@@ -1,0 +1,61 @@
+The Superformula Function (Polar Coordinates)
+function superformulaR(theta, {m, n1, n2, n3, a = 1, b = 1}): This function calculates the radius ($r$) for a given angle ($\theta$) based on the Superformula:$$r(\theta) = \left[ \left(\frac{|\cos(m\theta/4)|}{a}\right)^{n_2} + \left(\frac{|\sin(m\theta/4)|}{b}\right)^{n_3} \right]^{-1/n_1}$$
+
+The parameters $m$, $n_1$, $n_2$, $n_3$, $a$, and $b$ control the shape's geometry, such as the number of lobes, the sharpness, and the symmetry
+
+Code:
+<canvas id="c" width="384" height="384"></canvas>
+<script>
+// --- Superformula -----------------------------------------------------------
+// r(θ) = [ (|cos(mθ/4)/a|^n2 + |sin(mθ/4)/b|^n3) ]^(-1/n1)
+function superformulaR(theta, {m, n1, n2, n3, a = 1, b = 1}) {
+  const t1 = Math.pow(Math.abs(Math.cos((m * theta) / 4) / a), n2);
+  const t2 = Math.pow(Math.abs(Math.sin((m * theta) / 4) / b), n3);
+  const denom = t1 + t2;
+  // Guard against 0^(-1/n1)
+  return Math.pow(Math.max(denom, 1e-12), -1 / n1);
+}
+
+// Draw as a polyline (no per-pixel sampling; avoids quantization gaps)
+function drawSuperformula(ctx, {
+  cx, cy,                        // canvas center (px)
+  radius = 250,                  // overall scale factor (px)
+  rotation = 0,                  // radians
+  steps = 1500,                  // angular samples; increase for more detail
+  m = 5, n1 = 0.5, n2 = 0.5, n3 = 0.5, a = 1, b = 1
+} = {}) {
+  ctx.beginPath();
+  let x0, y0;
+
+  for (let i = 0; i <= steps; i++) {
+    const theta = (i / steps) * 2 * Math.PI;
+    const r = superformulaR(theta, {m, n1, n2, n3, a, b});
+    const ang = theta + rotation;
+    const x = cx + radius * r * Math.cos(ang);
+    const y = cy + radius * r * Math.sin(ang);
+
+    if (i === 0) { ctx.moveTo(x0 = x, y0 = y); }
+    else         { ctx.lineTo(x, y); }
+  }
+  ctx.closePath();
+  ctx.stroke();
+}
+
+// --- Example usage ----------------------------------------------------------
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+ctx.lineWidth = 2;
+
+// 5-point star-like (symmetric case: n1 = n2 = n3 = q)
+drawSuperformula(ctx, {
+  cx: canvas.width/2, cy: canvas.height/2,
+  radius: 280, m: 5, n1: 0.5, n2: 0.5, n3: 0.5, steps: 1200
+});
+
+// To try other shapes:
+// Eight points:        m: 8, n1=n2=n3=0.5
+// Diamond-like:        m: 4, n1=n2=n3=1
+// Circle:              any m, n1=n2=n3=2
+// Squarish lobes:      m: 6, n1=n2=n3=3
+// Asymmetric lobes:    choose n2 != n3 or a != b
+</script>

@@ -1,0 +1,150 @@
+
+// Render to a canvas of specific size
+function renderToCanvas(size) {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = size;
+    tempCanvas.height = size;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    const scaleFactor = size / 360;
+
+    layers.forEach(layer => {
+        if (layer.type === 'shape') {
+            renderShape(tempCtx, layer, scaleFactor);
+        } else {
+            renderMonogram(tempCtx, layer, scaleFactor);
+        }
+    });
+
+    return tempCanvas;
+}
+
+// Update export preview
+function updateExportPreview() {
+    const previewCanvas = renderToCanvas(180);
+    const previewImg = document.getElementById('exportPreview');
+    previewImg.src = previewCanvas.toDataURL('image/png');
+}
+
+// Export functions
+function exportAppleTouchIcon() {
+    const iconCanvas = renderToCanvas(180);
+    iconCanvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'apple-touch-icon.png';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+}
+
+function createIcoFile(sizes) {
+    const images = sizes.map(size => {
+        const canvas = renderToCanvas(size);
+        return {
+            size: size,
+            canvas: canvas,
+            imageData: canvas.getContext('2d').getImageData(0, 0, size, size)
+        };
+    });
+
+    let offset = 6 + (images.length * 16);
+    const imageBuffers = images.map(img => createBMPData(img.imageData));
+
+    const totalSize = offset + imageBuffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+    const buffer = new ArrayBuffer(totalSize);
+    const view = new DataView(buffer);
+    const uint8View = new Uint8Array(buffer);
+
+    view.setUint16(0, 0, true);
+    view.setUint16(2, 1, true);
+    view.setUint16(4, images.length, true);
+
+    let currentOffset = offset;
+    images.forEach((img, i) => {
+        const entryOffset = 6 + (i * 16);
+        const imageSize = imageBuffers[i].byteLength;
+
+        view.setUint8(entryOffset, img.size === 256 ? 0 : img.size);
+        view.setUint8(entryOffset + 1, img.size === 256 ? 0 : img.size);
+        view.setUint8(entryOffset + 2, 0);
+        view.setUint8(entryOffset + 3, 0);
+        view.setUint16(entryOffset + 4, 1, true);
+        view.setUint16(entryOffset + 6, 32, true);
+        view.setUint32(entryOffset + 8, imageSize, true);
+        view.setUint32(entryOffset + 12, currentOffset, true);
+
+        currentOffset += imageSize;
+    });
+
+    currentOffset = offset;
+    imageBuffers.forEach(imgBuffer => {
+        uint8View.set(new Uint8Array(imgBuffer), currentOffset);
+        currentOffset += imgBuffer.byteLength;
+    });
+
+    return buffer;
+}
+
+function createBMPData(imageData) {
+    if (!imageData || !imageData.width || !imageData.height) {
+        return new ArrayBuffer(0);
+    }
+
+    const width = imageData.width;
+    const height = imageData.height;
+    const headerSize = 40;
+    const imageSize = width * height * 4;
+
+    const maskRowSize = Math.ceil(Math.ceil(width / 8) / 4) * 4;
+    const maskSize = maskRowSize * height;
+    const totalSize = headerSize + imageSize + maskSize;
+
+    const buffer = new ArrayBuffer(totalSize);
+    const view = new DataView(buffer);
+    const uint8View = new Uint8Array(buffer);
+
+    view.setUint32(0, headerSize, true);
+    view.setInt32(4, width, true);
+    view.setInt32(8, height * 2, true);
+    view.setUint16(12, 1, true);
+    view.setUint16(14, 32, true);
+    view.setUint32(16, 0, true);
+    view.setUint32(20, imageSize + maskSize, true);
+    view.setInt32(24, 0, true);
+    view.setInt32(28, 0, true);
+    view.setUint32(32, 0, true);
+    view.setUint32(36, 0, true);
+
+    let offset = headerSize;
+    for (let y = height - 1; y >= 0; y--) {
+        for (let x = 0; x < width; x++) {
+            const srcOffset = (y * width + x) * 4;
+            uint8View[offset++] = imageData.data[srcOffset + 2];
+            uint8View[offset++] = imageData.data[srcOffset + 1];
+            uint8View[offset++] = imageData.data[srcOffset];
+            uint8View[offset++] = imageData.data[srcOffset + 3];
+        }
+    }
+
+    for (let y = height - 1; y >= 0; y--) {
+        for (let x = 0; x < maskRowSize; x++) {
+            uint8View[offset++] = 0;
+        }
+    }
+
+    return buffer;
+}
+
+function exportFavicon() {
+    const sizes = [16, 32, 48, 64, 128, 256];
+    const icoData = createIcoFile(sizes);
+    const blob = new Blob([icoData], { type: 'image/x-icon' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'favicon.ico';
+    a.click();
+    URL.revokeObjectURL(url);
+}
