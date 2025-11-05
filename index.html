@@ -232,6 +232,62 @@
             border-color: #666;
         }
 
+        .demos-panel {
+            width: 200px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .demos-panel h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .demo-item {
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .demo-item:hover {
+            background: #333;
+            border-color: #007aff;
+            transform: translateY(-1px);
+        }
+
+        .demo-item:active {
+            transform: translateY(0);
+        }
+
+        .demo-item.random {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .demo-item.random:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            border-color: #764ba2;
+        }
+
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -484,6 +540,12 @@
                     <button id="clearAll">Clear</button>
                 </div>
             </div>
+
+            <!-- Demos Panel -->
+            <div class="demos-panel">
+                <h2>Demos</h2>
+                <div class="demo-list" id="demoList"></div>
+            </div>
         </div>
 
         <!-- Controls Grid -->
@@ -633,6 +695,217 @@
             gear: { m: 8, n1: 10, n2: 10, n3: 10, a: 1, b: 1 },
             diamond: { m: 4, n1: 1, n2: 1, n3: 1, a: 1, b: 1 },
             cross: { m: 4, n1: 100, n2: 100, n3: 100, a: 1, b: 1 }
+        };
+
+        // Helper function to lighten a color
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace("#",""), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.min(255, (num >> 16) + amt);
+            const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
+            const B = Math.min(255, (num & 0x0000FF) + amt);
+            return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+        }
+
+        // Demo configurations
+        const demos = {
+            descendingStar: {
+                name: "Descending Star",
+                shapes: (function() {
+                    const shapes = [];
+                    const colors = ['#FF6B6B', '#FF8E53', '#FFA64D', '#FFD93D', '#6BCF7F', '#4ECDC4',
+                                  '#45B7D1', '#4D96FF', '#6C5CE7', '#A78BFA', '#F472B6', '#FB7185',
+                                  '#EF4444', '#F97316', '#F59E0B'];
+                    for (let i = 0; i < 15; i++) {
+                        const points = 18 - i;
+                        const size = 160 - (i * 8);
+                        const rotation = (i * 8) * Math.PI / 180;
+                        const opacity = 0.9 - (i * 0.03);
+                        const baseColor = colors[i % colors.length];
+                        const lightColor = lightenColor(baseColor, i * 3);
+
+                        const hexToRgba = (hex, alpha) => {
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: size,
+                            rotation: rotation,
+                            m: points,
+                            n1: 0.5,
+                            n2: 0.5,
+                            n3: 0.5,
+                            a: 1,
+                            b: 1,
+                            fillColor: hexToRgba(lightColor, opacity),
+                            strokeColor: lightenColor(baseColor, i * 2),
+                            strokeWidth: 2
+                        });
+                    }
+                    return shapes;
+                })()
+            },
+            bloomingFlower: {
+                name: "Blooming Flower",
+                shapes: (function() {
+                    const shapes = [];
+                    const petalCounts = [3, 4, 5, 6, 7, 8, 9, 10];
+                    const colors = ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9F1239', '#881337', '#701A47', '#5D1A57'];
+
+                    petalCounts.forEach((petals, i) => {
+                        const size = 50 + (i * 15);
+                        const rotation = (i * 15) * Math.PI / 180;
+                        const opacity = 0.5 + (i * 0.06);
+
+                        const hexToRgba = (hex, alpha) => {
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: size,
+                            rotation: rotation,
+                            m: petals,
+                            n1: 1,
+                            n2: 4,
+                            n3: 4,
+                            a: 1,
+                            b: 1,
+                            fillColor: hexToRgba(colors[i], opacity),
+                            strokeColor: colors[i],
+                            strokeWidth: 1
+                        });
+                    });
+
+                    return shapes;
+                })()
+            },
+            clockworkGears: {
+                name: "Clockwork Gears",
+                shapes: (function() {
+                    const shapes = [];
+                    const gearConfigs = [
+                        { teeth: 12, size: 140, color: '#6B7280', rotation: 0 },
+                        { teeth: 10, size: 110, color: '#9CA3AF', rotation: 18 },
+                        { teeth: 8, size: 85, color: '#D1D5DB', rotation: 22.5 },
+                        { teeth: 6, size: 60, color: '#E5E7EB', rotation: 30 },
+                    ];
+
+                    gearConfigs.forEach((config, i) => {
+                        const hexToRgba = (hex, alpha) => {
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: config.size,
+                            rotation: config.rotation * Math.PI / 180,
+                            m: config.teeth,
+                            n1: 10,
+                            n2: 10,
+                            n3: 10,
+                            a: 1,
+                            b: 1,
+                            fillColor: hexToRgba(config.color, 0.7),
+                            strokeColor: '#374151',
+                            strokeWidth: 3
+                        });
+                    });
+
+                    return shapes;
+                })()
+            },
+            rainbowBurst: {
+                name: "Rainbow Burst",
+                shapes: (function() {
+                    const shapes = [];
+                    const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+
+                    colors.forEach((color, i) => {
+                        const size = 150 - (i * 15);
+                        const rotation = (i * 25) * Math.PI / 180;
+                        const opacity = 0.6;
+
+                        const hexToRgba = (hex, alpha) => {
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: size,
+                            rotation: rotation,
+                            m: 12,
+                            n1: 0.5,
+                            n2: 0.5,
+                            n3: 0.5,
+                            a: 1,
+                            b: 1,
+                            fillColor: hexToRgba(color, opacity),
+                            strokeColor: color,
+                            strokeWidth: 2
+                        });
+                    });
+
+                    return shapes;
+                })()
+            },
+            geometricMandala: {
+                name: "Geometric Mandala",
+                shapes: (function() {
+                    const shapes = [];
+                    const layers = [
+                        { m: 8, n1: 0.5, n2: 0.5, n3: 0.5, size: 150, color: '#6366F1', rotation: 0 },
+                        { m: 8, n1: 2, n2: 2, n3: 2, size: 120, color: '#8B5CF6', rotation: 22.5 },
+                        { m: 8, n1: 4, n2: 4, n3: 4, size: 90, color: '#A78BFA', rotation: 0 },
+                        { m: 12, n1: 1, n2: 4, n3: 4, size: 65, color: '#C4B5FD', rotation: 15 },
+                        { m: 4, n1: 2, n2: 5, n3: 5, size: 40, color: '#DDD6FE', rotation: 0 },
+                    ];
+
+                    layers.forEach((layer, i) => {
+                        const hexToRgba = (hex, alpha) => {
+                            const r = parseInt(hex.slice(1, 3), 16);
+                            const g = parseInt(hex.slice(3, 5), 16);
+                            const b = parseInt(hex.slice(5, 7), 16);
+                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                        };
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: layer.size,
+                            rotation: layer.rotation * Math.PI / 180,
+                            m: layer.m,
+                            n1: layer.n1,
+                            n2: layer.n2,
+                            n3: layer.n3,
+                            a: 1,
+                            b: 1,
+                            fillColor: hexToRgba(layer.color, 0.7),
+                            strokeColor: layer.color,
+                            strokeWidth: 2
+                        });
+                    });
+
+                    return shapes;
+                })()
+            }
         };
 
         // Application state
@@ -920,6 +1193,92 @@
             }
         }
 
+        // Load a demo
+        function loadDemo(demoKey) {
+            if (demos[demoKey]) {
+                shapes = JSON.parse(JSON.stringify(demos[demoKey].shapes)); // Deep clone
+                selectedShapeIndex = shapes.length > 0 ? shapes.length - 1 : null;
+                if (selectedShapeIndex !== null) {
+                    loadShapeToEditor(shapes[selectedShapeIndex]);
+                }
+                updateShapeList();
+                renderCanvas();
+            }
+        }
+
+        // Generate random demo
+        function generateRandomDemo() {
+            shapes = [];
+            const layerCount = Math.floor(Math.random() * 6) + 3; // 3-8 layers
+
+            for (let i = 0; i < layerCount; i++) {
+                const m = Math.floor(Math.random() * 16) + 3; // 3-18 symmetry
+                const n1 = Math.random() * 9 + 0.5; // 0.5-9.5
+                const n2 = Math.random() * 9 + 0.5;
+                const n3 = Math.random() * 9 + 0.5;
+                const a = Math.random() * 2 + 0.5; // 0.5-2.5
+                const b = Math.random() * 2 + 0.5;
+                const size = Math.random() * 120 + 40; // 40-160
+                const rotation = Math.random() * 360 * Math.PI / 180;
+                const opacity = Math.random() * 0.5 + 0.4; // 0.4-0.9
+
+                // Random color from palette
+                const color = defaultPalette[Math.floor(Math.random() * (defaultPalette.length - 6))]; // Exclude greys
+
+                const hexToRgba = (hex, alpha) => {
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                };
+
+                shapes.push({
+                    cx: 192,
+                    cy: 192,
+                    radius: size,
+                    rotation: rotation,
+                    m: m,
+                    n1: n1,
+                    n2: n2,
+                    n3: n3,
+                    a: a,
+                    b: b,
+                    fillColor: hexToRgba(color, opacity),
+                    strokeColor: color,
+                    strokeWidth: Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : 0
+                });
+            }
+
+            selectedShapeIndex = shapes.length > 0 ? shapes.length - 1 : null;
+            if (selectedShapeIndex !== null) {
+                loadShapeToEditor(shapes[selectedShapeIndex]);
+            }
+            updateShapeList();
+            renderCanvas();
+        }
+
+        // Initialize demo list
+        function initDemoList() {
+            const demoList = document.getElementById('demoList');
+
+            // Add preset demos
+            Object.keys(demos).forEach(key => {
+                const demo = demos[key];
+                const item = document.createElement('div');
+                item.className = 'demo-item';
+                item.textContent = demo.name;
+                item.addEventListener('click', () => loadDemo(key));
+                demoList.appendChild(item);
+            });
+
+            // Add random button
+            const randomItem = document.createElement('div');
+            randomItem.className = 'demo-item random';
+            randomItem.textContent = 'Random';
+            randomItem.addEventListener('click', generateRandomDemo);
+            demoList.appendChild(randomItem);
+        }
+
         // Update stroke color field visibility
         function updateStrokeColorVisibility() {
             const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
@@ -1175,6 +1534,7 @@
 
         // Initialize
         initColorPalette();
+        initDemoList();
         renderCanvas();
     </script>
 </body>
