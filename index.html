@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superformula Icon Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 384px 1fr;
+            gap: 30px;
+        }
+
+        h1 {
+            grid-column: 1 / -1;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .canvas-container {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        #mainCanvas {
+            display: block;
+            border: 1px solid #444;
+            background: white;
+            cursor: crosshair;
+            border-radius: 4px;
+        }
+
+        .controls {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            max-height: calc(100vh - 100px);
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.selected {
+            border-color: #fff;
+            box-shadow: 0 0 0 2px #2a2a2a, 0 0 0 4px #fff;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #b0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="range"],
+        select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        input[type="range"] {
+            padding: 0;
+            height: 6px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .range-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        button {
+            width: 100%;
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        button:hover {
+            background: #0051d5;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.secondary {
+            background: #444;
+            margin-top: 8px;
+        }
+
+        button.secondary:hover {
+            background: #555;
+        }
+
+        button.danger {
+            background: #ff3b30;
+        }
+
+        button.danger:hover {
+            background: #d32f2f;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .shape-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .shape-item {
+            padding: 10px;
+            margin-bottom: 6px;
+            background: #2a2a2a;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.15s;
+        }
+
+        .shape-item:hover {
+            background: #333;
+        }
+
+        .shape-item.selected {
+            background: #007aff;
+        }
+
+        .shape-item-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #666;
+        }
+
+        .export-preview {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-box {
+            text-align: center;
+        }
+
+        .preview-box img {
+            display: block;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .preview-box label {
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .draw-mode-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            padding: 8px;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #b0b0b0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+
+        .mode-btn:hover {
+            border-color: #666;
+        }
+
+        .mode-btn.active {
+            background: #007aff;
+            border-color: #007aff;
+            color: white;
+        }
+
+        .layer-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .layer-controls button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .custom-color-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .custom-color-input input[type="text"] {
+            flex: 1;
+        }
+
+        .custom-color-input input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Superformula Icon Maker</h1>
+
+        <div class="canvas-container">
+            <canvas id="mainCanvas" width="384" height="384"></canvas>
+        </div>
+
+        <div class="controls">
+            <div class="section">
+                <h2>Colors</h2>
+                <div class="color-palette" id="colorPalette"></div>
+                <div class="input-group">
+                    <label>Custom Color (CSS)</label>
+                    <div class="custom-color-input">
+                        <input type="text" id="customColor" placeholder="e.g., #ff5733, rgba(255,87,51,0.5)">
+                        <input type="color" id="colorPicker">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Opacity</label>
+                    <input type="range" id="opacity" min="0" max="1" step="0.01" value="1">
+                    <span class="range-value" id="opacityValue">1.00</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Draw Mode</h2>
+                <div class="draw-mode-group">
+                    <button class="mode-btn active" data-mode="fill">Fill</button>
+                    <button class="mode-btn" data-mode="stroke">Stroke</button>
+                    <button class="mode-btn" data-mode="both">Both</button>
+                </div>
+                <div class="input-group">
+                    <label>Stroke Width</label>
+                    <input type="number" id="strokeWidth" min="1" max="50" value="4">
+                </div>
+                <div class="input-group" id="strokeColorGroup" style="display: none;">
+                    <label>Stroke Color</label>
+                    <div class="custom-color-input">
+                        <input type="text" id="strokeColor" placeholder="e.g., #000000">
+                        <input type="color" id="strokeColorPicker" value="#000000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Shape Parameters</h2>
+                <div class="input-group">
+                    <label>m (symmetry/lobes)</label>
+                    <input type="number" id="paramM" min="0" max="20" step="0.1" value="5">
+                </div>
+                <div class="param-grid">
+                    <div class="input-group">
+                        <label>n1</label>
+                        <input type="number" id="paramN1" min="0.1" max="10" step="0.1" value="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>n2</label>
+                        <input type="number" id="paramN2" min="0.1" max="10" step="0.1" value="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>n3</label>
+                        <input type="number" id="paramN3" min="0.1" max="10" step="0.1" value="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label>a</label>
+                        <input type="number" id="paramA" min="0.1" max="5" step="0.1" value="1">
+                    </div>
+                    <div class="input-group">
+                        <label>b</label>
+                        <input type="number" id="paramB" min="0.1" max="5" step="0.1" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Transform</h2>
+                <div class="input-group">
+                    <label>Size</label>
+                    <input type="range" id="size" min="10" max="300" value="150">
+                    <span class="range-value" id="sizeValue">150</span>
+                </div>
+                <div class="input-group">
+                    <label>Rotation (degrees)</label>
+                    <input type="range" id="rotation" min="0" max="360" value="0">
+                    <span class="range-value" id="rotationValue">0</span>
+                </div>
+                <div class="input-group">
+                    <label>Position X</label>
+                    <input type="number" id="posX" min="0" max="384" value="192">
+                </div>
+                <div class="input-group">
+                    <label>Position Y</label>
+                    <input type="number" id="posY" min="0" max="384" value="192">
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Layers</h2>
+                <div class="shape-list" id="shapeList"></div>
+                <button id="addShape">Add Shape</button>
+                <div class="layer-controls">
+                    <button class="secondary" id="moveUp">Move Up</button>
+                    <button class="secondary" id="moveDown">Move Down</button>
+                    <button class="danger" id="deleteShape">Delete</button>
+                </div>
+                <button class="secondary" id="clearAll" style="margin-top: 8px;">Clear All</button>
+            </div>
+
+            <div class="section">
+                <h2>Export</h2>
+                <div class="export-preview">
+                    <div class="preview-box">
+                        <img id="applePreview" width="60" height="60">
+                        <label>180×180</label>
+                    </div>
+                    <div class="preview-box">
+                        <img id="faviconPreview" width="32" height="32">
+                        <label>32×32</label>
+                    </div>
+                    <div class="preview-box">
+                        <img id="faviconPreview16" width="16" height="16">
+                        <label>16×16</label>
+                    </div>
+                </div>
+                <button id="exportAppleIcon">Download apple-touch-icon.png</button>
+                <button class="secondary" id="exportFavicon">Download favicon.ico</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modern icon color palette
+        const defaultPalette = [
+            '#FF6B6B', '#FF8E53', '#FFA64D', '#FFD93D', '#6BCF7F', '#4ECDC4',
+            '#45B7D1', '#4D96FF', '#6C5CE7', '#A78BFA', '#F472B6', '#FB7185',
+            '#EF4444', '#F97316', '#F59E0B', '#EAB308', '#22C55E', '#14B8A6',
+            '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E',
+            '#DC2626', '#EA580C', '#D97706', '#CA8A04', '#16A34A', '#0D9488',
+            '#0891B2', '#2563EB', '#4F46E5', '#7C3AED', '#DB2777', '#E11D48',
+            '#000000', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB', '#FFFFFF'
+        ];
+
+        // Application state
+        let shapes = [];
+        let selectedShapeIndex = null;
+        let currentColor = '#FF6B6B';
+        let currentOpacity = 1;
+        let currentDrawMode = 'fill';
+        let currentStrokeColor = '#000000';
+
+        // Canvas setup
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Initialize color palette
+        function initColorPalette() {
+            const palette = document.getElementById('colorPalette');
+            defaultPalette.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.background = color;
+                if (color === currentColor) {
+                    swatch.classList.add('selected');
+                }
+                swatch.addEventListener('click', () => {
+                    currentColor = color;
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    document.getElementById('customColor').value = color;
+                    updateSelectedShape();
+                });
+                palette.appendChild(swatch);
+            });
+        }
+
+        // Superformula calculation
+        function superformulaR(theta, {m, n1, n2, n3, a = 1, b = 1}) {
+            const t1 = Math.pow(Math.abs(Math.cos((m * theta) / 4) / a), n2);
+            const t2 = Math.pow(Math.abs(Math.sin((m * theta) / 4) / b), n3);
+            const denom = t1 + t2;
+            return Math.pow(Math.max(denom, 1e-12), -1 / n1);
+        }
+
+        // Draw superformula shape
+        function drawSuperformula(ctx, shape, scaleFactor = 1) {
+            const {cx, cy, radius, rotation, m, n1, n2, n3, a, b, steps = 1500} = shape;
+
+            ctx.beginPath();
+
+            for (let i = 0; i <= steps; i++) {
+                const theta = (i / steps) * 2 * Math.PI;
+                const r = superformulaR(theta, {m, n1, n2, n3, a, b});
+                const ang = theta + rotation;
+                const x = (cx * scaleFactor) + (radius * scaleFactor * r * Math.cos(ang));
+                const y = (cy * scaleFactor) + (radius * scaleFactor * r * Math.sin(ang));
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.closePath();
+        }
+
+        // Render a shape with its properties
+        function renderShape(ctx, shape, scaleFactor = 1) {
+            ctx.save();
+
+            drawSuperformula(ctx, shape, scaleFactor);
+
+            if (shape.drawMode === 'fill' || shape.drawMode === 'both') {
+                ctx.fillStyle = shape.fillColor;
+                ctx.fill();
+            }
+
+            if (shape.drawMode === 'stroke' || shape.drawMode === 'both') {
+                ctx.strokeStyle = shape.strokeColor;
+                ctx.lineWidth = shape.strokeWidth * scaleFactor;
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        // Render all shapes to canvas
+        function renderCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            shapes.forEach(shape => {
+                renderShape(ctx, shape);
+            });
+
+            updateExportPreviews();
+        }
+
+        // Create shape object from current settings
+        function createShapeFromSettings() {
+            const opacity = parseFloat(document.getElementById('opacity').value);
+            const hexToRgba = (hex, alpha) => {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            let fillColor = currentColor;
+            if (currentColor.startsWith('#') && currentColor.length === 7) {
+                fillColor = hexToRgba(currentColor, opacity);
+            } else if (currentColor.startsWith('rgb(')) {
+                fillColor = currentColor.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
+            }
+
+            return {
+                cx: parseFloat(document.getElementById('posX').value),
+                cy: parseFloat(document.getElementById('posY').value),
+                radius: parseFloat(document.getElementById('size').value),
+                rotation: parseFloat(document.getElementById('rotation').value) * Math.PI / 180,
+                m: parseFloat(document.getElementById('paramM').value),
+                n1: parseFloat(document.getElementById('paramN1').value),
+                n2: parseFloat(document.getElementById('paramN2').value),
+                n3: parseFloat(document.getElementById('paramN3').value),
+                a: parseFloat(document.getElementById('paramA').value),
+                b: parseFloat(document.getElementById('paramB').value),
+                fillColor: fillColor,
+                strokeColor: document.getElementById('strokeColor').value || currentStrokeColor,
+                strokeWidth: parseFloat(document.getElementById('strokeWidth').value),
+                drawMode: currentDrawMode
+            };
+        }
+
+        // Add new shape
+        function addShape() {
+            const shape = createShapeFromSettings();
+            shapes.push(shape);
+            selectedShapeIndex = shapes.length - 1;
+            updateShapeList();
+            renderCanvas();
+        }
+
+        // Update selected shape with current settings
+        function updateSelectedShape() {
+            if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
+                shapes[selectedShapeIndex] = createShapeFromSettings();
+                renderCanvas();
+            }
+        }
+
+        // Load shape into editor
+        function loadShapeToEditor(shape) {
+            document.getElementById('posX').value = shape.cx;
+            document.getElementById('posY').value = shape.cy;
+            document.getElementById('size').value = shape.radius;
+            document.getElementById('sizeValue').textContent = shape.radius;
+
+            const rotationDeg = shape.rotation * 180 / Math.PI;
+            document.getElementById('rotation').value = rotationDeg;
+            document.getElementById('rotationValue').textContent = rotationDeg.toFixed(0);
+
+            document.getElementById('paramM').value = shape.m;
+            document.getElementById('paramN1').value = shape.n1;
+            document.getElementById('paramN2').value = shape.n2;
+            document.getElementById('paramN3').value = shape.n3;
+            document.getElementById('paramA').value = shape.a;
+            document.getElementById('paramB').value = shape.b;
+
+            document.getElementById('strokeWidth').value = shape.strokeWidth;
+            document.getElementById('strokeColor').value = shape.strokeColor;
+            document.getElementById('strokeColorPicker').value = shape.strokeColor;
+
+            currentDrawMode = shape.drawMode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === currentDrawMode);
+            });
+
+            updateStrokeColorVisibility();
+        }
+
+        // Update shape list UI
+        function updateShapeList() {
+            const list = document.getElementById('shapeList');
+            list.innerHTML = '';
+
+            shapes.forEach((shape, index) => {
+                const item = document.createElement('div');
+                item.className = 'shape-item';
+                if (index === selectedShapeIndex) {
+                    item.classList.add('selected');
+                }
+
+                const preview = document.createElement('div');
+                preview.className = 'shape-item-preview';
+                preview.style.background = shape.fillColor;
+
+                const label = document.createElement('span');
+                label.textContent = `Shape ${index + 1} (m=${shape.m})`;
+
+                item.appendChild(preview);
+                item.appendChild(label);
+
+                item.addEventListener('click', () => {
+                    selectedShapeIndex = index;
+                    loadShapeToEditor(shape);
+                    updateShapeList();
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // Move shape up in layer order
+        function moveShapeUp() {
+            if (selectedShapeIndex !== null && selectedShapeIndex < shapes.length - 1) {
+                [shapes[selectedShapeIndex], shapes[selectedShapeIndex + 1]] =
+                [shapes[selectedShapeIndex + 1], shapes[selectedShapeIndex]];
+                selectedShapeIndex++;
+                updateShapeList();
+                renderCanvas();
+            }
+        }
+
+        // Move shape down in layer order
+        function moveShapeDown() {
+            if (selectedShapeIndex !== null && selectedShapeIndex > 0) {
+                [shapes[selectedShapeIndex], shapes[selectedShapeIndex - 1]] =
+                [shapes[selectedShapeIndex - 1], shapes[selectedShapeIndex]];
+                selectedShapeIndex--;
+                updateShapeList();
+                renderCanvas();
+            }
+        }
+
+        // Delete selected shape
+        function deleteShape() {
+            if (selectedShapeIndex !== null) {
+                shapes.splice(selectedShapeIndex, 1);
+                selectedShapeIndex = selectedShapeIndex > 0 ? selectedShapeIndex - 1 : null;
+                if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
+                    loadShapeToEditor(shapes[selectedShapeIndex]);
+                }
+                updateShapeList();
+                renderCanvas();
+            }
+        }
+
+        // Clear all shapes
+        function clearAll() {
+            if (confirm('Clear all shapes?')) {
+                shapes = [];
+                selectedShapeIndex = null;
+                updateShapeList();
+                renderCanvas();
+            }
+        }
+
+        // Update stroke color field visibility
+        function updateStrokeColorVisibility() {
+            const strokeColorGroup = document.getElementById('strokeColorGroup');
+            strokeColorGroup.style.display =
+                (currentDrawMode === 'stroke' || currentDrawMode === 'both') ? 'block' : 'none';
+        }
+
+        // Render to a specific size canvas
+        function renderToCanvas(size) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            tempCtx.fillStyle = 'white';
+            tempCtx.fillRect(0, 0, size, size);
+
+            const scaleFactor = size / 384;
+
+            shapes.forEach(shape => {
+                renderShape(tempCtx, shape, scaleFactor);
+            });
+
+            return tempCanvas;
+        }
+
+        // Update export previews
+        function updateExportPreviews() {
+            const preview180 = renderToCanvas(180);
+            const preview32 = renderToCanvas(32);
+            const preview16 = renderToCanvas(16);
+
+            document.getElementById('applePreview').src = preview180.toDataURL('image/png');
+            document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
+            document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
+        }
+
+        // Export apple touch icon
+        function exportAppleTouchIcon() {
+            const iconCanvas = renderToCanvas(180);
+            iconCanvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'apple-touch-icon.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // Create ICO file with multiple sizes
+        function createIcoFile(sizes) {
+            const images = sizes.map(size => {
+                const canvas = renderToCanvas(size);
+                return {
+                    size: size,
+                    canvas: canvas,
+                    imageData: canvas.getContext('2d').getImageData(0, 0, size, size)
+                };
+            });
+
+            let offset = 6 + (images.length * 16);
+            const imageBuffers = images.map(img => createBMPData(img.imageData));
+
+            const totalSize = offset + imageBuffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+            const buffer = new ArrayBuffer(totalSize);
+            const view = new DataView(buffer);
+            const uint8View = new Uint8Array(buffer);
+
+            view.setUint16(0, 0, true);
+            view.setUint16(2, 1, true);
+            view.setUint16(4, images.length, true);
+
+            let currentOffset = offset;
+            images.forEach((img, i) => {
+                const entryOffset = 6 + (i * 16);
+                const imageSize = imageBuffers[i].byteLength;
+
+                view.setUint8(entryOffset, img.size === 256 ? 0 : img.size);
+                view.setUint8(entryOffset + 1, img.size === 256 ? 0 : img.size);
+                view.setUint8(entryOffset + 2, 0);
+                view.setUint8(entryOffset + 3, 0);
+                view.setUint16(entryOffset + 4, 1, true);
+                view.setUint16(entryOffset + 6, 32, true);
+                view.setUint32(entryOffset + 8, imageSize, true);
+                view.setUint32(entryOffset + 12, currentOffset, true);
+
+                currentOffset += imageSize;
+            });
+
+            currentOffset = offset;
+            imageBuffers.forEach(imgBuffer => {
+                uint8View.set(new Uint8Array(imgBuffer), currentOffset);
+                currentOffset += imgBuffer.byteLength;
+            });
+
+            return buffer;
+        }
+
+        // Create BMP data for ICO format
+        function createBMPData(imageData) {
+            if (!imageData || !imageData.width || !imageData.height) {
+                return new ArrayBuffer(0);
+            }
+
+            const width = imageData.width;
+            const height = imageData.height;
+            const headerSize = 40;
+            const imageSize = width * height * 4;
+
+            const maskRowSize = Math.ceil(Math.ceil(width / 8) / 4) * 4;
+            const maskSize = maskRowSize * height;
+            const totalSize = headerSize + imageSize + maskSize;
+
+            const buffer = new ArrayBuffer(totalSize);
+            const view = new DataView(buffer);
+            const uint8View = new Uint8Array(buffer);
+
+            view.setUint32(0, headerSize, true);
+            view.setInt32(4, width, true);
+            view.setInt32(8, height * 2, true);
+            view.setUint16(12, 1, true);
+            view.setUint16(14, 32, true);
+            view.setUint32(16, 0, true);
+            view.setUint32(20, imageSize + maskSize, true);
+            view.setInt32(24, 0, true);
+            view.setInt32(28, 0, true);
+            view.setUint32(32, 0, true);
+            view.setUint32(36, 0, true);
+
+            let offset = headerSize;
+            for (let y = height - 1; y >= 0; y--) {
+                for (let x = 0; x < width; x++) {
+                    const srcOffset = (y * width + x) * 4;
+                    uint8View[offset++] = imageData.data[srcOffset + 2];
+                    uint8View[offset++] = imageData.data[srcOffset + 1];
+                    uint8View[offset++] = imageData.data[srcOffset];
+                    uint8View[offset++] = imageData.data[srcOffset + 3];
+                }
+            }
+
+            for (let y = height - 1; y >= 0; y--) {
+                for (let x = 0; x < maskRowSize; x++) {
+                    uint8View[offset++] = 0;
+                }
+            }
+
+            return buffer;
+        }
+
+        // Export favicon
+        function exportFavicon() {
+            const sizes = [16, 32, 48, 64, 128, 256];
+            const icoData = createIcoFile(sizes);
+            const blob = new Blob([icoData], { type: 'image/x-icon' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'favicon.ico';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Event listeners
+        document.getElementById('addShape').addEventListener('click', addShape);
+        document.getElementById('moveUp').addEventListener('click', moveShapeUp);
+        document.getElementById('moveDown').addEventListener('click', moveShapeDown);
+        document.getElementById('deleteShape').addEventListener('click', deleteShape);
+        document.getElementById('clearAll').addEventListener('click', clearAll);
+        document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
+        document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
+
+        // Draw mode buttons
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentDrawMode = btn.dataset.mode;
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                updateStrokeColorVisibility();
+                updateSelectedShape();
+            });
+        });
+
+        // Custom color input
+        document.getElementById('customColor').addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            updateSelectedShape();
+        });
+
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            document.getElementById('customColor').value = currentColor;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            updateSelectedShape();
+        });
+
+        // Stroke color inputs
+        document.getElementById('strokeColor').addEventListener('input', (e) => {
+            currentStrokeColor = e.target.value;
+            document.getElementById('strokeColorPicker').value = e.target.value;
+            updateSelectedShape();
+        });
+
+        document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
+            currentStrokeColor = e.target.value;
+            document.getElementById('strokeColor').value = e.target.value;
+            updateSelectedShape();
+        });
+
+        // Opacity slider
+        document.getElementById('opacity').addEventListener('input', (e) => {
+            currentOpacity = parseFloat(e.target.value);
+            document.getElementById('opacityValue').textContent = currentOpacity.toFixed(2);
+            updateSelectedShape();
+        });
+
+        // Size and rotation sliders
+        document.getElementById('size').addEventListener('input', (e) => {
+            document.getElementById('sizeValue').textContent = e.target.value;
+            updateSelectedShape();
+        });
+
+        document.getElementById('rotation').addEventListener('input', (e) => {
+            document.getElementById('rotationValue').textContent = e.target.value;
+            updateSelectedShape();
+        });
+
+        // All number inputs update on change
+        ['paramM', 'paramN1', 'paramN2', 'paramN3', 'paramA', 'paramB',
+         'posX', 'posY', 'strokeWidth'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateSelectedShape);
+        });
+
+        // Initialize
+        initColorPalette();
+        renderCanvas();
+    </script>
+</body>
+</html>
