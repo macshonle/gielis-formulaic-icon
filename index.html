@@ -21,16 +21,81 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 384px 1fr;
-            gap: 30px;
         }
 
         h1 {
-            grid-column: 1 / -1;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             font-size: 28px;
             font-weight: 600;
+            text-align: center;
+        }
+
+        .main-workspace {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .export-panel {
+            width: 180px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .export-panel h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .export-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .preview-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preview-box img {
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .preview-box span {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .download-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .download-link {
+            color: #007aff;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 0;
+            transition: color 0.15s;
+            cursor: pointer;
+        }
+
+        .download-link:hover {
+            color: #0051d5;
+            text-decoration: underline;
         }
 
         .canvas-container {
@@ -48,42 +113,173 @@
             border-radius: 4px;
         }
 
-        .controls {
+        .layers-panel {
+            width: 200px;
             background: #2a2a2a;
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            overflow-y: auto;
-            max-height: calc(100vh - 100px);
         }
 
-        .section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #3a3a3a;
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section h2 {
-            font-size: 16px;
+        .layers-panel h2 {
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .shape-list {
+            max-height: 320px;
+            overflow-y: auto;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 12px;
+        }
+
+        .shape-item {
+            padding: 8px;
+            margin-bottom: 4px;
+            background: #2a2a2a;
+            border-radius: 4px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.15s;
+            font-size: 12px;
+        }
+
+        .shape-item:hover {
+            background: #333;
+        }
+
+        .shape-item.selected {
+            background: #007aff;
+        }
+
+        .shape-item.dragging {
+            opacity: 0.5;
+        }
+
+        .shape-item-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .shape-item-preview {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid #666;
+            flex-shrink: 0;
+        }
+
+        .shape-item-label {
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 0;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: all 0.15s;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .delete-btn:hover {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .layer-actions {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .layer-actions button {
+            flex: 1;
+            padding: 6px;
+            font-size: 11px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #b0b0b0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .layer-actions button:hover {
+            background: #333;
+            border-color: #666;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .control-panel {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-panel h2 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        fieldset {
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 0;
+        }
+
+        legend {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 8px;
         }
 
         .color-palette {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .color-swatch {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 6px;
             cursor: pointer;
             border: 2px solid transparent;
@@ -99,31 +295,52 @@
             box-shadow: 0 0 0 2px #2a2a2a, 0 0 0 4px #fff;
         }
 
-        .input-group {
-            margin-bottom: 15px;
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        label {
-            display: block;
+        .input-row label {
             font-size: 12px;
             font-weight: 500;
-            margin-bottom: 6px;
             color: #b0b0b0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .input-row input,
+        .input-row select {
+            flex: 1;
+        }
+
+        .input-row .range-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-row .range-value {
+            font-size: 12px;
+            color: #888;
+            min-width: 40px;
+            text-align: right;
         }
 
         input[type="number"],
         input[type="text"],
         input[type="range"],
         select {
-            width: 100%;
             background: #1a1a1a;
             border: 1px solid #444;
             color: #e0e0e0;
-            padding: 8px 10px;
+            padding: 6px 8px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         input[type="number"]:focus,
@@ -140,174 +357,88 @@
             cursor: pointer;
         }
 
-        .range-value {
-            display: inline-block;
-            margin-left: 10px;
-            font-size: 12px;
-            color: #888;
-        }
-
-        button {
-            width: 100%;
-            background: #007aff;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+        input[type="color"] {
+            width: 40px;
+            height: 32px;
+            border: 1px solid #444;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.15s;
+            background: none;
+            padding: 2px;
         }
 
-        button:hover {
-            background: #0051d5;
+        .color-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex: 1;
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        button.secondary {
-            background: #444;
-            margin-top: 8px;
-        }
-
-        button.secondary:hover {
-            background: #555;
-        }
-
-        button.danger {
-            background: #ff3b30;
-        }
-
-        button.danger:hover {
-            background: #d32f2f;
+        .color-input-group input[type="text"] {
+            flex: 1;
         }
 
         .param-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .shape-list {
-            max-height: 200px;
-            overflow-y: auto;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 6px;
-            padding: 8px;
-        }
-
-        .shape-item {
-            padding: 10px;
-            margin-bottom: 6px;
-            background: #2a2a2a;
-            border-radius: 4px;
+        button.primary {
+            width: 100%;
+            background: #007aff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             transition: background 0.15s;
         }
 
-        .shape-item:hover {
-            background: #333;
+        button.primary:hover {
+            background: #0051d5;
         }
 
-        .shape-item.selected {
-            background: #007aff;
+        button.primary:active {
+            transform: scale(0.98);
         }
 
-        .shape-item-preview {
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            border: 1px solid #666;
-        }
-
-        .export-preview {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .preview-box {
-            text-align: center;
-        }
-
-        .preview-box img {
-            display: block;
+        .no-fill-indicator {
+            width: 32px;
+            height: 32px;
+            background: white;
             border: 1px solid #444;
             border-radius: 4px;
-            background: white;
-        }
-
-        .preview-box label {
-            margin-top: 8px;
-            margin-bottom: 0;
-        }
-
-        .draw-mode-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .mode-btn {
-            padding: 8px;
-            background: #1a1a1a;
-            border: 2px solid #444;
-            color: #b0b0b0;
-            border-radius: 6px;
+            position: relative;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
             transition: all 0.15s;
         }
 
-        .mode-btn:hover {
-            border-color: #666;
+        .no-fill-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ff3b30;
+            transform: translateY(-50%) rotate(-45deg);
         }
 
-        .mode-btn.active {
-            background: #007aff;
+        .no-fill-indicator:hover {
             border-color: #007aff;
-            color: white;
         }
 
-        .layer-controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .layer-controls button {
-            flex: 1;
-            padding: 8px;
-            font-size: 12px;
-        }
-
-        .custom-color-input {
+        .fill-control {
             display: flex;
             gap: 8px;
             align-items: center;
         }
 
-        .custom-color-input input[type="text"] {
-            flex: 1;
-        }
-
-        .custom-color-input input[type="color"] {
-            width: 50px;
-            height: 40px;
-            border: 1px solid #444;
-            border-radius: 6px;
-            cursor: pointer;
-            background: none;
+        .fill-control input[type="color"] {
+            flex: 0 0 40px;
         }
     </style>
 </head>
@@ -315,130 +446,165 @@
     <div class="container">
         <h1>Superformula Icon Maker</h1>
 
-        <div class="canvas-container">
-            <canvas id="mainCanvas" width="384" height="384"></canvas>
-        </div>
-
-        <div class="controls">
-            <div class="section">
-                <h2>Colors</h2>
-                <div class="color-palette" id="colorPalette"></div>
-                <div class="input-group">
-                    <label>Custom Color (CSS)</label>
-                    <div class="custom-color-input">
-                        <input type="text" id="customColor" placeholder="e.g., #ff5733, rgba(255,87,51,0.5)">
-                        <input type="color" id="colorPicker">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Opacity</label>
-                    <input type="range" id="opacity" min="0" max="1" step="0.01" value="1">
-                    <span class="range-value" id="opacityValue">1.00</span>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>Draw Mode</h2>
-                <div class="draw-mode-group">
-                    <button class="mode-btn active" data-mode="fill">Fill</button>
-                    <button class="mode-btn" data-mode="stroke">Stroke</button>
-                    <button class="mode-btn" data-mode="both">Both</button>
-                </div>
-                <div class="input-group">
-                    <label>Stroke Width</label>
-                    <input type="number" id="strokeWidth" min="1" max="50" value="4">
-                </div>
-                <div class="input-group" id="strokeColorGroup" style="display: none;">
-                    <label>Stroke Color</label>
-                    <div class="custom-color-input">
-                        <input type="text" id="strokeColor" placeholder="e.g., #000000">
-                        <input type="color" id="strokeColorPicker" value="#000000">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>Shape Parameters</h2>
-                <div class="input-group">
-                    <label>m (symmetry/lobes)</label>
-                    <input type="number" id="paramM" min="0" max="20" step="0.1" value="5">
-                </div>
-                <div class="param-grid">
-                    <div class="input-group">
-                        <label>n1</label>
-                        <input type="number" id="paramN1" min="0.1" max="10" step="0.1" value="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label>n2</label>
-                        <input type="number" id="paramN2" min="0.1" max="10" step="0.1" value="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label>n3</label>
-                        <input type="number" id="paramN3" min="0.1" max="10" step="0.1" value="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label>a</label>
-                        <input type="number" id="paramA" min="0.1" max="5" step="0.1" value="1">
-                    </div>
-                    <div class="input-group">
-                        <label>b</label>
-                        <input type="number" id="paramB" min="0.1" max="5" step="0.1" value="1">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>Transform</h2>
-                <div class="input-group">
-                    <label>Size</label>
-                    <input type="range" id="size" min="10" max="300" value="150">
-                    <span class="range-value" id="sizeValue">150</span>
-                </div>
-                <div class="input-group">
-                    <label>Rotation (degrees)</label>
-                    <input type="range" id="rotation" min="0" max="360" value="0">
-                    <span class="range-value" id="rotationValue">0</span>
-                </div>
-                <div class="input-group">
-                    <label>Position X</label>
-                    <input type="number" id="posX" min="0" max="384" value="192">
-                </div>
-                <div class="input-group">
-                    <label>Position Y</label>
-                    <input type="number" id="posY" min="0" max="384" value="192">
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>Layers</h2>
-                <div class="shape-list" id="shapeList"></div>
-                <button id="addShape">Add Shape</button>
-                <div class="layer-controls">
-                    <button class="secondary" id="moveUp">Move Up</button>
-                    <button class="secondary" id="moveDown">Move Down</button>
-                    <button class="danger" id="deleteShape">Delete</button>
-                </div>
-                <button class="secondary" id="clearAll" style="margin-top: 8px;">Clear All</button>
-            </div>
-
-            <div class="section">
+        <div class="main-workspace">
+            <!-- Export Panel -->
+            <div class="export-panel">
                 <h2>Export</h2>
                 <div class="export-preview">
                     <div class="preview-box">
-                        <img id="applePreview" width="60" height="60">
-                        <label>180×180</label>
+                        <img id="applePreview" width="32" height="32">
+                        <span>180×180</span>
                     </div>
                     <div class="preview-box">
-                        <img id="faviconPreview" width="32" height="32">
-                        <label>32×32</label>
+                        <img id="faviconPreview" width="24" height="24">
+                        <span>32×32</span>
                     </div>
                     <div class="preview-box">
                         <img id="faviconPreview16" width="16" height="16">
-                        <label>16×16</label>
+                        <span>16×16</span>
                     </div>
                 </div>
-                <button id="exportAppleIcon">Download apple-touch-icon.png</button>
-                <button class="secondary" id="exportFavicon">Download favicon.ico</button>
+                <div class="download-links">
+                    <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
+                    <a class="download-link" id="exportFavicon">Download favicon.ico</a>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas-container">
+                <canvas id="mainCanvas" width="384" height="384"></canvas>
+            </div>
+
+            <!-- Layers Panel -->
+            <div class="layers-panel">
+                <h2>Layers</h2>
+                <div class="shape-list" id="shapeList"></div>
+                <div class="layer-actions">
+                    <button id="addShape">+ Add</button>
+                    <button id="clearAll">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Grid -->
+        <div class="controls-grid">
+            <!-- Colors Panel -->
+            <div class="control-panel">
+                <h2>Colors</h2>
+                <div class="color-palette" id="colorPalette"></div>
+                <div class="input-row">
+                    <label>Fill</label>
+                    <div class="fill-control">
+                        <div class="no-fill-indicator" id="noFillBtn" style="display: none;"></div>
+                        <input type="color" id="fillColorPicker">
+                        <input type="text" id="customColor" placeholder="#ff5733">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Opacity</label>
+                    <div class="range-container">
+                        <input type="range" id="opacity" min="0" max="1" step="0.01" value="1">
+                        <span class="range-value" id="opacityValue">1.00</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Stroke</label>
+                    <select id="strokeWidth">
+                        <option value="0">None</option>
+                        <option value="1">1px</option>
+                        <option value="2">2px</option>
+                        <option value="3">3px</option>
+                        <option value="4" selected>4px</option>
+                        <option value="6">6px</option>
+                        <option value="8">8px</option>
+                        <option value="10">10px</option>
+                        <option value="15">15px</option>
+                        <option value="20">20px</option>
+                    </select>
+                </div>
+                <div class="input-row" id="strokeColorRow" style="display: none;">
+                    <label>Stroke Color</label>
+                    <div class="color-input-group">
+                        <input type="color" id="strokeColorPicker" value="#000000">
+                        <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shape Parameters Panel -->
+            <div class="control-panel">
+                <fieldset>
+                    <legend>Shape Parameters</legend>
+                    <div class="input-row">
+                        <label>Preset</label>
+                        <select id="presetSelect">
+                            <option value="">Custom</option>
+                            <option value="circle">Perfect Circle</option>
+                            <option value="square">Rounded Square</option>
+                            <option value="squircle">Icon Squircle</option>
+                            <option value="star4">4-Pointed Star</option>
+                            <option value="star5">5-Pointed Star</option>
+                            <option value="star8">8-Pointed Star</option>
+                            <option value="flower">Flower Shape</option>
+                            <option value="gear">Gear/Cog</option>
+                            <option value="diamond">Diamond</option>
+                            <option value="cross">Cross/Plus</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>m (symmetry)</label>
+                        <input type="number" id="paramM" min="0" max="20" step="0.1" value="5">
+                    </div>
+                    <div class="param-grid">
+                        <div class="input-row">
+                            <label>n1</label>
+                            <input type="number" id="paramN1" min="0.1" max="10" step="0.1" value="0.5">
+                        </div>
+                        <div class="input-row">
+                            <label>n2</label>
+                            <input type="number" id="paramN2" min="0.1" max="10" step="0.1" value="0.5">
+                        </div>
+                        <div class="input-row">
+                            <label>n3</label>
+                            <input type="number" id="paramN3" min="0.1" max="10" step="0.1" value="0.5">
+                        </div>
+                        <div class="input-row">
+                            <label>a</label>
+                            <input type="number" id="paramA" min="0.1" max="5" step="0.1" value="1">
+                        </div>
+                        <div class="input-row">
+                            <label>b</label>
+                            <input type="number" id="paramB" min="0.1" max="5" step="0.1" value="1">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Transform Panel -->
+            <div class="control-panel">
+                <h2>Transform</h2>
+                <div class="input-row">
+                    <label>Size</label>
+                    <div class="range-container">
+                        <input type="range" id="size" min="10" max="300" value="150">
+                        <span class="range-value" id="sizeValue">150</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Rotation</label>
+                    <div class="range-container">
+                        <input type="range" id="rotation" min="0" max="360" value="0">
+                        <span class="range-value" id="rotationValue">0°</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Position X</label>
+                    <input type="number" id="posX" min="0" max="384" value="192">
+                </div>
+                <div class="input-row">
+                    <label>Position Y</label>
+                    <input type="number" id="posY" min="0" max="384" value="192">
+                </div>
             </div>
         </div>
     </div>
@@ -455,13 +621,27 @@
             '#000000', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB', '#FFFFFF'
         ];
 
+        // Preset configurations
+        const presets = {
+            circle: { m: 4, n1: 2, n2: 2, n3: 2, a: 1, b: 1 },
+            square: { m: 4, n1: 4, n2: 4, n3: 4, a: 1, b: 1 },
+            squircle: { m: 4, n1: 2, n2: 5, n3: 5, a: 1, b: 1 },
+            star4: { m: 4, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
+            star5: { m: 5, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
+            star8: { m: 8, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
+            flower: { m: 6, n1: 1, n2: 4, n3: 4, a: 1, b: 1 },
+            gear: { m: 8, n1: 10, n2: 10, n3: 10, a: 1, b: 1 },
+            diamond: { m: 4, n1: 1, n2: 1, n3: 1, a: 1, b: 1 },
+            cross: { m: 4, n1: 100, n2: 100, n3: 100, a: 1, b: 1 }
+        };
+
         // Application state
         let shapes = [];
         let selectedShapeIndex = null;
         let currentColor = '#FF6B6B';
         let currentOpacity = 1;
-        let currentDrawMode = 'fill';
         let currentStrokeColor = '#000000';
+        let draggedItem = null;
 
         // Canvas setup
         const canvas = document.getElementById('mainCanvas');
@@ -482,6 +662,7 @@
                     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
                     swatch.classList.add('selected');
                     document.getElementById('customColor').value = color;
+                    document.getElementById('fillColorPicker').value = color.startsWith('#') ? color : '#FF6B6B';
                     updateSelectedShape();
                 });
                 palette.appendChild(swatch);
@@ -525,12 +706,15 @@
 
             drawSuperformula(ctx, shape, scaleFactor);
 
-            if (shape.drawMode === 'fill' || shape.drawMode === 'both') {
+            const hasFill = shape.fillColor && shape.fillColor !== 'none';
+            const hasStroke = shape.strokeWidth > 0;
+
+            if (hasFill) {
                 ctx.fillStyle = shape.fillColor;
                 ctx.fill();
             }
 
-            if (shape.drawMode === 'stroke' || shape.drawMode === 'both') {
+            if (hasStroke) {
                 ctx.strokeStyle = shape.strokeColor;
                 ctx.lineWidth = shape.strokeWidth * scaleFactor;
                 ctx.stroke();
@@ -583,7 +767,6 @@
                 fillColor: fillColor,
                 strokeColor: document.getElementById('strokeColor').value || currentStrokeColor,
                 strokeWidth: parseFloat(document.getElementById('strokeWidth').value),
-                drawMode: currentDrawMode
             };
         }
 
@@ -600,6 +783,7 @@
         function updateSelectedShape() {
             if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
                 shapes[selectedShapeIndex] = createShapeFromSettings();
+                updateShapeList();
                 renderCanvas();
             }
         }
@@ -613,7 +797,7 @@
 
             const rotationDeg = shape.rotation * 180 / Math.PI;
             document.getElementById('rotation').value = rotationDeg;
-            document.getElementById('rotationValue').textContent = rotationDeg.toFixed(0);
+            document.getElementById('rotationValue').textContent = rotationDeg.toFixed(0) + '°';
 
             document.getElementById('paramM').value = shape.m;
             document.getElementById('paramN1').value = shape.n1;
@@ -626,11 +810,6 @@
             document.getElementById('strokeColor').value = shape.strokeColor;
             document.getElementById('strokeColorPicker').value = shape.strokeColor;
 
-            currentDrawMode = shape.drawMode;
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode === currentDrawMode);
-            });
-
             updateStrokeColorVisibility();
         }
 
@@ -642,19 +821,69 @@
             shapes.forEach((shape, index) => {
                 const item = document.createElement('div');
                 item.className = 'shape-item';
+                item.draggable = true;
                 if (index === selectedShapeIndex) {
                     item.classList.add('selected');
                 }
+
+                const info = document.createElement('div');
+                info.className = 'shape-item-info';
 
                 const preview = document.createElement('div');
                 preview.className = 'shape-item-preview';
                 preview.style.background = shape.fillColor;
 
                 const label = document.createElement('span');
-                label.textContent = `Shape ${index + 1} (m=${shape.m})`;
+                label.className = 'shape-item-label';
+                label.textContent = `Shape ${index + 1}`;
 
-                item.appendChild(preview);
-                item.appendChild(label);
+                info.appendChild(preview);
+                info.appendChild(label);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '×';
+                deleteBtn.title = 'Delete shape';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteShape(index);
+                });
+
+                item.appendChild(info);
+                item.appendChild(deleteBtn);
+
+                // Drag and drop handlers
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = index;
+                    item.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', (e) => {
+                    item.classList.remove('dragging');
+                    draggedItem = null;
+                });
+
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (draggedItem !== null && draggedItem !== index) {
+                        const temp = shapes[draggedItem];
+                        shapes.splice(draggedItem, 1);
+                        shapes.splice(index, 0, temp);
+
+                        if (selectedShapeIndex === draggedItem) {
+                            selectedShapeIndex = index;
+                        } else if (selectedShapeIndex === index) {
+                            selectedShapeIndex = draggedItem > index ? selectedShapeIndex + 1 : selectedShapeIndex - 1;
+                        }
+
+                        updateShapeList();
+                        renderCanvas();
+                    }
+                });
 
                 item.addEventListener('click', () => {
                     selectedShapeIndex = index;
@@ -666,39 +895,19 @@
             });
         }
 
-        // Move shape up in layer order
-        function moveShapeUp() {
-            if (selectedShapeIndex !== null && selectedShapeIndex < shapes.length - 1) {
-                [shapes[selectedShapeIndex], shapes[selectedShapeIndex + 1]] =
-                [shapes[selectedShapeIndex + 1], shapes[selectedShapeIndex]];
-                selectedShapeIndex++;
-                updateShapeList();
-                renderCanvas();
-            }
-        }
-
-        // Move shape down in layer order
-        function moveShapeDown() {
-            if (selectedShapeIndex !== null && selectedShapeIndex > 0) {
-                [shapes[selectedShapeIndex], shapes[selectedShapeIndex - 1]] =
-                [shapes[selectedShapeIndex - 1], shapes[selectedShapeIndex]];
-                selectedShapeIndex--;
-                updateShapeList();
-                renderCanvas();
-            }
-        }
-
-        // Delete selected shape
-        function deleteShape() {
-            if (selectedShapeIndex !== null) {
-                shapes.splice(selectedShapeIndex, 1);
-                selectedShapeIndex = selectedShapeIndex > 0 ? selectedShapeIndex - 1 : null;
+        // Delete shape at index
+        function deleteShape(index) {
+            shapes.splice(index, 1);
+            if (selectedShapeIndex === index) {
+                selectedShapeIndex = shapes.length > 0 ? Math.max(0, index - 1) : null;
                 if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
                     loadShapeToEditor(shapes[selectedShapeIndex]);
                 }
-                updateShapeList();
-                renderCanvas();
+            } else if (selectedShapeIndex > index) {
+                selectedShapeIndex--;
             }
+            updateShapeList();
+            renderCanvas();
         }
 
         // Clear all shapes
@@ -713,9 +922,23 @@
 
         // Update stroke color field visibility
         function updateStrokeColorVisibility() {
-            const strokeColorGroup = document.getElementById('strokeColorGroup');
-            strokeColorGroup.style.display =
-                (currentDrawMode === 'stroke' || currentDrawMode === 'both') ? 'block' : 'none';
+            const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
+            const strokeColorRow = document.getElementById('strokeColorRow');
+            strokeColorRow.style.display = strokeWidth > 0 ? 'flex' : 'none';
+        }
+
+        // Apply preset
+        function applyPreset(presetName) {
+            if (presets[presetName]) {
+                const preset = presets[presetName];
+                document.getElementById('paramM').value = preset.m;
+                document.getElementById('paramN1').value = preset.n1;
+                document.getElementById('paramN2').value = preset.n2;
+                document.getElementById('paramN3').value = preset.n3;
+                document.getElementById('paramA').value = preset.a;
+                document.getElementById('paramB').value = preset.b;
+                updateSelectedShape();
+            }
         }
 
         // Render to a specific size canvas
@@ -876,32 +1099,26 @@
 
         // Event listeners
         document.getElementById('addShape').addEventListener('click', addShape);
-        document.getElementById('moveUp').addEventListener('click', moveShapeUp);
-        document.getElementById('moveDown').addEventListener('click', moveShapeDown);
-        document.getElementById('deleteShape').addEventListener('click', deleteShape);
         document.getElementById('clearAll').addEventListener('click', clearAll);
         document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
         document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
 
-        // Draw mode buttons
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentDrawMode = btn.dataset.mode;
-                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                updateStrokeColorVisibility();
-                updateSelectedShape();
-            });
+        // Preset selector
+        document.getElementById('presetSelect').addEventListener('change', (e) => {
+            applyPreset(e.target.value);
         });
 
         // Custom color input
         document.getElementById('customColor').addEventListener('input', (e) => {
             currentColor = e.target.value;
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            if (e.target.value.startsWith('#')) {
+                document.getElementById('fillColorPicker').value = e.target.value;
+            }
             updateSelectedShape();
         });
 
-        document.getElementById('colorPicker').addEventListener('input', (e) => {
+        document.getElementById('fillColorPicker').addEventListener('input', (e) => {
             currentColor = e.target.value;
             document.getElementById('customColor').value = currentColor;
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
@@ -911,13 +1128,21 @@
         // Stroke color inputs
         document.getElementById('strokeColor').addEventListener('input', (e) => {
             currentStrokeColor = e.target.value;
-            document.getElementById('strokeColorPicker').value = e.target.value;
+            if (e.target.value.startsWith('#')) {
+                document.getElementById('strokeColorPicker').value = e.target.value;
+            }
             updateSelectedShape();
         });
 
         document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
             currentStrokeColor = e.target.value;
             document.getElementById('strokeColor').value = e.target.value;
+            updateSelectedShape();
+        });
+
+        // Stroke width
+        document.getElementById('strokeWidth').addEventListener('change', (e) => {
+            updateStrokeColorVisibility();
             updateSelectedShape();
         });
 
@@ -935,14 +1160,17 @@
         });
 
         document.getElementById('rotation').addEventListener('input', (e) => {
-            document.getElementById('rotationValue').textContent = e.target.value;
+            document.getElementById('rotationValue').textContent = e.target.value + '°';
             updateSelectedShape();
         });
 
         // All number inputs update on change
         ['paramM', 'paramN1', 'paramN2', 'paramN3', 'paramA', 'paramB',
-         'posX', 'posY', 'strokeWidth'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateSelectedShape);
+         'posX', 'posY'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                document.getElementById('presetSelect').value = '';
+                updateSelectedShape();
+            });
         });
 
         // Initialize
