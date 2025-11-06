@@ -211,11 +211,12 @@
         }
 
         .shape-item-preview {
-            width: 16px;
-            height: 16px;
+            width: 32px;
+            height: 32px;
             border-radius: 3px;
             border: 1px solid #666;
             flex-shrink: 0;
+            background: white;
         }
 
         .shape-item-label {
@@ -1455,6 +1456,40 @@
             updateStrokeColorVisibility();
         }
 
+        // Generate shape preview thumbnail
+        function generateShapePreview(shape) {
+            const size = 48; // Higher resolution for better quality
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.width = size;
+            previewCanvas.height = size;
+            const previewCtx = previewCanvas.getContext('2d');
+
+            // White background
+            previewCtx.fillStyle = 'white';
+            previewCtx.fillRect(0, 0, size, size);
+
+            // Create a normalized version of the shape centered in the preview
+            const center = size / 2;
+            const maxRadius = size * 0.4; // Leave some padding
+
+            // Calculate scale factor to fit shape in preview
+            const scaleFactor = maxRadius / shape.radius;
+
+            // Create temporary shape with adjusted position and scale
+            const previewShape = {
+                ...shape,
+                cx: center,
+                cy: center,
+                radius: maxRadius
+            };
+
+            // Render the shape
+            renderShape(previewCtx, previewShape, 1);
+
+            // Convert to data URL
+            return previewCanvas.toDataURL('image/png');
+        }
+
         // Update shape list UI
         function updateShapeList() {
             const list = document.getElementById('shapeList');
@@ -1471,9 +1506,11 @@
                 const info = document.createElement('div');
                 info.className = 'shape-item-info';
 
-                const preview = document.createElement('div');
+                const preview = document.createElement('img');
                 preview.className = 'shape-item-preview';
-                preview.style.background = shape.fillColor;
+                preview.src = generateShapePreview(shape);
+                preview.width = 32;
+                preview.height = 32;
 
                 const label = document.createElement('span');
                 label.className = 'shape-item-label';
