@@ -584,7 +584,7 @@
                         <option value="20">20px</option>
                     </select>
                 </div>
-                <div class="input-row" id="strokeColorRow" style="display: none;">
+                <div class="input-row" id="strokeColorRow">
                     <label>Stroke Color</label>
                     <div class="color-input-group">
                         <input type="color" id="strokeColorPicker" value="#000000">
@@ -1318,7 +1318,17 @@
         function updateStrokeColorVisibility() {
             const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
             const strokeColorRow = document.getElementById('strokeColorRow');
-            strokeColorRow.style.display = strokeWidth > 0 ? 'flex' : 'none';
+            const strokeColorInput = document.getElementById('strokeColor');
+            const strokeColorPicker = document.getElementById('strokeColorPicker');
+            const isStrokeEnabled = strokeWidth > 0;
+
+            // Disable/enable inputs instead of hiding
+            strokeColorInput.disabled = !isStrokeEnabled;
+            strokeColorPicker.disabled = !isStrokeEnabled;
+
+            // Adjust opacity to indicate disabled state
+            strokeColorRow.style.opacity = isStrokeEnabled ? '1' : '0.5';
+            strokeColorRow.style.pointerEvents = isStrokeEnabled ? 'auto' : 'none';
         }
 
         // Apply preset
@@ -1570,6 +1580,7 @@
         // Initialize
         initColorPalette();
         initDemoList();
+        updateStrokeColorVisibility();
         renderCanvas();
     </script>
 </body>
