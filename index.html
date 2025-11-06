@@ -55,40 +55,43 @@
         }
 
         .export-preview {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
             gap: 12px;
             margin-bottom: 16px;
         }
 
         .preview-box {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
 
-        .preview-box img {
+        .preview-box img,
+        .preview-box > div {
             border: 1px solid #444;
             border-radius: 4px;
             background: white;
         }
 
         .preview-box span {
-            font-size: 11px;
+            font-size: 10px;
             color: #888;
+            text-align: center;
         }
 
         .download-links {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0;
         }
 
         .download-link {
             color: #007aff;
             text-decoration: none;
             font-size: 13px;
-            padding: 6px 0;
+            padding: 4px 0;
             transition: color 0.15s;
             cursor: pointer;
         }
@@ -208,11 +211,12 @@
         }
 
         .shape-item-preview {
-            width: 16px;
-            height: 16px;
+            width: 32px;
+            height: 32px;
             border-radius: 3px;
             border: 1px solid #666;
             flex-shrink: 0;
+            background: white;
         }
 
         .shape-item-label {
@@ -400,7 +404,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             white-space: nowrap;
-            min-width: 3em;
+            min-width: 1.5em;
         }
 
         .input-row input,
@@ -432,6 +436,10 @@
             padding: 6px 8px;
             border-radius: 6px;
             font-size: 13px;
+        }
+
+        input[type="number"] {
+            max-width: 7em;
         }
 
         input[type="number"]:focus,
@@ -516,11 +524,12 @@
             width: 32px;
             height: 32px;
             background: white;
-            border: 1px solid #444;
+            border: 2px solid #444;
             border-radius: 4px;
             position: relative;
             cursor: pointer;
             transition: all 0.15s;
+            flex-shrink: 0;
         }
 
         .no-fill-indicator::after {
@@ -536,6 +545,12 @@
 
         .no-fill-indicator:hover {
             border-color: #007aff;
+        }
+
+        .no-fill-indicator.active {
+            border-color: #007aff;
+            border-width: 3px;
+            box-shadow: 0 0 0 1px #007aff;
         }
 
         .fill-control {
@@ -568,21 +583,26 @@
                 <h2>Export</h2>
                 <div class="export-preview">
                     <div class="preview-box">
-                        <img id="applePreview" width="32" height="32">
-                        <span>180×180</span>
+                        <img id="preview64" width="64" height="64">
+                        <span>64×64</span>
                     </div>
                     <div class="preview-box">
-                        <img id="faviconPreview" width="24" height="24">
+                        <img id="faviconPreview" width="32" height="32">
                         <span>32×32</span>
                     </div>
                     <div class="preview-box">
                         <img id="faviconPreview16" width="16" height="16">
                         <span>16×16</span>
                     </div>
+                    <div class="preview-box">
+                        <div id="svgPreview" style="width: 80px; height: 80px; overflow: hidden;"></div>
+                        <span>SVG</span>
+                    </div>
                 </div>
                 <div class="download-links">
                     <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
                     <a class="download-link" id="exportFavicon">Download favicon.ico</a>
+                    <a class="download-link" id="exportSVG">Download icon.svg</a>
                     <a class="download-link" id="exportJSON">Save as JSON</a>
                 </div>
             </div>
@@ -618,7 +638,7 @@
                 <div class="input-row">
                     <label>Fill</label>
                     <div class="fill-control">
-                        <div class="no-fill-indicator" id="noFillBtn" style="display: none;"></div>
+                        <div class="no-fill-indicator" id="noFillBtn" title="No Fill"></div>
                         <input type="color" id="fillColorPicker">
                         <input type="text" id="customColor" placeholder="#ff5733">
                     </div>
@@ -648,6 +668,7 @@
                 <div class="input-row" id="strokeColorRow">
                     <label>Stroke Color</label>
                     <div class="color-input-group">
+                        <div class="no-fill-indicator" id="noStrokeBtn" title="No Stroke"></div>
                         <input type="color" id="strokeColorPicker" value="#000000">
                         <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
                     </div>
@@ -711,7 +732,7 @@
                 <div class="input-row">
                     <label>Size</label>
                     <div class="range-container">
-                        <input type="range" id="size" min="10" max="300" value="150">
+                        <input type="range" id="size" min="4" max="300" value="150">
                         <span class="range-value" id="sizeValue">150</span>
                     </div>
                 </div>
@@ -719,7 +740,7 @@
                     <label>Rotation</label>
                     <div class="range-container">
                         <input type="range" id="rotation" min="0" max="360" value="0">
-                        <span class="range-value" id="rotationValue">0°</span>
+                        <input type="number" id="rotationValue" min="0" max="360" step="1" value="0" style="width: 60px;">
                     </div>
                 </div>
                 <div class="input-row">
@@ -814,42 +835,158 @@
             },
             bloomingFlower: {
                 name: "Blooming Flower",
-                shapes: (function() {
-                    const shapes = [];
-                    const petalCounts = [3, 4, 5, 6, 7, 8, 9, 10];
-                    const colors = ['#F472B6', '#EC4899', '#DB2777', '#BE185D', '#9F1239', '#881337', '#701A47', '#5D1A57'];
-
-                    petalCounts.forEach((petals, i) => {
-                        const size = 50 + (i * 15);
-                        const rotation = (i * 15) * Math.PI / 180;
-                        const opacity = 0.5 + (i * 0.06);
-
-                        const hexToRgba = (hex, alpha) => {
-                            const r = parseInt(hex.slice(1, 3), 16);
-                            const g = parseInt(hex.slice(3, 5), 16);
-                            const b = parseInt(hex.slice(5, 7), 16);
-                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                        };
-
-                        shapes.push({
-                            cx: 192,
-                            cy: 192,
-                            radius: size,
-                            rotation: rotation,
-                            m: petals,
-                            n1: 1,
-                            n2: 4,
-                            n3: 4,
-                            a: 1,
-                            b: 1,
-                            fillColor: hexToRgba(colors[i], opacity),
-                            strokeColor: colors[i],
-                            strokeWidth: 1
-                        });
-                    });
-
-                    return shapes;
-                })()
+                shapes: [
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 94,
+                        rotation: 0.3316125578789226,
+                        m: 6,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(244, 114, 182, 0.5)",
+                        strokeColor: "#F472B6",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 94,
+                        rotation: 0.6632251157578452,
+                        m: 4,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(236, 72, 153, 0.56)",
+                        strokeColor: "#EC4899",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 90,
+                        rotation: 1.413716694115407,
+                        m: 5,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(219, 39, 119, 0.62)",
+                        strokeColor: "#DB2777",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 90,
+                        rotation: 2.199114857512855,
+                        m: 6,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(190, 24, 93, 0.68)",
+                        strokeColor: "#BE185D",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 72,
+                        rotation: 0.715584993317675,
+                        m: 15,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(159, 18, 57, 0.74)",
+                        strokeColor: "#9F1239",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 94,
+                        rotation: 0.8552113334772214,
+                        m: 8,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(136, 19, 55, 0.8)",
+                        strokeColor: "#881337",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 67,
+                        rotation: 1.8151424220741028,
+                        m: 9,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(112, 26, 71, 0.86)",
+                        strokeColor: "#701A47",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 67,
+                        rotation: 3.6477381366681487,
+                        m: 9,
+                        n1: 1,
+                        n2: 4,
+                        n3: 4,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(93, 26, 87, 0.82)",
+                        strokeColor: "#5D1A57",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 18,
+                        rotation: 1.8325957145940461,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(234, 179, 8, 0.82)",
+                        strokeColor: "#a96800",
+                        strokeWidth: 4
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 10,
+                        rotation: 0.3316125578789226,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 217, 61, 0.5)",
+                        strokeColor: "#F472B6",
+                        strokeWidth: 0
+                    }
+                ]
             },
             clockworkGears: {
                 name: "Clockwork Gears",
@@ -967,6 +1104,199 @@
 
                     return shapes;
                 })()
+            },
+            nestedSquares: {
+                name: "Nested Squares",
+                shapes: (function() {
+                    const shapes = [];
+                    const startRadius = 188;
+                    const minRadius = 25;
+                    const scaleFactor = 167 / 188; // Optimal nesting ratio (~0.888)
+                    const rotationStep = 80 * Math.PI / 180; // 80 degrees in radians
+
+                    // Calculate how many iterations we need
+                    let currentRadius = startRadius;
+                    let currentRotation = 0;
+                    let iteration = 0;
+
+                    // Gradient from steel blue to light gray
+                    const startColor = { r: 70, g: 130, b: 180 };  // Steel blue
+                    const endColor = { r: 220, g: 220, b: 220 };   // Light gray
+
+                    while (currentRadius >= minRadius) {
+                        // Calculate total iterations for gradient
+                        const totalIterations = Math.ceil(Math.log(minRadius / startRadius) / Math.log(scaleFactor));
+                        const t = iteration / (totalIterations - 1); // Interpolation factor 0 to 1
+
+                        // Interpolate color
+                        const r = Math.round(startColor.r + (endColor.r - startColor.r) * t);
+                        const g = Math.round(startColor.g + (endColor.g - startColor.g) * t);
+                        const b = Math.round(startColor.b + (endColor.b - startColor.b) * t);
+                        const color = `rgb(${r}, ${g}, ${b})`;
+
+                        shapes.push({
+                            cx: 192,
+                            cy: 192,
+                            radius: Math.round(currentRadius),
+                            rotation: currentRotation % (2 * Math.PI), // Keep rotation in [0, 2π)
+                            m: 4,
+                            n1: 11,
+                            n2: 11,
+                            n3: 11,
+                            a: 1,
+                            b: 1,
+                            fillColor: color,
+                            strokeColor: '#000000',
+                            strokeWidth: 2
+                        });
+
+                        currentRadius *= scaleFactor;
+                        currentRotation += rotationStep;
+                        iteration++;
+                    }
+
+                    return shapes;
+                })()
+            },
+            geminEye: {
+                name: "Gemin-EYE",
+                shapes: [
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 187,
+                        rotation: 0,
+                        m: 4,
+                        n1: 0.6,
+                        n2: 0.6,
+                        n3: 0.7,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 217, 61, 1)",
+                        strokeColor: "#fec700",
+                        strokeWidth: 6
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 186,
+                        rotation: 0,
+                        m: 2,
+                        n1: 0.5,
+                        n2: 0.5,
+                        n3: 0.5,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(59, 130, 246, 0.82)",
+                        strokeColor: "#000000",
+                        strokeWidth: 2
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 157,
+                        rotation: 0,
+                        m: 2,
+                        n1: 0.5,
+                        n2: 0.5,
+                        n3: 0.5,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 255, 255, 0.72)",
+                        strokeColor: "#000000",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 46,
+                        rotation: 0,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 255, 255, 1)",
+                        strokeColor: "#000000",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 38,
+                        rotation: 0,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(88, 52, 0, 1)",
+                        strokeColor: "#000000",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 192,
+                        cy: 192,
+                        radius: 25,
+                        rotation: 0,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(0, 0, 0, 0.82)",
+                        strokeColor: "#000000",
+                        strokeWidth: 2
+                    },
+                    {
+                        cx: 175,
+                        cy: 172,
+                        radius: 10,
+                        rotation: 0,
+                        m: 4,
+                        n1: 2,
+                        n2: 2,
+                        n3: 2,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 255, 255, 1)",
+                        strokeColor: "#000000",
+                        strokeWidth: 1
+                    },
+                    {
+                        cx: 73,
+                        cy: 305,
+                        radius: 41,
+                        rotation: 1.5707963267948966,
+                        m: 4,
+                        n1: 0.6,
+                        n2: 0.7,
+                        n3: 0.8,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 217, 61, 1)",
+                        strokeColor: "#fec700",
+                        strokeWidth: 3
+                    },
+                    {
+                        cx: 68,
+                        cy: 52,
+                        radius: 23,
+                        rotation: 0,
+                        m: 4,
+                        n1: 0.6,
+                        n2: 0.6,
+                        n3: 0.6,
+                        a: 1,
+                        b: 1,
+                        fillColor: "rgba(255, 217, 61, 1)",
+                        strokeColor: "#fec700",
+                        strokeWidth: 2
+                    }
+                ]
             }
         };
 
@@ -977,6 +1307,15 @@
         let currentOpacity = 1;
         let currentStrokeColor = '#000000';
         let draggedItem = null;
+        let isFillNone = false;  // Track if fill is set to "none"
+        let isStrokeNone = false;  // Track if stroke is set to "none"
+
+        // Canvas dragging state
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragStartCX = 0;
+        let dragStartCY = 0;
 
         // Canvas setup
         const canvas = document.getElementById('mainCanvas');
@@ -994,10 +1333,12 @@
                 }
                 swatch.addEventListener('click', () => {
                     currentColor = color;
+                    isFillNone = false;  // Disable "no fill" when color is selected
                     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
                     swatch.classList.add('selected');
                     document.getElementById('customColor').value = color;
                     document.getElementById('fillColorPicker').value = color.startsWith('#') ? color : '#FF6B6B';
+                    updateFillUIState();
                     updateSelectedShape();
                 });
                 palette.appendChild(swatch);
@@ -1071,6 +1412,16 @@
             updateExportPreviews();
         }
 
+        // Check if a point is inside a shape
+        function isPointInShape(x, y, shape) {
+            ctx.save();
+            ctx.beginPath();
+            drawSuperformula(ctx, shape, 1);
+            const result = ctx.isPointInPath(x, y);
+            ctx.restore();
+            return result;
+        }
+
         // Create shape object from current settings
         function createShapeFromSettings() {
             const opacity = parseFloat(document.getElementById('opacity').value);
@@ -1081,11 +1432,27 @@
                 return `rgba(${r}, ${g}, ${b}, ${alpha})`;
             };
 
-            let fillColor = currentColor;
-            if (currentColor.startsWith('#') && currentColor.length === 7) {
+            // Handle fill color based on "no fill" state
+            let fillColor;
+            if (isFillNone) {
+                fillColor = 'none';
+            } else if (currentColor.startsWith('#') && currentColor.length === 7) {
                 fillColor = hexToRgba(currentColor, opacity);
             } else if (currentColor.startsWith('rgb(')) {
                 fillColor = currentColor.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
+            } else {
+                fillColor = currentColor;
+            }
+
+            // Handle stroke based on "no stroke" state
+            let strokeWidth;
+            let strokeColor;
+            if (isStrokeNone) {
+                strokeWidth = 0;
+                strokeColor = currentStrokeColor;
+            } else {
+                strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
+                strokeColor = document.getElementById('strokeColor').value || currentStrokeColor;
             }
 
             return {
@@ -1100,8 +1467,8 @@
                 a: parseFloat(document.getElementById('paramA').value),
                 b: parseFloat(document.getElementById('paramB').value),
                 fillColor: fillColor,
-                strokeColor: document.getElementById('strokeColor').value || currentStrokeColor,
-                strokeWidth: parseFloat(document.getElementById('strokeWidth').value),
+                strokeColor: strokeColor,
+                strokeWidth: strokeWidth,
             };
         }
 
@@ -1112,6 +1479,9 @@
             selectedShapeIndex = shapes.length - 1;
             updateShapeList();
             renderCanvas();
+            // Ensure UI state is updated after adding shape
+            updateFillUIState();
+            updateStrokeUIState();
         }
 
         // Update selected shape with current settings
@@ -1132,7 +1502,7 @@
 
             const rotationDeg = shape.rotation * 180 / Math.PI;
             document.getElementById('rotation').value = rotationDeg;
-            document.getElementById('rotationValue').textContent = rotationDeg.toFixed(0) + '°';
+            document.getElementById('rotationValue').value = Math.round(rotationDeg);
 
             document.getElementById('paramM').value = shape.m;
             document.getElementById('paramN1').value = shape.n1;
@@ -1142,45 +1512,119 @@
             document.getElementById('paramB').value = shape.b;
 
             // Load fill color and opacity
-            const rgbaMatch = shape.fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-            if (rgbaMatch) {
-                const r = parseInt(rgbaMatch[1]);
-                const g = parseInt(rgbaMatch[2]);
-                const b = parseInt(rgbaMatch[3]);
-                const opacity = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+            if (shape.fillColor === 'none') {
+                isFillNone = true;
+                updateFillUIState();
+            } else {
+                isFillNone = false;
+                const rgbaMatch = shape.fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (rgbaMatch) {
+                    const r = parseInt(rgbaMatch[1]);
+                    const g = parseInt(rgbaMatch[2]);
+                    const b = parseInt(rgbaMatch[3]);
+                    const opacity = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
 
-                // Convert to hex
-                const hexColor = '#' + [r, g, b].map(x => {
-                    const hex = x.toString(16);
-                    return hex.length === 1 ? '0' + hex : hex;
-                }).join('');
+                    // Convert to hex
+                    const hexColor = '#' + [r, g, b].map(x => {
+                        const hex = x.toString(16);
+                        return hex.length === 1 ? '0' + hex : hex;
+                    }).join('');
 
-                // Update global state
-                currentColor = hexColor;
-                currentOpacity = opacity;
+                    // Update global state
+                    currentColor = hexColor;
+                    currentOpacity = opacity;
 
-                // Update color inputs
-                document.getElementById('fillColorPicker').value = hexColor;
-                document.getElementById('customColor').value = hexColor;
+                    // Update color inputs
+                    document.getElementById('fillColorPicker').value = hexColor;
+                    document.getElementById('customColor').value = hexColor;
 
-                // Update opacity input
-                document.getElementById('opacity').value = opacity;
+                    // Update opacity input
+                    document.getElementById('opacity').value = opacity;
+                    document.getElementById('opacityValue').textContent = opacity.toFixed(2);
 
-                // Update color palette selection
-                document.querySelectorAll('.color-swatch').forEach(swatch => {
-                    if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
-                        swatch.classList.add('selected');
-                    } else {
+                    // Update color palette selection
+                    document.querySelectorAll('.color-swatch').forEach(swatch => {
+                        if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
+                            swatch.classList.add('selected');
+                        } else {
+                            swatch.classList.remove('selected');
+                        }
+                    });
+                } else if (shape.fillColor.startsWith('#')) {
+                    // Handle hex colors directly
+                    currentColor = shape.fillColor;
+                    currentOpacity = 1;
+
+                    // Update color inputs
+                    document.getElementById('fillColorPicker').value = shape.fillColor;
+                    document.getElementById('customColor').value = shape.fillColor;
+
+                    // Update opacity input
+                    document.getElementById('opacity').value = 1;
+                    document.getElementById('opacityValue').textContent = '1.00';
+
+                    // Update color palette selection
+                    document.querySelectorAll('.color-swatch').forEach(swatch => {
                         swatch.classList.remove('selected');
-                    }
-                });
+                    });
+                } else {
+                    // Fallback: use the color as-is
+                    currentColor = shape.fillColor;
+                    currentOpacity = 1;
+
+                    // Update opacity input
+                    document.getElementById('opacity').value = 1;
+                    document.getElementById('opacityValue').textContent = '1.00';
+                }
+                updateFillUIState();
             }
 
-            document.getElementById('strokeWidth').value = shape.strokeWidth;
+            // Load stroke width and color
+            if (shape.strokeWidth === 0) {
+                isStrokeNone = true;
+                document.getElementById('strokeWidth').value = 4; // Set to a default value
+            } else {
+                isStrokeNone = false;
+                document.getElementById('strokeWidth').value = shape.strokeWidth;
+            }
+
             document.getElementById('strokeColor').value = shape.strokeColor;
             document.getElementById('strokeColorPicker').value = shape.strokeColor;
+            currentStrokeColor = shape.strokeColor;
 
+            updateStrokeUIState();
             updateStrokeColorVisibility();
+        }
+
+        // Generate shape preview thumbnail
+        function generateShapePreview(shape) {
+            const size = 48; // Higher resolution for better quality
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.width = size;
+            previewCanvas.height = size;
+            const previewCtx = previewCanvas.getContext('2d');
+
+            // White background
+            previewCtx.fillStyle = 'white';
+            previewCtx.fillRect(0, 0, size, size);
+
+            // Create a normalized version of the shape centered in the preview
+            const center = size / 2;
+            const maxRadius = size * 0.4; // Leave some padding
+
+            // Create temporary shape with adjusted position and scale for preview
+            const previewShape = {
+                ...shape,
+                cx: center,
+                cy: center,
+                radius: maxRadius
+            };
+
+            // Render the shape
+            renderShape(previewCtx, previewShape, 1);
+
+            // Convert to data URL
+            return previewCanvas.toDataURL('image/png');
         }
 
         // Update shape list UI
@@ -1199,9 +1643,11 @@
                 const info = document.createElement('div');
                 info.className = 'shape-item-info';
 
-                const preview = document.createElement('div');
+                const preview = document.createElement('img');
                 preview.className = 'shape-item-preview';
-                preview.style.background = shape.fillColor;
+                preview.src = generateShapePreview(shape);
+                preview.width = 32;
+                preview.height = 32;
 
                 const label = document.createElement('span');
                 label.className = 'shape-item-label';
@@ -1383,13 +1829,65 @@
             demoList.appendChild(randomItem);
         }
 
+        // Update fill UI state based on isFillNone
+        function updateFillUIState() {
+            const noFillBtn = document.getElementById('noFillBtn');
+            const fillColorPicker = document.getElementById('fillColorPicker');
+            const customColorInput = document.getElementById('customColor');
+            const opacitySlider = document.getElementById('opacity');
+            const opacityValue = document.getElementById('opacityValue');
+
+            if (isFillNone) {
+                noFillBtn.classList.add('active');
+                fillColorPicker.disabled = true;
+                customColorInput.disabled = true;
+                opacitySlider.disabled = true;
+                fillColorPicker.style.opacity = '0.5';
+                customColorInput.style.opacity = '0.5';
+                opacitySlider.style.opacity = '0.5';
+                opacityValue.style.opacity = '0.5';
+            } else {
+                noFillBtn.classList.remove('active');
+                fillColorPicker.disabled = false;
+                customColorInput.disabled = false;
+                opacitySlider.disabled = false;
+                fillColorPicker.style.opacity = '1';
+                customColorInput.style.opacity = '1';
+                opacitySlider.style.opacity = '1';
+                opacityValue.style.opacity = '1';
+            }
+        }
+
+        // Update stroke UI state based on isStrokeNone
+        function updateStrokeUIState() {
+            const noStrokeBtn = document.getElementById('noStrokeBtn');
+            const strokeWidthSelect = document.getElementById('strokeWidth');
+            const strokeColorInput = document.getElementById('strokeColor');
+            const strokeColorPicker = document.getElementById('strokeColorPicker');
+
+            if (isStrokeNone) {
+                noStrokeBtn.classList.add('active');
+                // Don't disable stroke width selector - allow user to change it to re-enable
+                strokeColorInput.disabled = true;
+                strokeColorPicker.disabled = true;
+                strokeColorInput.style.opacity = '0.5';
+                strokeColorPicker.style.opacity = '0.5';
+            } else {
+                noStrokeBtn.classList.remove('active');
+                strokeColorInput.disabled = false;
+                strokeColorPicker.disabled = false;
+                strokeColorInput.style.opacity = '1';
+                strokeColorPicker.style.opacity = '1';
+            }
+        }
+
         // Update stroke color field visibility
         function updateStrokeColorVisibility() {
             const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
             const strokeColorRow = document.getElementById('strokeColorRow');
             const strokeColorInput = document.getElementById('strokeColor');
             const strokeColorPicker = document.getElementById('strokeColorPicker');
-            const isStrokeEnabled = strokeWidth > 0;
+            const isStrokeEnabled = strokeWidth > 0 && !isStrokeNone;
 
             // Disable/enable inputs instead of hiding
             strokeColorInput.disabled = !isStrokeEnabled;
@@ -1447,13 +1945,18 @@
 
         // Update export previews
         function updateExportPreviews() {
-            const preview180 = renderToCanvas(180);
+            const preview64 = renderToCanvas(64);
             const preview32 = renderToCanvas(32);
             const preview16 = renderToCanvas(16);
 
-            document.getElementById('applePreview').src = preview180.toDataURL('image/png');
+            document.getElementById('preview64').src = preview64.toDataURL('image/png');
             document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
             document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
+
+            // Update SVG preview
+            const svgPreviewContainer = document.getElementById('svgPreview');
+            const svgContent = generateSVG(80);
+            svgPreviewContainer.innerHTML = svgContent;
         }
 
         // Export apple touch icon
@@ -1582,6 +2085,68 @@
             URL.revokeObjectURL(url);
         }
 
+        // Generate SVG path data for a shape
+        function generateSVGPath(shape) {
+            const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
+            // Use fewer steps for SVG to reduce file size (still plenty smooth)
+            const steps = 360;
+            let pathData = '';
+
+            for (let i = 0; i <= steps; i++) {
+                const theta = (i / steps) * 2 * Math.PI;
+                const r = superformulaR(theta, {m, n1, n2, n3, a, b});
+                const ang = theta + rotation;
+                const x = cx + (radius * r * Math.cos(ang));
+                const y = cy + (radius * r * Math.sin(ang));
+
+                if (i === 0) {
+                    pathData += `M ${x.toFixed(2)} ${y.toFixed(2)}`;
+                } else {
+                    pathData += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+                }
+            }
+
+            pathData += ' Z'; // Close path
+            return pathData;
+        }
+
+        // Generate complete SVG document
+        function generateSVG(size = 384) {
+            const svgParts = [];
+            svgParts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
+            svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">`);
+
+            // White background
+            svgParts.push(`  <rect width="384" height="384" fill="white"/>`);
+
+            // Render each shape
+            shapes.forEach((shape, index) => {
+                const pathData = generateSVGPath(shape);
+                const hasFill = shape.fillColor && shape.fillColor !== 'none';
+                const hasStroke = shape.strokeWidth > 0;
+
+                let fillAttr = hasFill ? `fill="${shape.fillColor}"` : 'fill="none"';
+                let strokeAttr = hasStroke ? `stroke="${shape.strokeColor}" stroke-width="${shape.strokeWidth}"` : 'stroke="none"';
+
+                svgParts.push(`  <path d="${pathData}" ${fillAttr} ${strokeAttr}/>`);
+            });
+
+            svgParts.push(`</svg>`);
+            return svgParts.join('\n');
+        }
+
+        // Export as SVG
+        function exportSVG() {
+            const svgContent = generateSVG(384);
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'icon.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
         // Export as JSON
         function exportJSON() {
             const data = {
@@ -1625,7 +2190,23 @@
         document.getElementById('clearAll').addEventListener('click', clearAll);
         document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
         document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
+        document.getElementById('exportSVG').addEventListener('click', exportSVG);
         document.getElementById('exportJSON').addEventListener('click', exportJSON);
+
+        // No fill button
+        document.getElementById('noFillBtn').addEventListener('click', () => {
+            isFillNone = !isFillNone;
+            updateFillUIState();
+            updateSelectedShape();
+        });
+
+        // No stroke button
+        document.getElementById('noStrokeBtn').addEventListener('click', () => {
+            isStrokeNone = !isStrokeNone;
+            updateStrokeUIState();
+            updateStrokeColorVisibility();
+            updateSelectedShape();
+        });
 
         // Import JSON
         document.getElementById('importJSONBtn').addEventListener('click', () => {
@@ -1647,17 +2228,21 @@
         // Custom color input
         document.getElementById('customColor').addEventListener('input', (e) => {
             currentColor = e.target.value;
+            isFillNone = false;  // Disable "no fill" when color is changed
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
             if (e.target.value.startsWith('#')) {
                 document.getElementById('fillColorPicker').value = e.target.value;
             }
+            updateFillUIState();
             updateSelectedShape();
         });
 
         document.getElementById('fillColorPicker').addEventListener('input', (e) => {
             currentColor = e.target.value;
+            isFillNone = false;  // Disable "no fill" when color is changed
             document.getElementById('customColor').value = currentColor;
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            updateFillUIState();
             updateSelectedShape();
         });
 
@@ -1667,17 +2252,23 @@
             if (e.target.value.startsWith('#')) {
                 document.getElementById('strokeColorPicker').value = e.target.value;
             }
+            // Don't change isStrokeNone state, just update the color
             updateSelectedShape();
         });
 
         document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
             currentStrokeColor = e.target.value;
             document.getElementById('strokeColor').value = e.target.value;
+            // Don't change isStrokeNone state, just update the color
             updateSelectedShape();
         });
 
         // Stroke width
         document.getElementById('strokeWidth').addEventListener('change', (e) => {
+            if (parseFloat(e.target.value) > 0) {
+                isStrokeNone = false;  // Disable "no stroke" when width > 0
+                updateStrokeUIState();
+            }
             updateStrokeColorVisibility();
             updateSelectedShape();
         });
@@ -1686,6 +2277,7 @@
         document.getElementById('opacity').addEventListener('input', (e) => {
             currentOpacity = parseFloat(e.target.value);
             document.getElementById('opacityValue').textContent = currentOpacity.toFixed(2);
+            // Don't change isFillNone state, opacity is separate
             updateSelectedShape();
         });
 
@@ -1696,8 +2288,19 @@
         });
 
         document.getElementById('rotation').addEventListener('input', (e) => {
-            document.getElementById('rotationValue').textContent = e.target.value + '°';
+            document.getElementById('rotationValue').value = e.target.value;
             updateSelectedShape();
+        });
+
+        // Rotation value input - sync with slider
+        document.getElementById('rotationValue').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                // Clamp value between 0 and 360
+                const clampedValue = Math.max(0, Math.min(360, value));
+                document.getElementById('rotation').value = clampedValue;
+                updateSelectedShape();
+            }
         });
 
         // All number inputs update on change
@@ -1709,9 +2312,117 @@
             });
         });
 
+        // Canvas mouse event handlers for dragging shapes
+        canvas.addEventListener('mousedown', (e) => {
+            if (selectedShapeIndex === null || !shapes[selectedShapeIndex]) {
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Check if clicking on the selected shape
+            if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
+                isDragging = true;
+                dragStartX = x;
+                dragStartY = y;
+                dragStartCX = shapes[selectedShapeIndex].cx;
+                dragStartCY = shapes[selectedShapeIndex].cy;
+                canvas.style.cursor = 'move';
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (isDragging && selectedShapeIndex !== null) {
+                // Calculate the movement delta
+                const deltaX = x - dragStartX;
+                const deltaY = y - dragStartY;
+
+                // Update position
+                const newCX = dragStartCX + deltaX;
+                const newCY = dragStartCY + deltaY;
+
+                // Update the input fields
+                document.getElementById('posX').value = Math.round(newCX);
+                document.getElementById('posY').value = Math.round(newCY);
+
+                // Update the shape
+                updateSelectedShape();
+            } else if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
+                // Update cursor when hovering over selected shape
+                if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
+                    canvas.style.cursor = 'move';
+                } else {
+                    canvas.style.cursor = 'crosshair';
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+
+        // Arrow key controls for precise positioning
+        document.addEventListener('keydown', (e) => {
+            // Only handle arrow keys when there's a selected shape
+            if (selectedShapeIndex === null || !shapes[selectedShapeIndex]) {
+                return;
+            }
+
+            // Check if arrow keys are pressed
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault(); // Prevent page scrolling
+
+                // Get current position
+                const posXInput = document.getElementById('posX');
+                const posYInput = document.getElementById('posY');
+                let currentX = parseFloat(posXInput.value) || 0;
+                let currentY = parseFloat(posYInput.value) || 0;
+
+                // Determine step size (10 pixels with Shift, 1 pixel otherwise)
+                const step = e.shiftKey ? 10 : 1;
+
+                // Update position based on arrow key
+                switch (e.key) {
+                    case 'ArrowUp':
+                        currentY -= step;
+                        break;
+                    case 'ArrowDown':
+                        currentY += step;
+                        break;
+                    case 'ArrowLeft':
+                        currentX -= step;
+                        break;
+                    case 'ArrowRight':
+                        currentX += step;
+                        break;
+                }
+
+                // Update the input fields
+                posXInput.value = Math.round(currentX);
+                posYInput.value = Math.round(currentY);
+
+                // Update the shape
+                updateSelectedShape();
+            }
+        });
+
         // Initialize
         initColorPalette();
         initDemoList();
+        updateFillUIState();
+        updateStrokeUIState();
         updateStrokeColorVisibility();
         renderCanvas();
     </script>
