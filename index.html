@@ -749,7 +749,7 @@
         const presets = {
             circle: { m: 4, n1: 2, n2: 2, n3: 2, a: 1, b: 1 },
             square: { m: 4, n1: 4, n2: 4, n3: 4, a: 1, b: 1 },
-            squircle: { m: 4, n1: 2, n2: 5, n3: 5, a: 1, b: 1 },
+            squircle: { m: 4, n1: 11, n2: 11, n3: 11, a: 1, b: 1, radius: 190 },
             star4: { m: 4, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
             star5: { m: 5, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
             star8: { m: 8, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
@@ -1410,6 +1410,13 @@
                 document.getElementById('paramN3').value = preset.n3;
                 document.getElementById('paramA').value = preset.a;
                 document.getElementById('paramB').value = preset.b;
+
+                // Apply radius if specified in preset
+                if (preset.radius !== undefined) {
+                    document.getElementById('size').value = preset.radius;
+                    document.getElementById('sizeValue').textContent = preset.radius;
+                }
+
                 updateSelectedShape();
             }
         }
