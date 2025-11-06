@@ -1409,6 +1409,31 @@
                             swatch.classList.remove('selected');
                         }
                     });
+                } else if (shape.fillColor.startsWith('#')) {
+                    // Handle hex colors directly
+                    currentColor = shape.fillColor;
+                    currentOpacity = 1;
+
+                    // Update color inputs
+                    document.getElementById('fillColorPicker').value = shape.fillColor;
+                    document.getElementById('customColor').value = shape.fillColor;
+
+                    // Update opacity input
+                    document.getElementById('opacity').value = 1;
+                    document.getElementById('opacityValue').textContent = '1.00';
+
+                    // Update color palette selection
+                    document.querySelectorAll('.color-swatch').forEach(swatch => {
+                        swatch.classList.remove('selected');
+                    });
+                } else {
+                    // Fallback: use the color as-is
+                    currentColor = shape.fillColor;
+                    currentOpacity = 1;
+
+                    // Update opacity input
+                    document.getElementById('opacity').value = 1;
+                    document.getElementById('opacityValue').textContent = '1.00';
                 }
                 updateFillUIState();
             }
