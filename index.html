@@ -719,7 +719,7 @@
                     <label>Rotation</label>
                     <div class="range-container">
                         <input type="range" id="rotation" min="0" max="360" value="0">
-                        <span class="range-value" id="rotationValue">0°</span>
+                        <input type="number" id="rotationValue" min="0" max="360" step="1" value="0" style="width: 60px;">
                     </div>
                 </div>
                 <div class="input-row">
@@ -978,6 +978,13 @@
         let currentStrokeColor = '#000000';
         let draggedItem = null;
 
+        // Canvas dragging state
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragStartCX = 0;
+        let dragStartCY = 0;
+
         // Canvas setup
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
@@ -1071,6 +1078,16 @@
             updateExportPreviews();
         }
 
+        // Check if a point is inside a shape
+        function isPointInShape(x, y, shape) {
+            ctx.save();
+            ctx.beginPath();
+            drawSuperformula(ctx, shape, 1);
+            const result = ctx.isPointInPath(x, y);
+            ctx.restore();
+            return result;
+        }
+
         // Create shape object from current settings
         function createShapeFromSettings() {
             const opacity = parseFloat(document.getElementById('opacity').value);
@@ -1132,7 +1149,7 @@
 
             const rotationDeg = shape.rotation * 180 / Math.PI;
             document.getElementById('rotation').value = rotationDeg;
-            document.getElementById('rotationValue').textContent = rotationDeg.toFixed(0) + '°';
+            document.getElementById('rotationValue').value = Math.round(rotationDeg);
 
             document.getElementById('paramM').value = shape.m;
             document.getElementById('paramN1').value = shape.n1;
@@ -1696,8 +1713,19 @@
         });
 
         document.getElementById('rotation').addEventListener('input', (e) => {
-            document.getElementById('rotationValue').textContent = e.target.value + '°';
+            document.getElementById('rotationValue').value = e.target.value;
             updateSelectedShape();
+        });
+
+        // Rotation value input - sync with slider
+        document.getElementById('rotationValue').addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (!isNaN(value)) {
+                // Clamp value between 0 and 360
+                const clampedValue = Math.max(0, Math.min(360, value));
+                document.getElementById('rotation').value = clampedValue;
+                updateSelectedShape();
+            }
         });
 
         // All number inputs update on change
@@ -1707,6 +1735,112 @@
                 document.getElementById('presetSelect').value = '';
                 updateSelectedShape();
             });
+        });
+
+        // Canvas mouse event handlers for dragging shapes
+        canvas.addEventListener('mousedown', (e) => {
+            if (selectedShapeIndex === null || !shapes[selectedShapeIndex]) {
+                return;
+            }
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Check if clicking on the selected shape
+            if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
+                isDragging = true;
+                dragStartX = x;
+                dragStartY = y;
+                dragStartCX = shapes[selectedShapeIndex].cx;
+                dragStartCY = shapes[selectedShapeIndex].cy;
+                canvas.style.cursor = 'move';
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (isDragging && selectedShapeIndex !== null) {
+                // Calculate the movement delta
+                const deltaX = x - dragStartX;
+                const deltaY = y - dragStartY;
+
+                // Update position
+                const newCX = dragStartCX + deltaX;
+                const newCY = dragStartCY + deltaY;
+
+                // Update the input fields
+                document.getElementById('posX').value = Math.round(newCX);
+                document.getElementById('posY').value = Math.round(newCY);
+
+                // Update the shape
+                updateSelectedShape();
+            } else if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
+                // Update cursor when hovering over selected shape
+                if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
+                    canvas.style.cursor = 'move';
+                } else {
+                    canvas.style.cursor = 'crosshair';
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+
+        // Arrow key controls for precise positioning
+        document.addEventListener('keydown', (e) => {
+            // Only handle arrow keys when there's a selected shape
+            if (selectedShapeIndex === null || !shapes[selectedShapeIndex]) {
+                return;
+            }
+
+            // Check if arrow keys are pressed
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault(); // Prevent page scrolling
+
+                // Get current position
+                const posXInput = document.getElementById('posX');
+                const posYInput = document.getElementById('posY');
+                let currentX = parseFloat(posXInput.value) || 0;
+                let currentY = parseFloat(posYInput.value) || 0;
+
+                // Determine step size (10 pixels with Shift, 1 pixel otherwise)
+                const step = e.shiftKey ? 10 : 1;
+
+                // Update position based on arrow key
+                switch (e.key) {
+                    case 'ArrowUp':
+                        currentY -= step;
+                        break;
+                    case 'ArrowDown':
+                        currentY += step;
+                        break;
+                    case 'ArrowLeft':
+                        currentX -= step;
+                        break;
+                    case 'ArrowRight':
+                        currentX += step;
+                        break;
+                }
+
+                // Update the input fields
+                posXInput.value = Math.round(currentX);
+                posYInput.value = Math.round(currentY);
+
+                // Update the shape
+                updateSelectedShape();
+            }
         });
 
         // Initialize
