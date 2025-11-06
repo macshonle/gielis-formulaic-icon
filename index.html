@@ -516,11 +516,12 @@
             width: 32px;
             height: 32px;
             background: white;
-            border: 1px solid #444;
+            border: 2px solid #444;
             border-radius: 4px;
             position: relative;
             cursor: pointer;
             transition: all 0.15s;
+            flex-shrink: 0;
         }
 
         .no-fill-indicator::after {
@@ -536,6 +537,12 @@
 
         .no-fill-indicator:hover {
             border-color: #007aff;
+        }
+
+        .no-fill-indicator.active {
+            border-color: #007aff;
+            border-width: 3px;
+            box-shadow: 0 0 0 1px #007aff;
         }
 
         .fill-control {
@@ -618,7 +625,7 @@
                 <div class="input-row">
                     <label>Fill</label>
                     <div class="fill-control">
-                        <div class="no-fill-indicator" id="noFillBtn" style="display: none;"></div>
+                        <div class="no-fill-indicator" id="noFillBtn" title="No Fill"></div>
                         <input type="color" id="fillColorPicker">
                         <input type="text" id="customColor" placeholder="#ff5733">
                     </div>
@@ -648,6 +655,7 @@
                 <div class="input-row" id="strokeColorRow">
                     <label>Stroke Color</label>
                     <div class="color-input-group">
+                        <div class="no-fill-indicator" id="noStrokeBtn" title="No Stroke"></div>
                         <input type="color" id="strokeColorPicker" value="#000000">
                         <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
                     </div>
@@ -977,6 +985,8 @@
         let currentOpacity = 1;
         let currentStrokeColor = '#000000';
         let draggedItem = null;
+        let isFillNone = false;  // Track if fill is set to "none"
+        let isStrokeNone = false;  // Track if stroke is set to "none"
 
         // Canvas dragging state
         let isDragging = false;
@@ -1001,10 +1011,12 @@
                 }
                 swatch.addEventListener('click', () => {
                     currentColor = color;
+                    isFillNone = false;  // Disable "no fill" when color is selected
                     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
                     swatch.classList.add('selected');
                     document.getElementById('customColor').value = color;
                     document.getElementById('fillColorPicker').value = color.startsWith('#') ? color : '#FF6B6B';
+                    updateFillUIState();
                     updateSelectedShape();
                 });
                 palette.appendChild(swatch);
@@ -1098,11 +1110,27 @@
                 return `rgba(${r}, ${g}, ${b}, ${alpha})`;
             };
 
-            let fillColor = currentColor;
-            if (currentColor.startsWith('#') && currentColor.length === 7) {
+            // Handle fill color based on "no fill" state
+            let fillColor;
+            if (isFillNone) {
+                fillColor = 'none';
+            } else if (currentColor.startsWith('#') && currentColor.length === 7) {
                 fillColor = hexToRgba(currentColor, opacity);
             } else if (currentColor.startsWith('rgb(')) {
                 fillColor = currentColor.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
+            } else {
+                fillColor = currentColor;
+            }
+
+            // Handle stroke based on "no stroke" state
+            let strokeWidth;
+            let strokeColor;
+            if (isStrokeNone) {
+                strokeWidth = 0;
+                strokeColor = currentStrokeColor;
+            } else {
+                strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
+                strokeColor = document.getElementById('strokeColor').value || currentStrokeColor;
             }
 
             return {
@@ -1117,8 +1145,8 @@
                 a: parseFloat(document.getElementById('paramA').value),
                 b: parseFloat(document.getElementById('paramB').value),
                 fillColor: fillColor,
-                strokeColor: document.getElementById('strokeColor').value || currentStrokeColor,
-                strokeWidth: parseFloat(document.getElementById('strokeWidth').value),
+                strokeColor: strokeColor,
+                strokeWidth: strokeWidth,
             };
         }
 
@@ -1129,6 +1157,9 @@
             selectedShapeIndex = shapes.length - 1;
             updateShapeList();
             renderCanvas();
+            // Ensure UI state is updated after adding shape
+            updateFillUIState();
+            updateStrokeUIState();
         }
 
         // Update selected shape with current settings
@@ -1159,44 +1190,62 @@
             document.getElementById('paramB').value = shape.b;
 
             // Load fill color and opacity
-            const rgbaMatch = shape.fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-            if (rgbaMatch) {
-                const r = parseInt(rgbaMatch[1]);
-                const g = parseInt(rgbaMatch[2]);
-                const b = parseInt(rgbaMatch[3]);
-                const opacity = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+            if (shape.fillColor === 'none') {
+                isFillNone = true;
+                updateFillUIState();
+            } else {
+                isFillNone = false;
+                const rgbaMatch = shape.fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (rgbaMatch) {
+                    const r = parseInt(rgbaMatch[1]);
+                    const g = parseInt(rgbaMatch[2]);
+                    const b = parseInt(rgbaMatch[3]);
+                    const opacity = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
 
-                // Convert to hex
-                const hexColor = '#' + [r, g, b].map(x => {
-                    const hex = x.toString(16);
-                    return hex.length === 1 ? '0' + hex : hex;
-                }).join('');
+                    // Convert to hex
+                    const hexColor = '#' + [r, g, b].map(x => {
+                        const hex = x.toString(16);
+                        return hex.length === 1 ? '0' + hex : hex;
+                    }).join('');
 
-                // Update global state
-                currentColor = hexColor;
-                currentOpacity = opacity;
+                    // Update global state
+                    currentColor = hexColor;
+                    currentOpacity = opacity;
 
-                // Update color inputs
-                document.getElementById('fillColorPicker').value = hexColor;
-                document.getElementById('customColor').value = hexColor;
+                    // Update color inputs
+                    document.getElementById('fillColorPicker').value = hexColor;
+                    document.getElementById('customColor').value = hexColor;
 
-                // Update opacity input
-                document.getElementById('opacity').value = opacity;
+                    // Update opacity input
+                    document.getElementById('opacity').value = opacity;
+                    document.getElementById('opacityValue').textContent = opacity.toFixed(2);
 
-                // Update color palette selection
-                document.querySelectorAll('.color-swatch').forEach(swatch => {
-                    if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
-                        swatch.classList.add('selected');
-                    } else {
-                        swatch.classList.remove('selected');
-                    }
-                });
+                    // Update color palette selection
+                    document.querySelectorAll('.color-swatch').forEach(swatch => {
+                        if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
+                            swatch.classList.add('selected');
+                        } else {
+                            swatch.classList.remove('selected');
+                        }
+                    });
+                }
+                updateFillUIState();
             }
 
-            document.getElementById('strokeWidth').value = shape.strokeWidth;
+            // Load stroke width and color
+            if (shape.strokeWidth === 0) {
+                isStrokeNone = true;
+                document.getElementById('strokeWidth').value = 4; // Set to a default value
+            } else {
+                isStrokeNone = false;
+                document.getElementById('strokeWidth').value = shape.strokeWidth;
+            }
+
             document.getElementById('strokeColor').value = shape.strokeColor;
             document.getElementById('strokeColorPicker').value = shape.strokeColor;
+            currentStrokeColor = shape.strokeColor;
 
+            updateStrokeUIState();
             updateStrokeColorVisibility();
         }
 
@@ -1400,13 +1449,68 @@
             demoList.appendChild(randomItem);
         }
 
+        // Update fill UI state based on isFillNone
+        function updateFillUIState() {
+            const noFillBtn = document.getElementById('noFillBtn');
+            const fillColorPicker = document.getElementById('fillColorPicker');
+            const customColorInput = document.getElementById('customColor');
+            const opacitySlider = document.getElementById('opacity');
+            const opacityValue = document.getElementById('opacityValue');
+
+            if (isFillNone) {
+                noFillBtn.classList.add('active');
+                fillColorPicker.disabled = true;
+                customColorInput.disabled = true;
+                opacitySlider.disabled = true;
+                fillColorPicker.style.opacity = '0.5';
+                customColorInput.style.opacity = '0.5';
+                opacitySlider.style.opacity = '0.5';
+                opacityValue.style.opacity = '0.5';
+            } else {
+                noFillBtn.classList.remove('active');
+                fillColorPicker.disabled = false;
+                customColorInput.disabled = false;
+                opacitySlider.disabled = false;
+                fillColorPicker.style.opacity = '1';
+                customColorInput.style.opacity = '1';
+                opacitySlider.style.opacity = '1';
+                opacityValue.style.opacity = '1';
+            }
+        }
+
+        // Update stroke UI state based on isStrokeNone
+        function updateStrokeUIState() {
+            const noStrokeBtn = document.getElementById('noStrokeBtn');
+            const strokeWidthSelect = document.getElementById('strokeWidth');
+            const strokeColorInput = document.getElementById('strokeColor');
+            const strokeColorPicker = document.getElementById('strokeColorPicker');
+
+            if (isStrokeNone) {
+                noStrokeBtn.classList.add('active');
+                strokeWidthSelect.disabled = true;
+                strokeColorInput.disabled = true;
+                strokeColorPicker.disabled = true;
+                strokeWidthSelect.style.opacity = '0.5';
+                strokeColorInput.style.opacity = '0.5';
+                strokeColorPicker.style.opacity = '0.5';
+            } else {
+                noStrokeBtn.classList.remove('active');
+                strokeWidthSelect.disabled = false;
+                strokeColorInput.disabled = false;
+                strokeColorPicker.disabled = false;
+                strokeWidthSelect.style.opacity = '1';
+                strokeColorInput.style.opacity = '1';
+                strokeColorPicker.style.opacity = '1';
+            }
+        }
+
         // Update stroke color field visibility
         function updateStrokeColorVisibility() {
             const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
             const strokeColorRow = document.getElementById('strokeColorRow');
             const strokeColorInput = document.getElementById('strokeColor');
             const strokeColorPicker = document.getElementById('strokeColorPicker');
-            const isStrokeEnabled = strokeWidth > 0;
+            const isStrokeEnabled = strokeWidth > 0 && !isStrokeNone;
 
             // Disable/enable inputs instead of hiding
             strokeColorInput.disabled = !isStrokeEnabled;
@@ -1644,6 +1748,21 @@
         document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
         document.getElementById('exportJSON').addEventListener('click', exportJSON);
 
+        // No fill button
+        document.getElementById('noFillBtn').addEventListener('click', () => {
+            isFillNone = !isFillNone;
+            updateFillUIState();
+            updateSelectedShape();
+        });
+
+        // No stroke button
+        document.getElementById('noStrokeBtn').addEventListener('click', () => {
+            isStrokeNone = !isStrokeNone;
+            updateStrokeUIState();
+            updateStrokeColorVisibility();
+            updateSelectedShape();
+        });
+
         // Import JSON
         document.getElementById('importJSONBtn').addEventListener('click', () => {
             document.getElementById('importJSON').click();
@@ -1664,17 +1783,21 @@
         // Custom color input
         document.getElementById('customColor').addEventListener('input', (e) => {
             currentColor = e.target.value;
+            isFillNone = false;  // Disable "no fill" when color is changed
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
             if (e.target.value.startsWith('#')) {
                 document.getElementById('fillColorPicker').value = e.target.value;
             }
+            updateFillUIState();
             updateSelectedShape();
         });
 
         document.getElementById('fillColorPicker').addEventListener('input', (e) => {
             currentColor = e.target.value;
+            isFillNone = false;  // Disable "no fill" when color is changed
             document.getElementById('customColor').value = currentColor;
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            updateFillUIState();
             updateSelectedShape();
         });
 
@@ -1684,17 +1807,23 @@
             if (e.target.value.startsWith('#')) {
                 document.getElementById('strokeColorPicker').value = e.target.value;
             }
+            // Don't change isStrokeNone state, just update the color
             updateSelectedShape();
         });
 
         document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
             currentStrokeColor = e.target.value;
             document.getElementById('strokeColor').value = e.target.value;
+            // Don't change isStrokeNone state, just update the color
             updateSelectedShape();
         });
 
         // Stroke width
         document.getElementById('strokeWidth').addEventListener('change', (e) => {
+            if (parseFloat(e.target.value) > 0) {
+                isStrokeNone = false;  // Disable "no stroke" when width > 0
+                updateStrokeUIState();
+            }
             updateStrokeColorVisibility();
             updateSelectedShape();
         });
@@ -1703,6 +1832,7 @@
         document.getElementById('opacity').addEventListener('input', (e) => {
             currentOpacity = parseFloat(e.target.value);
             document.getElementById('opacityValue').textContent = currentOpacity.toFixed(2);
+            // Don't change isFillNone state, opacity is separate
             updateSelectedShape();
         });
 
@@ -1846,6 +1976,8 @@
         // Initialize
         initColorPalette();
         initDemoList();
+        updateFillUIState();
+        updateStrokeUIState();
         updateStrokeColorVisibility();
         renderCanvas();
     </script>
