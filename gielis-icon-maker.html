@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superformula Icon Maker</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Superformula Icon Maker</h1>
+
+        <div class="main-workspace">
+            <!-- Export/Import Panel -->
+            <div class="export-panel">
+                <h2>Import</h2>
+                <div class="import-section">
+                    <input type="file" id="importJSON" accept=".json" style="display: none;">
+                    <button id="importJSONBtn" class="import-button">Load from JSON</button>
+                    <p class="import-info">Load previously saved layers</p>
+                </div>
+
+                <div class="panel-divider"></div>
+
+                <h2>Export</h2>
+                <div class="export-preview">
+                    <div class="preview-box">
+                        <img id="preview64" width="64" height="64">
+                        <span>64×64</span>
+                    </div>
+                    <div class="preview-box">
+                        <img id="faviconPreview" width="32" height="32">
+                        <span>32×32</span>
+                    </div>
+                    <div class="preview-box">
+                        <img id="faviconPreview16" width="16" height="16">
+                        <span>16×16</span>
+                    </div>
+                    <div class="preview-box">
+                        <div id="svgPreview" style="width: 80px; height: 80px; overflow: hidden;"></div>
+                        <span>SVG</span>
+                    </div>
+                </div>
+                <div class="download-links">
+                    <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
+                    <a class="download-link" id="exportFavicon">Download favicon.ico</a>
+                    <a class="download-link" id="exportSVG">Download icon.svg</a>
+                    <a class="download-link" id="exportJSON">Save as JSON</a>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas-container">
+                <canvas id="mainCanvas" width="384" height="384"></canvas>
+            </div>
+
+            <!-- Layers Panel -->
+            <div class="layers-panel">
+                <h2>Layers</h2>
+                <div class="shape-list" id="shapeList"></div>
+                <div class="layer-actions">
+                    <button id="addShape">+ Add</button>
+                    <button id="clearAll">Clear</button>
+                </div>
+            </div>
+
+            <!-- Demos Panel -->
+            <div class="demos-panel">
+                <h2>Demos</h2>
+                <div class="demo-list" id="demoList"></div>
+            </div>
+        </div>
+
+        <!-- Controls Grid -->
+        <div class="controls-grid">
+            <!-- Colors Panel -->
+            <div class="control-panel">
+                <h2>Colors</h2>
+                <div class="color-palette" id="colorPalette"></div>
+                <div class="input-row">
+                    <label>Fill</label>
+                    <div class="fill-control">
+                        <div class="no-fill-indicator" id="noFillBtn" title="No Fill"></div>
+                        <input type="color" id="fillColorPicker">
+                        <input type="text" id="customColor" placeholder="#ff5733">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Opacity</label>
+                    <div class="range-container">
+                        <input type="range" id="opacity" min="0" max="1" step="0.01" value="1">
+                        <span class="range-value" id="opacityValue">1.00</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Stroke</label>
+                    <select id="strokeWidth">
+                        <option value="0">None</option>
+                        <option value="1">1px</option>
+                        <option value="2">2px</option>
+                        <option value="3">3px</option>
+                        <option value="4" selected>4px</option>
+                        <option value="6">6px</option>
+                        <option value="8">8px</option>
+                        <option value="10">10px</option>
+                        <option value="15">15px</option>
+                        <option value="20">20px</option>
+                    </select>
+                </div>
+                <div class="input-row" id="strokeColorRow">
+                    <label>Stroke Color</label>
+                    <div class="color-input-group">
+                        <div class="no-fill-indicator" id="noStrokeBtn" title="No Stroke"></div>
+                        <input type="color" id="strokeColorPicker" value="#000000">
+                        <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shape Parameters Panel -->
+            <div class="control-panel">
+                <fieldset>
+                    <legend>Shape Parameters</legend>
+                    <div class="input-row">
+                        <label>Preset</label>
+                        <select id="presetSelect">
+                            <option value="">Custom</option>
+                            <option value="circle">Perfect Circle</option>
+                            <option value="square">Rounded Square</option>
+                            <option value="squircle">Icon Squircle</option>
+                            <option value="star4">4-Pointed Star</option>
+                            <option value="star5">5-Pointed Star</option>
+                            <option value="star8">8-Pointed Star</option>
+                            <option value="flower">Flower Shape</option>
+                            <option value="gear">Gear/Cog</option>
+                            <option value="diamond">Diamond</option>
+                            <option value="cross">Cross/Plus</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>m (symmetry)</label>
+                        <input type="number" id="paramM" min="0" max="20" step="0.1" value="5">
+                    </div>
+                    <div class="param-grid-3">
+                        <div class="input-row">
+                            <label>n1</label>
+                            <input type="number" id="paramN1" min="0.1" max="11" step="0.1" value="0.5">
+                        </div>
+                        <div class="input-row">
+                            <label>n2</label>
+                            <input type="number" id="paramN2" min="0.1" max="11" step="0.1" value="0.5">
+                        </div>
+                        <div class="input-row">
+                            <label>n3</label>
+                            <input type="number" id="paramN3" min="0.1" max="11" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                    <div class="param-grid">
+                        <div class="input-row">
+                            <label>a</label>
+                            <input type="number" id="paramA" min="0.1" max="5" step="0.1" value="1">
+                        </div>
+                        <div class="input-row">
+                            <label>b</label>
+                            <input type="number" id="paramB" min="0.1" max="5" step="0.1" value="1">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Transform Panel -->
+            <div class="control-panel">
+                <h2>Transform</h2>
+                <div class="input-row">
+                    <label>Size</label>
+                    <div class="range-container">
+                        <input type="range" id="size" min="4" max="300" value="150">
+                        <span class="range-value" id="sizeValue">150</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Rotation</label>
+                    <div class="range-container">
+                        <input type="range" id="rotation" min="0" max="360" value="0">
+                        <input type="number" id="rotationValue" min="0" max="360" step="1" value="0" style="width: 60px;">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Position</label>
+                    <div class="position-inputs">
+                        <input type="number" id="posX" min="0" max="384" value="192" placeholder="X">
+                        <input type="number" id="posY" min="0" max="384" value="192" placeholder="Y">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript modules in dependency order -->
+    <script src="scripts/math.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/shapes.js"></script>
+    <script src="scripts/rendering.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/export.js"></script>
+    <script src="scripts/events.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
