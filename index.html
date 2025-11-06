@@ -1472,10 +1472,7 @@
             const center = size / 2;
             const maxRadius = size * 0.4; // Leave some padding
 
-            // Calculate scale factor to fit shape in preview
-            const scaleFactor = maxRadius / shape.radius;
-
-            // Create temporary shape with adjusted position and scale
+            // Create temporary shape with adjusted position and scale for preview
             const previewShape = {
                 ...shape,
                 cx: center,
