@@ -681,15 +681,15 @@
                     <div class="param-grid-3">
                         <div class="input-row">
                             <label>n1</label>
-                            <input type="number" id="paramN1" min="0.1" max="10" step="0.1" value="0.5">
+                            <input type="number" id="paramN1" min="0.1" max="11" step="0.1" value="0.5">
                         </div>
                         <div class="input-row">
                             <label>n2</label>
-                            <input type="number" id="paramN2" min="0.1" max="10" step="0.1" value="0.5">
+                            <input type="number" id="paramN2" min="0.1" max="11" step="0.1" value="0.5">
                         </div>
                         <div class="input-row">
                             <label>n3</label>
-                            <input type="number" id="paramN3" min="0.1" max="10" step="0.1" value="0.5">
+                            <input type="number" id="paramN3" min="0.1" max="11" step="0.1" value="0.5">
                         </div>
                     </div>
                     <div class="param-grid">
@@ -749,7 +749,7 @@
         const presets = {
             circle: { m: 4, n1: 2, n2: 2, n3: 2, a: 1, b: 1 },
             square: { m: 4, n1: 4, n2: 4, n3: 4, a: 1, b: 1 },
-            squircle: { m: 4, n1: 11, n2: 11, n3: 11, a: 1, b: 1, radius: 190 },
+            squircle: { m: 4, n1: 11, n2: 11, n3: 11, a: 1, b: 1, radius: 188 },
             star4: { m: 4, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
             star5: { m: 5, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
             star8: { m: 8, n1: 0.5, n2: 0.5, n3: 0.5, a: 1, b: 1 },
@@ -1417,7 +1417,12 @@
                     document.getElementById('sizeValue').textContent = preset.radius;
                 }
 
-                updateSelectedShape();
+                // If no layers exist, create one automatically
+                if (shapes.length === 0) {
+                    addShape();
+                } else {
+                    updateSelectedShape();
+                }
             }
         }
 
