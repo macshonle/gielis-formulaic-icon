@@ -586,10 +586,15 @@
                         <img id="faviconPreview16" width="16" height="16">
                         <span>16×16</span>
                     </div>
+                    <div class="preview-box">
+                        <div id="svgPreview" style="width: 32px; height: 32px; border: 1px solid #444; border-radius: 4px; background: white; overflow: hidden;"></div>
+                        <span>SVG</span>
+                    </div>
                 </div>
                 <div class="download-links">
                     <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
                     <a class="download-link" id="exportFavicon">Download favicon.ico</a>
+                    <a class="download-link" id="exportSVG">Download icon.svg</a>
                     <a class="download-link" id="exportJSON">Save as JSON</a>
                 </div>
             </div>
@@ -1575,6 +1580,11 @@
             document.getElementById('applePreview').src = preview180.toDataURL('image/png');
             document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
             document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
+
+            // Update SVG preview
+            const svgPreviewContainer = document.getElementById('svgPreview');
+            const svgContent = generateSVG(32);
+            svgPreviewContainer.innerHTML = svgContent;
         }
 
         // Export apple touch icon
@@ -1703,6 +1713,68 @@
             URL.revokeObjectURL(url);
         }
 
+        // Generate SVG path data for a shape
+        function generateSVGPath(shape) {
+            const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
+            // Use fewer steps for SVG to reduce file size (still plenty smooth)
+            const steps = 360;
+            let pathData = '';
+
+            for (let i = 0; i <= steps; i++) {
+                const theta = (i / steps) * 2 * Math.PI;
+                const r = superformulaR(theta, {m, n1, n2, n3, a, b});
+                const ang = theta + rotation;
+                const x = cx + (radius * r * Math.cos(ang));
+                const y = cy + (radius * r * Math.sin(ang));
+
+                if (i === 0) {
+                    pathData += `M ${x.toFixed(2)} ${y.toFixed(2)}`;
+                } else {
+                    pathData += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+                }
+            }
+
+            pathData += ' Z'; // Close path
+            return pathData;
+        }
+
+        // Generate complete SVG document
+        function generateSVG(size = 384) {
+            const svgParts = [];
+            svgParts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
+            svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">`);
+
+            // White background
+            svgParts.push(`  <rect width="384" height="384" fill="white"/>`);
+
+            // Render each shape
+            shapes.forEach((shape, index) => {
+                const pathData = generateSVGPath(shape);
+                const hasFill = shape.fillColor && shape.fillColor !== 'none';
+                const hasStroke = shape.strokeWidth > 0;
+
+                let fillAttr = hasFill ? `fill="${shape.fillColor}"` : 'fill="none"';
+                let strokeAttr = hasStroke ? `stroke="${shape.strokeColor}" stroke-width="${shape.strokeWidth}"` : 'stroke="none"';
+
+                svgParts.push(`  <path d="${pathData}" ${fillAttr} ${strokeAttr}/>`);
+            });
+
+            svgParts.push(`</svg>`);
+            return svgParts.join('\n');
+        }
+
+        // Export as SVG
+        function exportSVG() {
+            const svgContent = generateSVG(384);
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'icon.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
         // Export as JSON
         function exportJSON() {
             const data = {
@@ -1746,6 +1818,7 @@
         document.getElementById('clearAll').addEventListener('click', clearAll);
         document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
         document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
+        document.getElementById('exportSVG').addEventListener('click', exportSVG);
         document.getElementById('exportJSON').addEventListener('click', exportJSON);
 
         // No fill button
