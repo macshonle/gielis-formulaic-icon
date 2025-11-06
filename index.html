@@ -55,40 +55,43 @@
         }
 
         .export-preview {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
             gap: 12px;
             margin-bottom: 16px;
         }
 
         .preview-box {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
 
-        .preview-box img {
+        .preview-box img,
+        .preview-box > div {
             border: 1px solid #444;
             border-radius: 4px;
             background: white;
         }
 
         .preview-box span {
-            font-size: 11px;
+            font-size: 10px;
             color: #888;
+            text-align: center;
         }
 
         .download-links {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 0;
         }
 
         .download-link {
             color: #007aff;
             text-decoration: none;
             font-size: 13px;
-            padding: 6px 0;
+            padding: 4px 0;
             transition: color 0.15s;
             cursor: pointer;
         }
@@ -400,7 +403,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             white-space: nowrap;
-            min-width: 3em;
+            min-width: 1.5em;
         }
 
         .input-row input,
@@ -432,6 +435,10 @@
             padding: 6px 8px;
             border-radius: 6px;
             font-size: 13px;
+        }
+
+        input[type="number"] {
+            max-width: 7em;
         }
 
         input[type="number"]:focus,
@@ -575,11 +582,11 @@
                 <h2>Export</h2>
                 <div class="export-preview">
                     <div class="preview-box">
-                        <img id="applePreview" width="32" height="32">
-                        <span>180×180</span>
+                        <img id="preview64" width="64" height="64">
+                        <span>64×64</span>
                     </div>
                     <div class="preview-box">
-                        <img id="faviconPreview" width="24" height="24">
+                        <img id="faviconPreview" width="32" height="32">
                         <span>32×32</span>
                     </div>
                     <div class="preview-box">
@@ -587,7 +594,7 @@
                         <span>16×16</span>
                     </div>
                     <div class="preview-box">
-                        <div id="svgPreview" style="width: 32px; height: 32px; border: 1px solid #444; border-radius: 4px; background: white; overflow: hidden;"></div>
+                        <div id="svgPreview" style="width: 80px; height: 80px; overflow: hidden;"></div>
                         <span>SVG</span>
                     </div>
                 </div>
@@ -1570,17 +1577,17 @@
 
         // Update export previews
         function updateExportPreviews() {
-            const preview180 = renderToCanvas(180);
+            const preview64 = renderToCanvas(64);
             const preview32 = renderToCanvas(32);
             const preview16 = renderToCanvas(16);
 
-            document.getElementById('applePreview').src = preview180.toDataURL('image/png');
+            document.getElementById('preview64').src = preview64.toDataURL('image/png');
             document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
             document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
 
             // Update SVG preview
             const svgPreviewContainer = document.getElementById('svgPreview');
-            const svgContent = generateSVG(32);
+            const svgContent = generateSVG(80);
             svgPreviewContainer.innerHTML = svgContent;
         }
 
