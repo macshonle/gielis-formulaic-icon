@@ -127,6 +127,12 @@
             text-align: center;
         }
 
+        .panel-divider {
+            height: 1px;
+            background: #3a3a3a;
+            margin: 20px 0;
+        }
+
         .canvas-container {
             background: #2a2a2a;
             border-radius: 12px;
@@ -532,8 +538,17 @@
         <h1>Superformula Icon Maker</h1>
 
         <div class="main-workspace">
-            <!-- Export Panel -->
+            <!-- Export/Import Panel -->
             <div class="export-panel">
+                <h2>Import</h2>
+                <div class="import-section">
+                    <input type="file" id="importJSON" accept=".json" style="display: none;">
+                    <button id="importJSONBtn" class="import-button">Load from JSON</button>
+                    <p class="import-info">Load previously saved layers</p>
+                </div>
+
+                <div class="panel-divider"></div>
+
                 <h2>Export</h2>
                 <div class="export-preview">
                     <div class="preview-box">
@@ -553,16 +568,6 @@
                     <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
                     <a class="download-link" id="exportFavicon">Download favicon.ico</a>
                     <a class="download-link" id="exportJSON">Save as JSON</a>
-                </div>
-            </div>
-
-            <!-- Import Panel -->
-            <div class="export-panel">
-                <h2>Import</h2>
-                <div class="import-section">
-                    <input type="file" id="importJSON" accept=".json" style="display: none;">
-                    <button id="importJSONBtn" class="import-button">Load from JSON</button>
-                    <p class="import-info">Load previously saved layers</p>
                 </div>
             </div>
 
