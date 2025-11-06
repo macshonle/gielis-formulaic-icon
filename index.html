@@ -1079,6 +1079,41 @@
             document.getElementById('paramA').value = shape.a;
             document.getElementById('paramB').value = shape.b;
 
+            // Load fill color and opacity
+            const rgbaMatch = shape.fillColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+            if (rgbaMatch) {
+                const r = parseInt(rgbaMatch[1]);
+                const g = parseInt(rgbaMatch[2]);
+                const b = parseInt(rgbaMatch[3]);
+                const opacity = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+
+                // Convert to hex
+                const hexColor = '#' + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                }).join('');
+
+                // Update global state
+                currentColor = hexColor;
+                currentOpacity = opacity;
+
+                // Update color inputs
+                document.getElementById('fillColorPicker').value = hexColor;
+                document.getElementById('customColor').value = hexColor;
+
+                // Update opacity input
+                document.getElementById('opacity').value = opacity;
+
+                // Update color palette selection
+                document.querySelectorAll('.color-swatch').forEach(swatch => {
+                    if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
+                        swatch.classList.add('selected');
+                    } else {
+                        swatch.classList.remove('selected');
+                    }
+                });
+            }
+
             document.getElementById('strokeWidth').value = shape.strokeWidth;
             document.getElementById('strokeColor').value = shape.strokeColor;
             document.getElementById('strokeColorPicker').value = shape.strokeColor;
