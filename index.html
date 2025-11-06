@@ -38,7 +38,7 @@
         }
 
         .export-panel {
-            width: 180px;
+            width: 280px;
             background: #2a2a2a;
             border-radius: 12px;
             padding: 20px;
@@ -96,6 +96,35 @@
         .download-link:hover {
             color: #0051d5;
             text-decoration: underline;
+        }
+
+        .import-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .import-button {
+            background: #4a4a4a;
+            color: #fff;
+            border: 1px solid #5a5a5a;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .import-button:hover {
+            background: #5a5a5a;
+        }
+
+        .import-info {
+            font-size: 11px;
+            color: #888;
+            margin: 0;
+            text-align: center;
         }
 
         .canvas-container {
@@ -523,6 +552,17 @@
                 <div class="download-links">
                     <a class="download-link" id="exportAppleIcon">Download apple-touch-icon.png</a>
                     <a class="download-link" id="exportFavicon">Download favicon.ico</a>
+                    <a class="download-link" id="exportJSON">Save as JSON</a>
+                </div>
+            </div>
+
+            <!-- Import Panel -->
+            <div class="export-panel">
+                <h2>Import</h2>
+                <div class="import-section">
+                    <input type="file" id="importJSON" accept=".json" style="display: none;">
+                    <button id="importJSONBtn" class="import-button">Load from JSON</button>
+                    <p class="import-info">Load previously saved layers</p>
                 </div>
             </div>
 
@@ -1501,11 +1541,62 @@
             URL.revokeObjectURL(url);
         }
 
+        // Export as JSON
+        function exportJSON() {
+            const data = {
+                version: "1.0",
+                shapes: shapes
+            };
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'icon-layers.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import from JSON
+        function importJSON(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.shapes && Array.isArray(data.shapes)) {
+                        shapes = data.shapes;
+                        selectedShapeIndex = null;
+                        updateShapeList();
+                        renderCanvas();
+                        updateExportPreviews();
+                    } else {
+                        alert('Invalid JSON file format. Expected a "shapes" array.');
+                    }
+                } catch (error) {
+                    alert('Error parsing JSON file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
         // Event listeners
         document.getElementById('addShape').addEventListener('click', addShape);
         document.getElementById('clearAll').addEventListener('click', clearAll);
         document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
         document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
+        document.getElementById('exportJSON').addEventListener('click', exportJSON);
+
+        // Import JSON
+        document.getElementById('importJSONBtn').addEventListener('click', () => {
+            document.getElementById('importJSON').click();
+        });
+        document.getElementById('importJSON').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                importJSON(file);
+            }
+            e.target.value = ''; // Reset input so same file can be loaded again
+        });
 
         // Preset selector
         document.getElementById('presetSelect').addEventListener('change', (e) => {
