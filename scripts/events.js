@@ -1,52 +1,55 @@
-// Cache DOM element references for performance
-const elements = {
-    // Buttons
-    addShape: document.getElementById('addShape'),
-    clearAll: document.getElementById('clearAll'),
-    exportAppleIcon: document.getElementById('exportAppleIcon'),
-    exportFavicon: document.getElementById('exportFavicon'),
-    exportSVG: document.getElementById('exportSVG'),
-    exportJSON: document.getElementById('exportJSON'),
-    noFillBtn: document.getElementById('noFillBtn'),
-    importJSONBtn: document.getElementById('importJSONBtn'),
-    importJSON: document.getElementById('importJSON'),
-
-    // Selectors
-    presetSelect: document.getElementById('presetSelect'),
-
-    // Color inputs
-    customColor: document.getElementById('customColor'),
-    fillColorPicker: document.getElementById('fillColorPicker'),
-    strokeColor: document.getElementById('strokeColor'),
-    strokeColorPicker: document.getElementById('strokeColorPicker'),
-
-    // Stroke controls
-    strokeEnabled: document.getElementById('strokeEnabled'),
-    strokeWidth: document.getElementById('strokeWidth'),
-
-    // Sliders and displays
-    opacity: document.getElementById('opacity'),
-    opacityValue: document.getElementById('opacityValue'),
-    size: document.getElementById('size'),
-    sizeDisplay: document.getElementById('sizeDisplay'),
-    sizeValue: document.getElementById('sizeValue'),
-    rotation: document.getElementById('rotation'),
-    rotationDisplay: document.getElementById('rotationDisplay'),
-    rotationValue: document.getElementById('rotationValue'),
-
-    // Parameter inputs
-    paramM: document.getElementById('paramM'),
-    paramN1: document.getElementById('paramN1'),
-    paramN2: document.getElementById('paramN2'),
-    paramN3: document.getElementById('paramN3'),
-    paramA: document.getElementById('paramA'),
-    paramB: document.getElementById('paramB'),
-    posX: document.getElementById('posX'),
-    posY: document.getElementById('posY')
-};
+// Cache DOM element references for performance (initialized in setupEventListeners)
+let elements = null;
 
 // Setup all event listeners
 function setupEventListeners() {
+    // Cache DOM element references now that DOM is ready
+    elements = {
+        // Buttons
+        addShape: document.getElementById('addShape'),
+        clearAll: document.getElementById('clearAll'),
+        exportAppleIcon: document.getElementById('exportAppleIcon'),
+        exportFavicon: document.getElementById('exportFavicon'),
+        exportSVG: document.getElementById('exportSVG'),
+        exportJSON: document.getElementById('exportJSON'),
+        noFillBtn: document.getElementById('noFillBtn'),
+        importJSONBtn: document.getElementById('importJSONBtn'),
+        importJSON: document.getElementById('importJSON'),
+
+        // Selectors
+        presetSelect: document.getElementById('presetSelect'),
+
+        // Color inputs
+        customColor: document.getElementById('customColor'),
+        fillColorPicker: document.getElementById('fillColorPicker'),
+        strokeColor: document.getElementById('strokeColor'),
+        strokeColorPicker: document.getElementById('strokeColorPicker'),
+
+        // Stroke controls
+        strokeEnabled: document.getElementById('strokeEnabled'),
+        strokeWidth: document.getElementById('strokeWidth'),
+
+        // Sliders and displays
+        opacity: document.getElementById('opacity'),
+        opacityValue: document.getElementById('opacityValue'),
+        size: document.getElementById('size'),
+        sizeDisplay: document.getElementById('sizeDisplay'),
+        sizeValue: document.getElementById('sizeValue'),
+        rotation: document.getElementById('rotation'),
+        rotationDisplay: document.getElementById('rotationDisplay'),
+        rotationValue: document.getElementById('rotationValue'),
+
+        // Parameter inputs
+        paramM: document.getElementById('paramM'),
+        paramN1: document.getElementById('paramN1'),
+        paramN2: document.getElementById('paramN2'),
+        paramN3: document.getElementById('paramN3'),
+        paramA: document.getElementById('paramA'),
+        paramB: document.getElementById('paramB'),
+        posX: document.getElementById('posX'),
+        posY: document.getElementById('posY')
+    };
+
     // Button event listeners
     elements.addShape.addEventListener('click', addShape);
     elements.clearAll.addEventListener('click', clearAll);

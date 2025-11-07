@@ -149,13 +149,13 @@ function generateSVGPath(shape) {
 }
 
 // Generate complete SVG document
-function generateSVG(size = 384) {
+function generateSVG(size = CANVAS_SIZE) {
     const svgParts = [];
     svgParts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
-    svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">`);
+    svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}" xmlns="http://www.w3.org/2000/svg">`);
 
     // White background
-    svgParts.push(`  <rect width="384" height="384" fill="white"/>`);
+    svgParts.push(`  <rect width="${CANVAS_SIZE}" height="${CANVAS_SIZE}" fill="white"/>`);
 
     // Render each shape
     shapes.forEach((shape, index) => {
@@ -175,7 +175,7 @@ function generateSVG(size = 384) {
 
 // Export as SVG
 function exportSVG() {
-    const svgContent = generateSVG(384);
+    const svgContent = generateSVG(CANVAS_SIZE);
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

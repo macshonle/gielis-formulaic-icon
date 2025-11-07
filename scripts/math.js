@@ -1,3 +1,7 @@
+// Application constants (defined here since math.js loads first)
+const CANVAS_SIZE = 384; // Main canvas dimensions (pixels)
+const CANVAS_CENTER = CANVAS_SIZE / 2; // Center point of the canvas
+
 // Superformula calculation
 function superformulaR(theta, {m, n1, n2, n3, a, b}) {
     const t1 = Math.pow(Math.abs(Math.cos((m * theta) / 4) / a), n2);

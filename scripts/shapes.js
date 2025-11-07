@@ -1,7 +1,3 @@
-// Application constants
-const CANVAS_SIZE = 384; // Main canvas dimensions (pixels)
-const CANVAS_CENTER = CANVAS_SIZE / 2; // Center point of the canvas
-
 // Application state
 let shapes = [];
 let selectedShapeIndex = null;
@@ -275,8 +271,8 @@ function generateRandomDemo() {
         const color = defaultPalette[Math.floor(Math.random() * (defaultPalette.length - 6))]; // Exclude greys
 
         shapes.push({
-            cx: 192,
-            cy: 192,
+            cx: CANVAS_CENTER,
+            cy: CANVAS_CENTER,
             radius: size,
             rotation: rotation,
             m: m,

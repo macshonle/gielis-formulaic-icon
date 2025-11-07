@@ -81,7 +81,7 @@ function renderToCanvas(size) {
     tempCtx.fillStyle = 'white';
     tempCtx.fillRect(0, 0, size, size);
 
-    const scaleFactor = size / 384;
+    const scaleFactor = size / CANVAS_SIZE;
 
     shapes.forEach(shape => {
         renderShape(tempCtx, shape, scaleFactor);

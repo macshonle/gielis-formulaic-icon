@@ -63,8 +63,8 @@ const demos = {
         name: "Blooming Flower",
         shapes: [
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 94,
                 rotation: 0.3316125578789226,
                 m: 6,
@@ -78,8 +78,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 94,
                 rotation: 0.6632251157578452,
                 m: 4,
@@ -93,8 +93,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 90,
                 rotation: 1.413716694115407,
                 m: 5,
@@ -108,8 +108,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 90,
                 rotation: 2.199114857512855,
                 m: 6,
@@ -123,8 +123,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 72,
                 rotation: 0.715584993317675,
                 m: 15,
@@ -138,8 +138,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 94,
                 rotation: 0.8552113334772214,
                 m: 8,
@@ -153,8 +153,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 67,
                 rotation: 1.8151424220741028,
                 m: 9,
@@ -168,8 +168,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 67,
                 rotation: 3.6477381366681487,
                 m: 9,
@@ -183,8 +183,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 18,
                 rotation: 1.8325957145940461,
                 m: 4,
@@ -198,8 +198,8 @@ const demos = {
                 strokeWidth: 4
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 10,
                 rotation: 0.3316125578789226,
                 m: 4,
@@ -363,8 +363,8 @@ const demos = {
 
             // Add star on top
             shapes.push({
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 186,
                 rotation: 0,
                 m: 8,
@@ -385,8 +385,8 @@ const demos = {
         name: "Gemin-EYE",
         shapes: [
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 187,
                 rotation: 0,
                 m: 4,
@@ -400,8 +400,8 @@ const demos = {
                 strokeWidth: 6
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 186,
                 rotation: 0,
                 m: 2,
@@ -415,8 +415,8 @@ const demos = {
                 strokeWidth: 2
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 157,
                 rotation: 0,
                 m: 2,
@@ -430,8 +430,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 46,
                 rotation: 0,
                 m: 4,
@@ -445,8 +445,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 38,
                 rotation: 0,
                 m: 4,
@@ -460,8 +460,8 @@ const demos = {
                 strokeWidth: 1
             },
             {
-                cx: 192,
-                cy: 192,
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
                 radius: 25,
                 rotation: 0,
                 m: 4,
