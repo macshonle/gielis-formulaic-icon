@@ -6,7 +6,6 @@ let currentOpacity = 1;
 let currentStrokeColor = '#000000';
 let draggedItem = null;
 let isFillNone = false;  // Track if fill is set to "none"
-let isStrokeNone = false;  // Track if stroke is set to "none"
 
 // Canvas dragging state
 let isDragging = false;
@@ -35,10 +34,11 @@ function createShapeFromSettings() {
         fillColor = currentColor;
     }
 
-    // Handle stroke based on "no stroke" state
+    // Handle stroke based on checkbox state
     let strokeWidth;
     let strokeColor;
-    if (isStrokeNone) {
+    const strokeEnabled = document.getElementById('strokeEnabled').checked;
+    if (!strokeEnabled) {
         strokeWidth = 0;
         strokeColor = currentStrokeColor;
     } else {
@@ -91,7 +91,9 @@ function loadShapeToEditor(shape) {
     document.getElementById('size').value = shape.radius;
     document.getElementById('sizeValue').textContent = shape.radius;
 
-    const rotationDeg = shape.rotation * 180 / Math.PI;
+    // Convert rotation to degrees and normalize to -180 to 180 range
+    let rotationDeg = shape.rotation * 180 / Math.PI;
+    rotationDeg = (((rotationDeg + 180) % 360) + 360) % 360 - 180;
     document.getElementById('rotation').value = rotationDeg;
     document.getElementById('rotationValue').value = Math.round(rotationDeg);
 
@@ -172,10 +174,10 @@ function loadShapeToEditor(shape) {
 
     // Load stroke width and color
     if (shape.strokeWidth === 0) {
-        isStrokeNone = true;
+        document.getElementById('strokeEnabled').checked = false;
         document.getElementById('strokeWidth').value = 4; // Set to a default value
     } else {
-        isStrokeNone = false;
+        document.getElementById('strokeEnabled').checked = true;
         document.getElementById('strokeWidth').value = shape.strokeWidth;
     }
 

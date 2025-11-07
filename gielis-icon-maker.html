@@ -93,9 +93,9 @@
                     </div>
                 </div>
                 <div class="input-row">
-                    <label>Stroke</label>
+                    <input type="checkbox" id="strokeEnabled" checked>
+                    <label for="strokeEnabled">Stroke</label>
                     <select id="strokeWidth">
-                        <option value="0">None</option>
                         <option value="1">1px</option>
                         <option value="2">2px</option>
                         <option value="3">3px</option>
@@ -108,9 +108,8 @@
                     </select>
                 </div>
                 <div class="input-row" id="strokeColorRow">
-                    <label>Stroke Color</label>
+                    <label>Color</label>
                     <div class="color-input-group">
-                        <div class="no-fill-indicator" id="noStrokeBtn" title="No Stroke"></div>
                         <input type="color" id="strokeColorPicker" value="#000000">
                         <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
                     </div>
@@ -181,8 +180,8 @@
                 <div class="input-row">
                     <label>Rotation</label>
                     <div class="range-container">
-                        <input type="range" id="rotation" min="0" max="360" value="0">
-                        <input type="number" id="rotationValue" min="0" max="360" step="1" value="0" style="width: 60px;">
+                        <input type="range" id="rotation" min="-180" max="180" value="0">
+                        <input type="number" id="rotationValue" min="-180" max="180" step="1" value="0" style="width: 60px;">
                     </div>
                 </div>
                 <div class="input-row">

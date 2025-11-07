@@ -388,6 +388,23 @@ const demos = {
                 iteration++;
             }
 
+            // Add star on top
+            shapes.push({
+                cx: 192,
+                cy: 192,
+                radius: 186,
+                rotation: 0,
+                m: 8,
+                n1: 0.5,
+                n2: 0.5,
+                n3: 0.5,
+                a: 1,
+                b: 0.6,
+                fillColor: "rgba(255, 217, 61, 1)",
+                strokeColor: "#d3d7da",
+                strokeWidth: 3
+            });
+
             return shapes;
         })()
     },

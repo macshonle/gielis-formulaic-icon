@@ -188,24 +188,25 @@ function updateFillUIState() {
     }
 }
 
-// Update stroke UI state based on isStrokeNone
+// Update stroke UI state based on checkbox
 function updateStrokeUIState() {
-    const noStrokeBtn = document.getElementById('noStrokeBtn');
+    const strokeEnabled = document.getElementById('strokeEnabled').checked;
     const strokeWidthSelect = document.getElementById('strokeWidth');
     const strokeColorInput = document.getElementById('strokeColor');
     const strokeColorPicker = document.getElementById('strokeColorPicker');
 
-    if (isStrokeNone) {
-        noStrokeBtn.classList.add('active');
-        // Don't disable stroke width selector - allow user to change it to re-enable
+    if (!strokeEnabled) {
+        strokeWidthSelect.disabled = true;
         strokeColorInput.disabled = true;
         strokeColorPicker.disabled = true;
+        strokeWidthSelect.style.opacity = '0.5';
         strokeColorInput.style.opacity = '0.5';
         strokeColorPicker.style.opacity = '0.5';
     } else {
-        noStrokeBtn.classList.remove('active');
+        strokeWidthSelect.disabled = false;
         strokeColorInput.disabled = false;
         strokeColorPicker.disabled = false;
+        strokeWidthSelect.style.opacity = '1';
         strokeColorInput.style.opacity = '1';
         strokeColorPicker.style.opacity = '1';
     }
@@ -213,19 +214,18 @@ function updateStrokeUIState() {
 
 // Update stroke color field visibility
 function updateStrokeColorVisibility() {
-    const strokeWidth = parseFloat(document.getElementById('strokeWidth').value);
+    const strokeEnabled = document.getElementById('strokeEnabled').checked;
     const strokeColorRow = document.getElementById('strokeColorRow');
     const strokeColorInput = document.getElementById('strokeColor');
     const strokeColorPicker = document.getElementById('strokeColorPicker');
-    const isStrokeEnabled = strokeWidth > 0 && !isStrokeNone;
 
-    // Disable/enable inputs instead of hiding
-    strokeColorInput.disabled = !isStrokeEnabled;
-    strokeColorPicker.disabled = !isStrokeEnabled;
+    // Disable/enable inputs based on checkbox
+    strokeColorInput.disabled = !strokeEnabled;
+    strokeColorPicker.disabled = !strokeEnabled;
 
     // Adjust opacity to indicate disabled state
-    strokeColorRow.style.opacity = isStrokeEnabled ? '1' : '0.5';
-    strokeColorRow.style.pointerEvents = isStrokeEnabled ? 'auto' : 'none';
+    strokeColorRow.style.opacity = strokeEnabled ? '1' : '0.5';
+    strokeColorRow.style.pointerEvents = strokeEnabled ? 'auto' : 'none';
 }
 
 // Update export previews

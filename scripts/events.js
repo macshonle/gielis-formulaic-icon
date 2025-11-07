@@ -15,9 +15,8 @@ function setupEventListeners() {
         updateSelectedShape();
     });
 
-    // No stroke button
-    document.getElementById('noStrokeBtn').addEventListener('click', () => {
-        isStrokeNone = !isStrokeNone;
+    // Stroke enabled checkbox
+    document.getElementById('strokeEnabled').addEventListener('change', () => {
         updateStrokeUIState();
         updateStrokeColorVisibility();
         updateSelectedShape();
@@ -67,24 +66,17 @@ function setupEventListeners() {
         if (e.target.value.startsWith('#')) {
             document.getElementById('strokeColorPicker').value = e.target.value;
         }
-        // Don't change isStrokeNone state, just update the color
         updateSelectedShape();
     });
 
     document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
         currentStrokeColor = e.target.value;
         document.getElementById('strokeColor').value = e.target.value;
-        // Don't change isStrokeNone state, just update the color
         updateSelectedShape();
     });
 
     // Stroke width
     document.getElementById('strokeWidth').addEventListener('change', (e) => {
-        if (parseFloat(e.target.value) > 0) {
-            isStrokeNone = false;  // Disable "no stroke" when width > 0
-            updateStrokeUIState();
-        }
-        updateStrokeColorVisibility();
         updateSelectedShape();
     });
 
@@ -111,8 +103,8 @@ function setupEventListeners() {
     document.getElementById('rotationValue').addEventListener('input', (e) => {
         const value = parseFloat(e.target.value);
         if (!isNaN(value)) {
-            // Clamp value between 0 and 360
-            const clampedValue = Math.max(0, Math.min(360, value));
+            // Clamp value between -180 and 180
+            const clampedValue = Math.max(-180, Math.min(180, value));
             document.getElementById('rotation').value = clampedValue;
             updateSelectedShape();
         }
