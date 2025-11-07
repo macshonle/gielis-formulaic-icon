@@ -89,13 +89,16 @@ function loadShapeToEditor(shape) {
     document.getElementById('posX').value = shape.cx;
     document.getElementById('posY').value = shape.cy;
     document.getElementById('size').value = shape.radius;
-    document.getElementById('sizeValue').textContent = shape.radius;
+    document.getElementById('sizeDisplay').textContent = shape.radius;
+    document.getElementById('sizeValue').value = shape.radius;
 
     // Convert rotation to degrees and normalize to -180 to 180 range
     let rotationDeg = shape.rotation * 180 / Math.PI;
     rotationDeg = (((rotationDeg + 180) % 360) + 360) % 360 - 180;
-    document.getElementById('rotation').value = rotationDeg;
-    document.getElementById('rotationValue').value = Math.round(rotationDeg);
+    const roundedRotation = Math.round(rotationDeg);
+    document.getElementById('rotation').value = roundedRotation;
+    document.getElementById('rotationDisplay').textContent = roundedRotation;
+    document.getElementById('rotationValue').value = roundedRotation;
 
     document.getElementById('paramM').value = shape.m;
     document.getElementById('paramN1').value = shape.n1;
@@ -292,7 +295,8 @@ function applyPreset(presetName) {
         // Apply radius if specified in preset
         if (preset.radius !== undefined) {
             document.getElementById('size').value = preset.radius;
-            document.getElementById('sizeValue').textContent = preset.radius;
+            document.getElementById('sizeDisplay').textContent = preset.radius;
+            document.getElementById('sizeValue').value = preset.radius;
         }
 
         // If no layers exist, create one automatically

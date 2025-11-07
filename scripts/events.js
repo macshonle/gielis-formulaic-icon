@@ -88,13 +88,28 @@ function setupEventListeners() {
         updateSelectedShape();
     });
 
-    // Size and rotation sliders
+    // Size slider
     document.getElementById('size').addEventListener('input', (e) => {
-        document.getElementById('sizeValue').textContent = e.target.value;
+        document.getElementById('sizeDisplay').textContent = e.target.value;
+        document.getElementById('sizeValue').value = e.target.value;
         updateSelectedShape();
     });
 
+    // Size value input - sync with slider
+    document.getElementById('sizeValue').addEventListener('input', (e) => {
+        const value = parseFloat(e.target.value);
+        if (!isNaN(value)) {
+            // Clamp value between 4 and 300
+            const clampedValue = Math.max(4, Math.min(300, value));
+            document.getElementById('size').value = clampedValue;
+            document.getElementById('sizeDisplay').textContent = clampedValue;
+            updateSelectedShape();
+        }
+    });
+
+    // Rotation slider
     document.getElementById('rotation').addEventListener('input', (e) => {
+        document.getElementById('rotationDisplay').textContent = e.target.value;
         document.getElementById('rotationValue').value = e.target.value;
         updateSelectedShape();
     });
@@ -106,6 +121,7 @@ function setupEventListeners() {
             // Clamp value between -180 and 180
             const clampedValue = Math.max(-180, Math.min(180, value));
             document.getElementById('rotation').value = clampedValue;
+            document.getElementById('rotationDisplay').textContent = clampedValue;
             updateSelectedShape();
         }
     });
