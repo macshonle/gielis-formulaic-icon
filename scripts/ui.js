@@ -1,3 +1,8 @@
+// UI constants
+const PREVIEW_SIZE = 48; // Thumbnail size for shape list previews (pixels)
+const PREVIEW_SCALE = 0.4; // Scale factor for preview shapes (relative to canvas size)
+const EXPORT_PREVIEW_DEBOUNCE = 300; // Debounce delay for export preview updates (ms)
+
 // Cache for shape previews
 const shapePreviewCache = new Map();
 
@@ -55,19 +60,18 @@ function generateShapePreview(shape) {
         return shapePreviewCache.get(cacheKey);
     }
 
-    const size = 48; // Higher resolution for better quality
     const previewCanvas = document.createElement('canvas');
-    previewCanvas.width = size;
-    previewCanvas.height = size;
+    previewCanvas.width = PREVIEW_SIZE;
+    previewCanvas.height = PREVIEW_SIZE;
     const previewCtx = previewCanvas.getContext('2d');
 
     // White background
     previewCtx.fillStyle = 'white';
-    previewCtx.fillRect(0, 0, size, size);
+    previewCtx.fillRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
 
     // Create a normalized version of the shape centered in the preview
-    const center = size / 2;
-    const maxRadius = size * 0.4; // Leave some padding
+    const center = PREVIEW_SIZE / 2;
+    const maxRadius = PREVIEW_SIZE * PREVIEW_SCALE;
 
     // Create temporary shape with adjusted position and scale for preview
     const previewShape = {
@@ -149,10 +153,23 @@ function updateShapeList() {
                 shapes.splice(draggedItem, 1);
                 shapes.splice(index, 0, temp);
 
+                // Update selectedShapeIndex to follow the correct item
                 if (selectedShapeIndex === draggedItem) {
+                    // Dragged item was selected, follow it to new position
                     selectedShapeIndex = index;
-                } else if (selectedShapeIndex === index) {
-                    selectedShapeIndex = draggedItem > index ? selectedShapeIndex + 1 : selectedShapeIndex - 1;
+                } else if (selectedShapeIndex !== null) {
+                    // Another item is selected, adjust if needed
+                    if (draggedItem < index) {
+                        // Dragging down: items between draggedItem and index shift up
+                        if (selectedShapeIndex > draggedItem && selectedShapeIndex <= index) {
+                            selectedShapeIndex--;
+                        }
+                    } else {
+                        // Dragging up: items between index and draggedItem shift down
+                        if (selectedShapeIndex >= index && selectedShapeIndex < draggedItem) {
+                            selectedShapeIndex++;
+                        }
+                    }
                 }
 
                 updateShapeList();
@@ -200,25 +217,20 @@ function updateFillUIState() {
     const opacitySlider = document.getElementById('opacity');
     const opacityValue = document.getElementById('opacityValue');
 
-    if (isFillNone) {
-        noFillBtn.classList.add('active');
-        fillColorPicker.disabled = true;
-        customColorInput.disabled = true;
-        opacitySlider.disabled = true;
-        fillColorPicker.style.opacity = '0.5';
-        customColorInput.style.opacity = '0.5';
-        opacitySlider.style.opacity = '0.5';
-        opacityValue.style.opacity = '0.5';
-    } else {
-        noFillBtn.classList.remove('active');
-        fillColorPicker.disabled = false;
-        customColorInput.disabled = false;
-        opacitySlider.disabled = false;
-        fillColorPicker.style.opacity = '1';
-        customColorInput.style.opacity = '1';
-        opacitySlider.style.opacity = '1';
-        opacityValue.style.opacity = '1';
-    }
+    const isDisabled = isFillNone;
+
+    // Update button state
+    noFillBtn.classList.toggle('active', isDisabled);
+
+    // Update input disabled state and CSS class
+    fillColorPicker.disabled = isDisabled;
+    customColorInput.disabled = isDisabled;
+    opacitySlider.disabled = isDisabled;
+
+    fillColorPicker.classList.toggle('disabled', isDisabled);
+    customColorInput.classList.toggle('disabled', isDisabled);
+    opacitySlider.classList.toggle('disabled', isDisabled);
+    opacityValue.classList.toggle('disabled', isDisabled);
 }
 
 // Update stroke UI state based on checkbox
@@ -229,25 +241,17 @@ function updateStrokeUIState() {
     const strokeColorPicker = document.getElementById('strokeColorPicker');
     const strokeColorRow = document.getElementById('strokeColorRow');
 
-    if (!strokeEnabled) {
-        strokeWidthSelect.disabled = true;
-        strokeColorInput.disabled = true;
-        strokeColorPicker.disabled = true;
-        strokeWidthSelect.style.opacity = '0.5';
-        strokeColorInput.style.opacity = '0.5';
-        strokeColorPicker.style.opacity = '0.5';
-        strokeColorRow.style.opacity = '0.5';
-        strokeColorRow.style.pointerEvents = 'none';
-    } else {
-        strokeWidthSelect.disabled = false;
-        strokeColorInput.disabled = false;
-        strokeColorPicker.disabled = false;
-        strokeWidthSelect.style.opacity = '1';
-        strokeColorInput.style.opacity = '1';
-        strokeColorPicker.style.opacity = '1';
-        strokeColorRow.style.opacity = '1';
-        strokeColorRow.style.pointerEvents = 'auto';
-    }
+    const isDisabled = !strokeEnabled;
+
+    // Update input disabled state and CSS class
+    strokeWidthSelect.disabled = isDisabled;
+    strokeColorInput.disabled = isDisabled;
+    strokeColorPicker.disabled = isDisabled;
+
+    strokeWidthSelect.classList.toggle('disabled', isDisabled);
+    strokeColorInput.classList.toggle('disabled', isDisabled);
+    strokeColorPicker.classList.toggle('disabled', isDisabled);
+    strokeColorRow.classList.toggle('disabled', isDisabled);
 }
 
 // Legacy function name - redirects to updateStrokeUIState for compatibility
@@ -265,7 +269,7 @@ function updateExportPreviews() {
         clearTimeout(exportPreviewDebounceTimer);
     }
 
-    // Schedule update after 300ms of inactivity
+    // Schedule update after debounce delay
     exportPreviewDebounceTimer = setTimeout(() => {
         const preview64 = renderToCanvas(64);
         const preview32 = renderToCanvas(32);
@@ -279,5 +283,5 @@ function updateExportPreviews() {
         const svgPreviewContainer = document.getElementById('svgPreview');
         const svgContent = generateSVG(80);
         svgPreviewContainer.innerHTML = svgContent;
-    }, 300);
+    }, EXPORT_PREVIEW_DEBOUNCE);
 }

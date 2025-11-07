@@ -120,11 +120,14 @@ function exportFavicon() {
     URL.revokeObjectURL(url);
 }
 
+// Export constants
+const SVG_STEPS = 360; // Number of points for SVG paths (balances smoothness and file size)
+const FAVICON_SIZES = [16, 32, 64]; // Standard favicon sizes in pixels
+
 // Generate SVG path data for a shape
 function generateSVGPath(shape) {
     const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
-    // Use fewer steps for SVG to reduce file size (still plenty smooth)
-    const steps = 360;
+    const steps = SVG_STEPS;
     const pathParts = [];
 
     for (let i = 0; i <= steps; i++) {

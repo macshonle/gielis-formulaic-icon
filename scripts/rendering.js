@@ -1,7 +1,10 @@
+// Rendering constants
+const RENDER_STEPS = 1500; // Number of points for smooth shape rendering
+
 // Draw superformula shape
 function drawSuperformula(ctx, shape, scaleFactor = 1) {
     const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
-    const steps = 1500; // Number of points for smooth rendering
+    const steps = RENDER_STEPS;
 
     ctx.beginPath();
 

@@ -1,3 +1,7 @@
+// Application constants
+const CANVAS_SIZE = 384; // Main canvas dimensions (pixels)
+const CANVAS_CENTER = CANVAS_SIZE / 2; // Center point of the canvas
+
 // Application state
 let shapes = [];
 let selectedShapeIndex = null;
@@ -12,6 +16,21 @@ let dragStartX = 0;
 let dragStartY = 0;
 let dragStartCX = 0;
 let dragStartCY = 0;
+
+// Helper function to normalize color for comparison
+function normalizeColor(color) {
+    // Convert rgb(r, g, b) to hex for consistent comparison
+    if (color.startsWith('rgb(')) {
+        const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+            const r = parseInt(match[1]);
+            const g = parseInt(match[2]);
+            const b = parseInt(match[3]);
+            return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+        }
+    }
+    return color.toUpperCase();
+}
 
 // Canvas setup
 let canvas;
@@ -135,8 +154,10 @@ function loadShapeToEditor(shape) {
 
             // Update color palette selection
             if (colorSwatches) {
+                const normalizedHex = normalizeColor(hexColor);
                 colorSwatches.forEach(swatch => {
-                    if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
+                    const normalizedSwatch = normalizeColor(swatch.style.background);
+                    if (normalizedSwatch === normalizedHex) {
                         swatch.classList.add('selected');
                     } else {
                         swatch.classList.remove('selected');

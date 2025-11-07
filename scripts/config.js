@@ -41,8 +41,8 @@ const demos = {
                 const lightColor = lightenColor(baseColor, i * 3);
 
                 shapes.push({
-                    cx: 192,
-                    cy: 192,
+                    cx: CANVAS_CENTER,
+                    cy: CANVAS_CENTER,
                     radius: size,
                     rotation: rotation,
                     m: points,
@@ -227,8 +227,8 @@ const demos = {
 
             gearConfigs.forEach((config, i) => {
                 shapes.push({
-                    cx: 192,
-                    cy: 192,
+                    cx: CANVAS_CENTER,
+                    cy: CANVAS_CENTER,
                     radius: config.size,
                     rotation: config.rotation * Math.PI / 180,
                     m: config.teeth,
@@ -258,8 +258,8 @@ const demos = {
                 const opacity = 0.6;
 
                 shapes.push({
-                    cx: 192,
-                    cy: 192,
+                    cx: CANVAS_CENTER,
+                    cy: CANVAS_CENTER,
                     radius: size,
                     rotation: rotation,
                     m: 12,
@@ -291,8 +291,8 @@ const demos = {
 
             layers.forEach((layer, i) => {
                 shapes.push({
-                    cx: 192,
-                    cy: 192,
+                    cx: CANVAS_CENTER,
+                    cy: CANVAS_CENTER,
                     radius: layer.size,
                     rotation: layer.rotation * Math.PI / 180,
                     m: layer.m,
@@ -341,8 +341,8 @@ const demos = {
                 const color = `rgb(${r}, ${g}, ${b})`;
 
                 shapes.push({
-                    cx: 192,
-                    cy: 192,
+                    cx: CANVAS_CENTER,
+                    cy: CANVAS_CENTER,
                     radius: Math.round(currentRadius),
                     rotation: currentRotation,
                     m: 4,

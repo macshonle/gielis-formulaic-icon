@@ -518,6 +518,14 @@ select:focus {
     border-color: #007aff;
 }
 
+/* Disabled state for form controls */
+.disabled,
+.disabled input,
+.disabled select {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 input[type="range"] {
     padding: 0;
     height: 6px;
