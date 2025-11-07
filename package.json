@@ -1,0 +1,19 @@
+{
+  "name": "gielis-formulaic-icon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.20.0",
+  "devDependencies": {
+    "vite": "^7.2.2",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}
