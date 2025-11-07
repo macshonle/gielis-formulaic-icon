@@ -301,6 +301,12 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# pnpm
+pnpm-lock.yaml
+
+# Build output
+dist/
+
 # Visual Studio 6 build log
 *.plg
 
