@@ -2,7 +2,6 @@
 let shapes = [];
 let selectedShapeIndex = null;
 let currentColor = '#FF6B6B';
-let currentOpacity = 1;
 let currentStrokeColor = '#000000';
 let draggedItem = null;
 let isFillNone = false;  // Track if fill is set to "none"
@@ -28,8 +27,6 @@ function createShapeFromSettings() {
         fillColor = 'none';
     } else if (currentColor.startsWith('#') && currentColor.length === 7) {
         fillColor = hexToRgba(currentColor, opacity);
-    } else if (currentColor.startsWith('rgb(')) {
-        fillColor = currentColor.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
     } else {
         fillColor = currentColor;
     }
@@ -70,9 +67,6 @@ function addShape() {
     selectedShapeIndex = shapes.length - 1;
     updateShapeList();
     renderCanvas();
-    // Ensure UI state is updated after adding shape
-    updateFillUIState();
-    updateStrokeUIState();
 }
 
 // Update selected shape with current settings
@@ -94,7 +88,9 @@ function loadShapeToEditor(shape) {
 
     // Convert rotation to degrees and normalize to -180 to 180 range
     let rotationDeg = shape.rotation * 180 / Math.PI;
-    rotationDeg = (((rotationDeg + 180) % 360) + 360) % 360 - 180;
+    // Normalize to [-180, 180]
+    rotationDeg = ((rotationDeg + 180) % 360) - 180;
+    if (rotationDeg < -180) rotationDeg += 360;
     const roundedRotation = Math.round(rotationDeg);
     document.getElementById('rotation').value = roundedRotation;
     document.getElementById('rotationDisplay').textContent = roundedRotation;
@@ -128,7 +124,6 @@ function loadShapeToEditor(shape) {
 
             // Update global state
             currentColor = hexColor;
-            currentOpacity = opacity;
 
             // Update color inputs
             document.getElementById('fillColorPicker').value = hexColor;
@@ -139,17 +134,18 @@ function loadShapeToEditor(shape) {
             document.getElementById('opacityValue').textContent = opacity.toFixed(2);
 
             // Update color palette selection
-            document.querySelectorAll('.color-swatch').forEach(swatch => {
-                if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
-                    swatch.classList.add('selected');
-                } else {
-                    swatch.classList.remove('selected');
-                }
-            });
+            if (colorSwatches) {
+                colorSwatches.forEach(swatch => {
+                    if (swatch.style.background === hexColor || swatch.style.background === `rgb(${r}, ${g}, ${b})`) {
+                        swatch.classList.add('selected');
+                    } else {
+                        swatch.classList.remove('selected');
+                    }
+                });
+            }
         } else if (shape.fillColor.startsWith('#')) {
             // Handle hex colors directly
             currentColor = shape.fillColor;
-            currentOpacity = 1;
 
             // Update color inputs
             document.getElementById('fillColorPicker').value = shape.fillColor;
@@ -160,13 +156,14 @@ function loadShapeToEditor(shape) {
             document.getElementById('opacityValue').textContent = '1.00';
 
             // Update color palette selection
-            document.querySelectorAll('.color-swatch').forEach(swatch => {
-                swatch.classList.remove('selected');
-            });
+            if (colorSwatches) {
+                colorSwatches.forEach(swatch => {
+                    swatch.classList.remove('selected');
+                });
+            }
         } else {
             // Fallback: use the color as-is
             currentColor = shape.fillColor;
-            currentOpacity = 1;
 
             // Update opacity input
             document.getElementById('opacity').value = 1;

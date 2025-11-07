@@ -1,3 +1,25 @@
+// Cache for shape previews
+const shapePreviewCache = new Map();
+
+// Cache for color swatches
+let colorSwatches = null;
+
+// Generate cache key for a shape based on properties that affect rendering
+function getShapeCacheKey(shape) {
+    return JSON.stringify({
+        m: shape.m,
+        n1: shape.n1,
+        n2: shape.n2,
+        n3: shape.n3,
+        a: shape.a,
+        b: shape.b,
+        fillColor: shape.fillColor,
+        strokeColor: shape.strokeColor,
+        strokeWidth: shape.strokeWidth,
+        rotation: shape.rotation
+    });
+}
+
 // Initialize color palette
 function initColorPalette() {
     const palette = document.getElementById('colorPalette');
@@ -11,7 +33,7 @@ function initColorPalette() {
         swatch.addEventListener('click', () => {
             currentColor = color;
             isFillNone = false;  // Disable "no fill" when color is selected
-            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            colorSwatches.forEach(s => s.classList.remove('selected'));
             swatch.classList.add('selected');
             document.getElementById('customColor').value = color;
             document.getElementById('fillColorPicker').value = color.startsWith('#') ? color : '#FF6B6B';
@@ -20,10 +42,19 @@ function initColorPalette() {
         });
         palette.appendChild(swatch);
     });
+
+    // Cache the color swatches after creation
+    colorSwatches = document.querySelectorAll('.color-swatch');
 }
 
 // Generate shape preview thumbnail
 function generateShapePreview(shape) {
+    // Check cache first
+    const cacheKey = getShapeCacheKey(shape);
+    if (shapePreviewCache.has(cacheKey)) {
+        return shapePreviewCache.get(cacheKey);
+    }
+
     const size = 48; // Higher resolution for better quality
     const previewCanvas = document.createElement('canvas');
     previewCanvas.width = size;
@@ -49,8 +80,10 @@ function generateShapePreview(shape) {
     // Render the shape
     renderShape(previewCtx, previewShape, 1);
 
-    // Convert to data URL
-    return previewCanvas.toDataURL('image/png');
+    // Convert to data URL and cache it
+    const dataURL = previewCanvas.toDataURL('image/png');
+    shapePreviewCache.set(cacheKey, dataURL);
+    return dataURL;
 }
 
 // Update shape list UI
@@ -194,6 +227,7 @@ function updateStrokeUIState() {
     const strokeWidthSelect = document.getElementById('strokeWidth');
     const strokeColorInput = document.getElementById('strokeColor');
     const strokeColorPicker = document.getElementById('strokeColorPicker');
+    const strokeColorRow = document.getElementById('strokeColorRow');
 
     if (!strokeEnabled) {
         strokeWidthSelect.disabled = true;
@@ -202,6 +236,8 @@ function updateStrokeUIState() {
         strokeWidthSelect.style.opacity = '0.5';
         strokeColorInput.style.opacity = '0.5';
         strokeColorPicker.style.opacity = '0.5';
+        strokeColorRow.style.opacity = '0.5';
+        strokeColorRow.style.pointerEvents = 'none';
     } else {
         strokeWidthSelect.disabled = false;
         strokeColorInput.disabled = false;
@@ -209,37 +245,39 @@ function updateStrokeUIState() {
         strokeWidthSelect.style.opacity = '1';
         strokeColorInput.style.opacity = '1';
         strokeColorPicker.style.opacity = '1';
+        strokeColorRow.style.opacity = '1';
+        strokeColorRow.style.pointerEvents = 'auto';
     }
 }
 
-// Update stroke color field visibility
+// Legacy function name - redirects to updateStrokeUIState for compatibility
 function updateStrokeColorVisibility() {
-    const strokeEnabled = document.getElementById('strokeEnabled').checked;
-    const strokeColorRow = document.getElementById('strokeColorRow');
-    const strokeColorInput = document.getElementById('strokeColor');
-    const strokeColorPicker = document.getElementById('strokeColorPicker');
-
-    // Disable/enable inputs based on checkbox
-    strokeColorInput.disabled = !strokeEnabled;
-    strokeColorPicker.disabled = !strokeEnabled;
-
-    // Adjust opacity to indicate disabled state
-    strokeColorRow.style.opacity = strokeEnabled ? '1' : '0.5';
-    strokeColorRow.style.pointerEvents = strokeEnabled ? 'auto' : 'none';
+    updateStrokeUIState();
 }
 
-// Update export previews
+// Debounce timer for export previews
+let exportPreviewDebounceTimer = null;
+
+// Update export previews (debounced to avoid excessive updates during editing)
 function updateExportPreviews() {
-    const preview64 = renderToCanvas(64);
-    const preview32 = renderToCanvas(32);
-    const preview16 = renderToCanvas(16);
+    // Clear any pending update
+    if (exportPreviewDebounceTimer) {
+        clearTimeout(exportPreviewDebounceTimer);
+    }
 
-    document.getElementById('preview64').src = preview64.toDataURL('image/png');
-    document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
-    document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
+    // Schedule update after 300ms of inactivity
+    exportPreviewDebounceTimer = setTimeout(() => {
+        const preview64 = renderToCanvas(64);
+        const preview32 = renderToCanvas(32);
+        const preview16 = renderToCanvas(16);
 
-    // Update SVG preview
-    const svgPreviewContainer = document.getElementById('svgPreview');
-    const svgContent = generateSVG(80);
-    svgPreviewContainer.innerHTML = svgContent;
+        document.getElementById('preview64').src = preview64.toDataURL('image/png');
+        document.getElementById('faviconPreview').src = preview32.toDataURL('image/png');
+        document.getElementById('faviconPreview16').src = preview16.toDataURL('image/png');
+
+        // Update SVG preview
+        const svgPreviewContainer = document.getElementById('svgPreview');
+        const svgContent = generateSVG(80);
+        svgPreviewContainer.innerHTML = svgContent;
+    }, 300);
 }

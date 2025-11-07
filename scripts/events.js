@@ -1,32 +1,79 @@
+// Cache DOM element references for performance
+const elements = {
+    // Buttons
+    addShape: document.getElementById('addShape'),
+    clearAll: document.getElementById('clearAll'),
+    exportAppleIcon: document.getElementById('exportAppleIcon'),
+    exportFavicon: document.getElementById('exportFavicon'),
+    exportSVG: document.getElementById('exportSVG'),
+    exportJSON: document.getElementById('exportJSON'),
+    noFillBtn: document.getElementById('noFillBtn'),
+    importJSONBtn: document.getElementById('importJSONBtn'),
+    importJSON: document.getElementById('importJSON'),
+
+    // Selectors
+    presetSelect: document.getElementById('presetSelect'),
+
+    // Color inputs
+    customColor: document.getElementById('customColor'),
+    fillColorPicker: document.getElementById('fillColorPicker'),
+    strokeColor: document.getElementById('strokeColor'),
+    strokeColorPicker: document.getElementById('strokeColorPicker'),
+
+    // Stroke controls
+    strokeEnabled: document.getElementById('strokeEnabled'),
+    strokeWidth: document.getElementById('strokeWidth'),
+
+    // Sliders and displays
+    opacity: document.getElementById('opacity'),
+    opacityValue: document.getElementById('opacityValue'),
+    size: document.getElementById('size'),
+    sizeDisplay: document.getElementById('sizeDisplay'),
+    sizeValue: document.getElementById('sizeValue'),
+    rotation: document.getElementById('rotation'),
+    rotationDisplay: document.getElementById('rotationDisplay'),
+    rotationValue: document.getElementById('rotationValue'),
+
+    // Parameter inputs
+    paramM: document.getElementById('paramM'),
+    paramN1: document.getElementById('paramN1'),
+    paramN2: document.getElementById('paramN2'),
+    paramN3: document.getElementById('paramN3'),
+    paramA: document.getElementById('paramA'),
+    paramB: document.getElementById('paramB'),
+    posX: document.getElementById('posX'),
+    posY: document.getElementById('posY')
+};
+
 // Setup all event listeners
 function setupEventListeners() {
     // Button event listeners
-    document.getElementById('addShape').addEventListener('click', addShape);
-    document.getElementById('clearAll').addEventListener('click', clearAll);
-    document.getElementById('exportAppleIcon').addEventListener('click', exportAppleTouchIcon);
-    document.getElementById('exportFavicon').addEventListener('click', exportFavicon);
-    document.getElementById('exportSVG').addEventListener('click', exportSVG);
-    document.getElementById('exportJSON').addEventListener('click', exportJSON);
+    elements.addShape.addEventListener('click', addShape);
+    elements.clearAll.addEventListener('click', clearAll);
+    elements.exportAppleIcon.addEventListener('click', exportAppleTouchIcon);
+    elements.exportFavicon.addEventListener('click', exportFavicon);
+    elements.exportSVG.addEventListener('click', exportSVG);
+    elements.exportJSON.addEventListener('click', exportJSON);
 
     // No fill button
-    document.getElementById('noFillBtn').addEventListener('click', () => {
+    elements.noFillBtn.addEventListener('click', () => {
         isFillNone = !isFillNone;
         updateFillUIState();
         updateSelectedShape();
     });
 
     // Stroke enabled checkbox
-    document.getElementById('strokeEnabled').addEventListener('change', () => {
+    elements.strokeEnabled.addEventListener('change', () => {
         updateStrokeUIState();
         updateStrokeColorVisibility();
         updateSelectedShape();
     });
 
     // Import JSON
-    document.getElementById('importJSONBtn').addEventListener('click', () => {
-        document.getElementById('importJSON').click();
+    elements.importJSONBtn.addEventListener('click', () => {
+        elements.importJSON.click();
     });
-    document.getElementById('importJSON').addEventListener('change', (e) => {
+    elements.importJSON.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             importJSON(file);
@@ -35,93 +82,92 @@ function setupEventListeners() {
     });
 
     // Preset selector
-    document.getElementById('presetSelect').addEventListener('change', (e) => {
+    elements.presetSelect.addEventListener('change', (e) => {
         applyPreset(e.target.value);
     });
 
     // Custom color input
-    document.getElementById('customColor').addEventListener('input', (e) => {
+    elements.customColor.addEventListener('input', (e) => {
         currentColor = e.target.value;
         isFillNone = false;  // Disable "no fill" when color is changed
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        if (colorSwatches) colorSwatches.forEach(s => s.classList.remove('selected'));
         if (e.target.value.startsWith('#')) {
-            document.getElementById('fillColorPicker').value = e.target.value;
+            elements.fillColorPicker.value = e.target.value;
         }
         updateFillUIState();
         updateSelectedShape();
     });
 
-    document.getElementById('fillColorPicker').addEventListener('input', (e) => {
+    elements.fillColorPicker.addEventListener('input', (e) => {
         currentColor = e.target.value;
         isFillNone = false;  // Disable "no fill" when color is changed
-        document.getElementById('customColor').value = currentColor;
-        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        elements.customColor.value = currentColor;
+        if (colorSwatches) colorSwatches.forEach(s => s.classList.remove('selected'));
         updateFillUIState();
         updateSelectedShape();
     });
 
     // Stroke color inputs
-    document.getElementById('strokeColor').addEventListener('input', (e) => {
+    elements.strokeColor.addEventListener('input', (e) => {
         currentStrokeColor = e.target.value;
         if (e.target.value.startsWith('#')) {
-            document.getElementById('strokeColorPicker').value = e.target.value;
+            elements.strokeColorPicker.value = e.target.value;
         }
         updateSelectedShape();
     });
 
-    document.getElementById('strokeColorPicker').addEventListener('input', (e) => {
+    elements.strokeColorPicker.addEventListener('input', (e) => {
         currentStrokeColor = e.target.value;
-        document.getElementById('strokeColor').value = e.target.value;
+        elements.strokeColor.value = e.target.value;
         updateSelectedShape();
     });
 
     // Stroke width
-    document.getElementById('strokeWidth').addEventListener('change', (e) => {
+    elements.strokeWidth.addEventListener('change', (e) => {
         updateSelectedShape();
     });
 
     // Opacity slider
-    document.getElementById('opacity').addEventListener('input', (e) => {
-        currentOpacity = parseFloat(e.target.value);
-        document.getElementById('opacityValue').textContent = currentOpacity.toFixed(2);
+    elements.opacity.addEventListener('input', (e) => {
+        elements.opacityValue.textContent = parseFloat(e.target.value).toFixed(2);
         // Don't change isFillNone state, opacity is separate
         updateSelectedShape();
     });
 
     // Size slider
-    document.getElementById('size').addEventListener('input', (e) => {
-        document.getElementById('sizeDisplay').textContent = e.target.value;
-        document.getElementById('sizeValue').value = e.target.value;
+    elements.size.addEventListener('input', (e) => {
+        elements.sizeDisplay.textContent = e.target.value;
+        elements.sizeValue.value = e.target.value;
         updateSelectedShape();
     });
 
     // Size value input - sync with slider
-    document.getElementById('sizeValue').addEventListener('input', (e) => {
+    elements.sizeValue.addEventListener('input', (e) => {
         const value = parseFloat(e.target.value);
         if (!isNaN(value)) {
             // Clamp value between 4 and 300
             const clampedValue = Math.max(4, Math.min(300, value));
-            document.getElementById('size').value = clampedValue;
-            document.getElementById('sizeDisplay').textContent = clampedValue;
+            elements.size.value = clampedValue;
+            elements.sizeDisplay.textContent = clampedValue;
             updateSelectedShape();
         }
     });
 
     // Rotation slider
-    document.getElementById('rotation').addEventListener('input', (e) => {
-        document.getElementById('rotationDisplay').textContent = e.target.value;
-        document.getElementById('rotationValue').value = e.target.value;
+    elements.rotation.addEventListener('input', (e) => {
+        elements.rotationDisplay.textContent = e.target.value;
+        elements.rotationValue.value = e.target.value;
         updateSelectedShape();
     });
 
     // Rotation value input - sync with slider
-    document.getElementById('rotationValue').addEventListener('input', (e) => {
+    elements.rotationValue.addEventListener('input', (e) => {
         const value = parseFloat(e.target.value);
         if (!isNaN(value)) {
             // Clamp value between -180 and 180
             const clampedValue = Math.max(-180, Math.min(180, value));
-            document.getElementById('rotation').value = clampedValue;
-            document.getElementById('rotationDisplay').textContent = clampedValue;
+            elements.rotation.value = clampedValue;
+            elements.rotationDisplay.textContent = clampedValue;
             updateSelectedShape();
         }
     });
@@ -129,8 +175,8 @@ function setupEventListeners() {
     // All number inputs update on change
     ['paramM', 'paramN1', 'paramN2', 'paramN3', 'paramA', 'paramB',
      'posX', 'posY'].forEach(id => {
-        document.getElementById(id).addEventListener('input', () => {
-            document.getElementById('presetSelect').value = '';
+        elements[id].addEventListener('input', () => {
+            elements.presetSelect.value = '';
             updateSelectedShape();
         });
     });
@@ -171,8 +217,8 @@ function setupEventListeners() {
             const newCY = dragStartCY + deltaY;
 
             // Update the input fields
-            document.getElementById('posX').value = Math.round(newCX);
-            document.getElementById('posY').value = Math.round(newCY);
+            elements.posX.value = Math.round(newCX);
+            elements.posY.value = Math.round(newCY);
 
             // Update the shape
             updateSelectedShape();
@@ -186,15 +232,13 @@ function setupEventListeners() {
         }
     });
 
-    canvas.addEventListener('mouseup', () => {
+    // Reset dragging state on mouseup or mouseleave
+    const resetDragging = () => {
         isDragging = false;
         canvas.style.cursor = 'crosshair';
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        isDragging = false;
-        canvas.style.cursor = 'crosshair';
-    });
+    };
+    canvas.addEventListener('mouseup', resetDragging);
+    canvas.addEventListener('mouseleave', resetDragging);
 
     // Arrow key controls for precise positioning
     document.addEventListener('keydown', (e) => {
@@ -208,10 +252,8 @@ function setupEventListeners() {
             e.preventDefault(); // Prevent page scrolling
 
             // Get current position
-            const posXInput = document.getElementById('posX');
-            const posYInput = document.getElementById('posY');
-            let currentX = parseFloat(posXInput.value) || 0;
-            let currentY = parseFloat(posYInput.value) || 0;
+            let currentX = parseFloat(elements.posX.value) || 0;
+            let currentY = parseFloat(elements.posY.value) || 0;
 
             // Determine step size (10 pixels with Shift, 1 pixel otherwise)
             const step = e.shiftKey ? 10 : 1;
@@ -233,8 +275,8 @@ function setupEventListeners() {
             }
 
             // Update the input fields
-            posXInput.value = Math.round(currentX);
-            posYInput.value = Math.round(currentY);
+            elements.posX.value = Math.round(currentX);
+            elements.posY.value = Math.round(currentY);
 
             // Update the shape
             updateSelectedShape();

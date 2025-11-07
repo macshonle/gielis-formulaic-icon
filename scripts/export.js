@@ -62,10 +62,6 @@ function createIcoFile(sizes) {
 
 // Create BMP data for ICO format
 function createBMPData(imageData) {
-    if (!imageData || !imageData.width || !imageData.height) {
-        return new ArrayBuffer(0);
-    }
-
     const width = imageData.width;
     const height = imageData.height;
     const headerSize = 40;
@@ -129,7 +125,7 @@ function generateSVGPath(shape) {
     const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
     // Use fewer steps for SVG to reduce file size (still plenty smooth)
     const steps = 360;
-    let pathData = '';
+    const pathParts = [];
 
     for (let i = 0; i <= steps; i++) {
         const theta = (i / steps) * 2 * Math.PI;
@@ -139,14 +135,14 @@ function generateSVGPath(shape) {
         const y = cy + (radius * r * Math.sin(ang));
 
         if (i === 0) {
-            pathData += `M ${x.toFixed(2)} ${y.toFixed(2)}`;
+            pathParts.push(`M ${x.toFixed(2)} ${y.toFixed(2)}`);
         } else {
-            pathData += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+            pathParts.push(`L ${x.toFixed(2)} ${y.toFixed(2)}`);
         }
     }
 
-    pathData += ' Z'; // Close path
-    return pathData;
+    pathParts.push('Z'); // Close path
+    return pathParts.join(' ');
 }
 
 // Generate complete SVG document

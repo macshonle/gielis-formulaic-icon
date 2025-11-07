@@ -40,13 +40,6 @@ const demos = {
                 const baseColor = colors[i % colors.length];
                 const lightColor = lightenColor(baseColor, i * 3);
 
-                const hexToRgba = (hex, alpha) => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                };
-
                 shapes.push({
                     cx: 192,
                     cy: 192,
@@ -233,13 +226,6 @@ const demos = {
             ];
 
             gearConfigs.forEach((config, i) => {
-                const hexToRgba = (hex, alpha) => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                };
-
                 shapes.push({
                     cx: 192,
                     cy: 192,
@@ -270,13 +256,6 @@ const demos = {
                 const size = 150 - (i * 15);
                 const rotation = (i * 25) * Math.PI / 180;
                 const opacity = 0.6;
-
-                const hexToRgba = (hex, alpha) => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                };
 
                 shapes.push({
                     cx: 192,
@@ -311,13 +290,6 @@ const demos = {
             ];
 
             layers.forEach((layer, i) => {
-                const hexToRgba = (hex, alpha) => {
-                    const r = parseInt(hex.slice(1, 3), 16);
-                    const g = parseInt(hex.slice(3, 5), 16);
-                    const b = parseInt(hex.slice(5, 7), 16);
-                    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                };
-
                 shapes.push({
                     cx: 192,
                     cy: 192,
@@ -356,9 +328,10 @@ const demos = {
             const startColor = { r: 70, g: 130, b: 180 };  // Steel blue
             const endColor = { r: 220, g: 220, b: 220 };   // Light gray
 
+            // Calculate total iterations for gradient (constant value)
+            const totalIterations = Math.ceil(Math.log(minRadius / startRadius) / Math.log(scaleFactor));
+
             while (currentRadius >= minRadius) {
-                // Calculate total iterations for gradient
-                const totalIterations = Math.ceil(Math.log(minRadius / startRadius) / Math.log(scaleFactor));
                 const t = iteration / (totalIterations - 1); // Interpolation factor 0 to 1
 
                 // Interpolate color
@@ -371,7 +344,7 @@ const demos = {
                     cx: 192,
                     cy: 192,
                     radius: Math.round(currentRadius),
-                    rotation: currentRotation % (2 * Math.PI), // Keep rotation in [0, 2π)
+                    rotation: currentRotation,
                     m: 4,
                     n1: 11,
                     n2: 11,

@@ -1,5 +1,5 @@
 // Superformula calculation
-function superformulaR(theta, {m, n1, n2, n3, a = 1, b = 1}) {
+function superformulaR(theta, {m, n1, n2, n3, a, b}) {
     const t1 = Math.pow(Math.abs(Math.cos((m * theta) / 4) / a), n2);
     const t2 = Math.pow(Math.abs(Math.sin((m * theta) / 4) / b), n3);
     const denom = t1 + t2;
