@@ -47,7 +47,17 @@ function setupEventListeners() {
         paramA: document.getElementById('paramA'),
         paramB: document.getElementById('paramB'),
         posX: document.getElementById('posX'),
-        posY: document.getElementById('posY')
+        posY: document.getElementById('posY'),
+
+        // Effect controls
+        penMode: document.getElementById('penMode'),
+        penWiggle: document.getElementById('penWiggle'),
+        penWiggleValue: document.getElementById('penWiggleValue'),
+        watercolorMode: document.getElementById('watercolorMode'),
+        watercolorIntensity: document.getElementById('watercolorIntensity'),
+        watercolorIntensityValue: document.getElementById('watercolorIntensityValue'),
+        gradientMode: document.getElementById('gradientMode'),
+        gradientEdgeColor: document.getElementById('gradientEdgeColor')
     };
 
     // Button event listeners
@@ -127,6 +137,38 @@ function setupEventListeners() {
 
     // Stroke width
     elements.strokeWidth.addEventListener('change', (e) => {
+        updateSelectedShape();
+    });
+
+    // Effect mode checkboxes
+    elements.penMode.addEventListener('change', () => {
+        updateEffectsUIState();
+        updateSelectedShape();
+    });
+
+    elements.watercolorMode.addEventListener('change', () => {
+        updateEffectsUIState();
+        updateSelectedShape();
+    });
+
+    elements.gradientMode.addEventListener('change', () => {
+        updateEffectsUIState();
+        updateSelectedShape();
+    });
+
+    // Effect sliders
+    elements.penWiggle.addEventListener('input', (e) => {
+        elements.penWiggleValue.textContent = parseFloat(e.target.value).toFixed(1);
+        updateSelectedShape();
+    });
+
+    elements.watercolorIntensity.addEventListener('input', (e) => {
+        elements.watercolorIntensityValue.textContent = parseFloat(e.target.value).toFixed(1);
+        updateSelectedShape();
+    });
+
+    // Gradient edge color
+    elements.gradientEdgeColor.addEventListener('input', () => {
         updateSelectedShape();
     });
 

@@ -27,3 +27,37 @@ function hexToRgba(hex, alpha) {
     const b = parseInt(hex.slice(5, 7), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
+
+// Seeded random number generator (Mulberry32)
+// Provides reproducible random numbers based on a seed
+class SeededRandom {
+    constructor(seed) {
+        this.seed = seed >>> 0; // Convert to unsigned 32-bit integer
+    }
+
+    // Generate next random number between 0 and 1
+    next() {
+        let t = this.seed += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+
+    // Generate random number in range [min, max]
+    range(min, max) {
+        return min + this.next() * (max - min);
+    }
+}
+
+// Create a seed from shape parameters
+function createShapeSeed(shape) {
+    // Hash function to convert shape parameters to a seed
+    const str = `${shape.cx}|${shape.cy}|${shape.radius}|${shape.rotation}|${shape.m}|${shape.n1}|${shape.n2}|${shape.n3}|${shape.a}|${shape.b}`;
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+}

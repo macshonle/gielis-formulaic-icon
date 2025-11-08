@@ -259,6 +259,33 @@ function updateStrokeColorVisibility() {
     updateStrokeUIState();
 }
 
+// Update effects UI state based on checkboxes
+function updateEffectsUIState() {
+    // Update pen mode controls
+    const penMode = document.getElementById('penMode');
+    const penWiggle = document.getElementById('penWiggle');
+    if (penMode && penWiggle) {
+        penWiggle.disabled = !penMode.checked;
+        penWiggle.classList.toggle('disabled', !penMode.checked);
+    }
+
+    // Update watercolor mode controls
+    const watercolorMode = document.getElementById('watercolorMode');
+    const watercolorIntensity = document.getElementById('watercolorIntensity');
+    if (watercolorMode && watercolorIntensity) {
+        watercolorIntensity.disabled = !watercolorMode.checked;
+        watercolorIntensity.classList.toggle('disabled', !watercolorMode.checked);
+    }
+
+    // Update gradient mode controls
+    const gradientMode = document.getElementById('gradientMode');
+    const gradientEdgeColor = document.getElementById('gradientEdgeColor');
+    if (gradientMode && gradientEdgeColor) {
+        gradientEdgeColor.disabled = !gradientMode.checked;
+        gradientEdgeColor.classList.toggle('disabled', !gradientMode.checked);
+    }
+}
+
 // Debounce timer for export previews
 let exportPreviewDebounceTimer = null;
 

@@ -197,6 +197,49 @@
                     </div>
                 </fieldset>
             </div>
+
+            <!-- Effects Panel -->
+            <div class="control-panel">
+                <h2>Effects</h2>
+
+                <!-- Pen Drawing Mode -->
+                <div class="input-row">
+                    <input type="checkbox" id="penMode">
+                    <label for="penMode">Pen Drawing</label>
+                </div>
+                <div class="input-row">
+                    <label>Wiggle</label>
+                    <div class="range-container">
+                        <input type="range" id="penWiggle" min="0" max="20" step="0.5" value="5">
+                        <span class="range-value" id="penWiggleValue">5.0</span>
+                    </div>
+                </div>
+
+                <!-- Watercolor Fill Mode -->
+                <div class="input-row">
+                    <input type="checkbox" id="watercolorMode">
+                    <label for="watercolorMode">Watercolor Fill</label>
+                </div>
+                <div class="input-row">
+                    <label>Intensity</label>
+                    <div class="range-container">
+                        <input type="range" id="watercolorIntensity" min="0" max="20" step="0.5" value="10">
+                        <span class="range-value" id="watercolorIntensityValue">10.0</span>
+                    </div>
+                </div>
+
+                <!-- Radial Gradient Mode -->
+                <div class="input-row">
+                    <input type="checkbox" id="gradientMode">
+                    <label for="gradientMode">Radial Gradient</label>
+                </div>
+                <div class="input-row">
+                    <label>Edge Color</label>
+                    <div class="color-input-group">
+                        <input type="color" id="gradientEdgeColor" value="#000000">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

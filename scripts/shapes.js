@@ -58,6 +58,14 @@ function createShapeFromSettings() {
         strokeColor = document.getElementById('strokeColor').value || currentStrokeColor;
     }
 
+    // Get effect parameters
+    const penMode = document.getElementById('penMode')?.checked || false;
+    const penWiggle = parseFloat(document.getElementById('penWiggle')?.value || 0);
+    const watercolorMode = document.getElementById('watercolorMode')?.checked || false;
+    const watercolorIntensity = parseFloat(document.getElementById('watercolorIntensity')?.value || 0);
+    const gradientMode = document.getElementById('gradientMode')?.checked || false;
+    const gradientEdgeColor = document.getElementById('gradientEdgeColor')?.value || '';
+
     return {
         cx: parseFloat(document.getElementById('posX').value),
         cy: parseFloat(document.getElementById('posY').value),
@@ -72,6 +80,12 @@ function createShapeFromSettings() {
         fillColor: fillColor,
         strokeColor: strokeColor,
         strokeWidth: strokeWidth,
+        penMode: penMode,
+        penWiggle: penWiggle,
+        watercolorMode: watercolorMode,
+        watercolorIntensity: watercolorIntensity,
+        gradientMode: gradientMode,
+        gradientEdgeColor: gradientEdgeColor,
     };
 }
 
@@ -202,8 +216,37 @@ function loadShapeToEditor(shape) {
     document.getElementById('strokeColorPicker').value = shape.strokeColor;
     currentStrokeColor = shape.strokeColor;
 
+    // Load effect parameters
+    if (document.getElementById('penMode')) {
+        document.getElementById('penMode').checked = shape.penMode || false;
+    }
+    if (document.getElementById('penWiggle')) {
+        const wiggle = shape.penWiggle || 0;
+        document.getElementById('penWiggle').value = wiggle;
+        if (document.getElementById('penWiggleValue')) {
+            document.getElementById('penWiggleValue').textContent = wiggle.toFixed(1);
+        }
+    }
+    if (document.getElementById('watercolorMode')) {
+        document.getElementById('watercolorMode').checked = shape.watercolorMode || false;
+    }
+    if (document.getElementById('watercolorIntensity')) {
+        const intensity = shape.watercolorIntensity || 0;
+        document.getElementById('watercolorIntensity').value = intensity;
+        if (document.getElementById('watercolorIntensityValue')) {
+            document.getElementById('watercolorIntensityValue').textContent = intensity.toFixed(1);
+        }
+    }
+    if (document.getElementById('gradientMode')) {
+        document.getElementById('gradientMode').checked = shape.gradientMode || false;
+    }
+    if (document.getElementById('gradientEdgeColor')) {
+        document.getElementById('gradientEdgeColor').value = shape.gradientEdgeColor || '#000000';
+    }
+
     updateStrokeUIState();
     updateStrokeColorVisibility();
+    updateEffectsUIState();
 }
 
 // Delete shape at index
