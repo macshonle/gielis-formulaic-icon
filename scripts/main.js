@@ -1,8 +1,15 @@
+import { setCanvas, setCtx } from './shapes.js';
+import { initColorPalette, initDemoList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility } from './ui.js';
+import { setupEventListeners } from './events.js';
+import { renderCanvas } from './rendering.js';
+
 // Initialize the application
-function init() {
+export function init() {
     // Setup canvas
-    canvas = document.getElementById('mainCanvas');
-    ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    setCanvas(canvas);
+    setCtx(ctx);
 
     // Initialize UI components
     initColorPalette();
@@ -16,11 +23,4 @@ function init() {
 
     // Initial render
     renderCanvas();
-}
-
-// Start the app when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
 }

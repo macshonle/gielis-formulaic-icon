@@ -1,13 +1,15 @@
-// Rendering constants
-const RENDER_STEPS = 1500; // Number of points for smooth shape rendering
+import { superformulaR, CANVAS_SIZE } from './math.js';
+import { shapes, canvas, ctx } from './shapes.js';
+import { updateExportPreviews } from './ui.js';
 
-// Draw superformula shape
-function drawSuperformula(ctx, shape, scaleFactor = 1) {
+// Rendering constants
+export const RENDER_STEPS = 1500; // Number of points for smooth shape rendering
+
+export function drawSuperformula(ctx, shape, scaleFactor = 1) {
     const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
     const steps = RENDER_STEPS;
 
     ctx.beginPath();
-
     for (let i = 0; i <= steps; i++) {
         const theta = (i / steps) * 2 * Math.PI;
         const r = superformulaR(theta, {m, n1, n2, n3, a, b});
@@ -21,12 +23,11 @@ function drawSuperformula(ctx, shape, scaleFactor = 1) {
             ctx.lineTo(x, y);
         }
     }
-
     ctx.closePath();
 }
 
 // Render a shape with its properties
-function renderShape(ctx, shape, scaleFactor = 1) {
+export function renderShape(ctx, shape, scaleFactor = 1) {
     ctx.save();
 
     drawSuperformula(ctx, shape, scaleFactor);
@@ -49,7 +50,7 @@ function renderShape(ctx, shape, scaleFactor = 1) {
 }
 
 // Render all shapes to canvas
-function renderCanvas() {
+export function renderCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -62,7 +63,7 @@ function renderCanvas() {
 }
 
 // Check if a point is inside a shape
-function isPointInShape(x, y, shape) {
+export function isPointInShape(x, y, shape) {
     ctx.save();
     ctx.beginPath();
     drawSuperformula(ctx, shape, 1);
@@ -72,7 +73,7 @@ function isPointInShape(x, y, shape) {
 }
 
 // Render to a specific size canvas
-function renderToCanvas(size) {
+export function renderToCanvas(size) {
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = size;
     tempCanvas.height = size;

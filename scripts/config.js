@@ -1,5 +1,7 @@
+import { lightenColor, hexToRgba, CANVAS_CENTER } from './math.js';
+
 // Modern icon color palette
-const defaultPalette = [
+export const defaultPalette = [
     '#FF6B6B', '#FF8E53', '#FFA64D', '#FFD93D', '#6BCF7F', '#4ECDC4',
     '#45B7D1', '#4D96FF', '#6C5CE7', '#A78BFA', '#F472B6', '#FB7185',
     '#EF4444', '#F97316', '#F59E0B', '#EAB308', '#22C55E', '#14B8A6',
@@ -10,7 +12,7 @@ const defaultPalette = [
 ];
 
 // Preset configurations
-const presets = {
+export const presets = {
     circle: { m: 4, n1: 2, n2: 2, n3: 2, a: 1, b: 1 },
     square: { m: 4, n1: 4, n2: 4, n3: 4, a: 1, b: 1 },
     squircle: { m: 4, n1: 11, n2: 11, n3: 11, a: 1, b: 1, radius: 188 },
@@ -24,7 +26,7 @@ const presets = {
 };
 
 // Demo configurations
-const demos = {
+export const demos = {
     descendingStar: {
         name: "Descending Star",
         shapes: (function() {

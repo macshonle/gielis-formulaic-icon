@@ -1,9 +1,9 @@
-// Application constants (defined here since math.js loads first)
-const CANVAS_SIZE = 384; // Main canvas dimensions (pixels)
-const CANVAS_CENTER = CANVAS_SIZE / 2; // Center point of the canvas
+// Application constants
+export const CANVAS_SIZE = 384; // Main canvas dimensions (pixels)
+export const CANVAS_CENTER = CANVAS_SIZE / 2; // Center point of the canvas
 
 // Superformula calculation
-function superformulaR(theta, {m, n1, n2, n3, a, b}) {
+export function superformulaR(theta, {m, n1, n2, n3, a, b}) {
     const t1 = Math.pow(Math.abs(Math.cos((m * theta) / 4) / a), n2);
     const t2 = Math.pow(Math.abs(Math.sin((m * theta) / 4) / b), n3);
     const denom = t1 + t2;
@@ -11,7 +11,7 @@ function superformulaR(theta, {m, n1, n2, n3, a, b}) {
 }
 
 // Helper function to lighten a color
-function lightenColor(color, percent) {
+export function lightenColor(color, percent) {
     const num = parseInt(color.replace("#",""), 16);
     const amt = Math.round(2.55 * percent);
     const R = Math.min(255, (num >> 16) + amt);
@@ -21,7 +21,7 @@ function lightenColor(color, percent) {
 }
 
 // Convert hex color to rgba
-function hexToRgba(hex, alpha) {
+export function hexToRgba(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);

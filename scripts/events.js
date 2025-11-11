@@ -1,8 +1,13 @@
+import { addShape, clearAll, applyPreset, updateSelectedShape, shapes, selectedShapeIndex, canvas, isFillNone, currentColor, currentStrokeColor, isDragging, dragStartX, dragStartY, dragStartCX, dragStartCY, setIsFillNone, setCurrentColor, setCurrentStrokeColor, setIsDragging, setDragStartX, setDragStartY, setDragStartCX, setDragStartCY } from './shapes.js';
+import { exportAppleTouchIcon, exportFavicon, exportSVG, exportJSON, importJSON } from './export.js';
+import { updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, colorSwatches } from './ui.js';
+import { isPointInShape } from './rendering.js';
+
 // Cache DOM element references for performance (initialized in setupEventListeners)
 let elements = null;
 
 // Setup all event listeners
-function setupEventListeners() {
+export function setupEventListeners() {
     // Cache DOM element references now that DOM is ready
     elements = {
         // Buttons
@@ -60,7 +65,7 @@ function setupEventListeners() {
 
     // No fill button
     elements.noFillBtn.addEventListener('click', () => {
-        isFillNone = !isFillNone;
+        setIsFillNone(!isFillNone);
         updateFillUIState();
         updateSelectedShape();
     });
@@ -91,8 +96,8 @@ function setupEventListeners() {
 
     // Custom color input
     elements.customColor.addEventListener('input', (e) => {
-        currentColor = e.target.value;
-        isFillNone = false;  // Disable "no fill" when color is changed
+        setCurrentColor(e.target.value);
+        setIsFillNone(false);  // Disable "no fill" when color is changed
         if (colorSwatches) colorSwatches.forEach(s => s.classList.remove('selected'));
         if (e.target.value.startsWith('#')) {
             elements.fillColorPicker.value = e.target.value;
@@ -102,8 +107,8 @@ function setupEventListeners() {
     });
 
     elements.fillColorPicker.addEventListener('input', (e) => {
-        currentColor = e.target.value;
-        isFillNone = false;  // Disable "no fill" when color is changed
+        setCurrentColor(e.target.value);
+        setIsFillNone(false);  // Disable "no fill" when color is changed
         elements.customColor.value = currentColor;
         if (colorSwatches) colorSwatches.forEach(s => s.classList.remove('selected'));
         updateFillUIState();
@@ -112,7 +117,7 @@ function setupEventListeners() {
 
     // Stroke color inputs
     elements.strokeColor.addEventListener('input', (e) => {
-        currentStrokeColor = e.target.value;
+        setCurrentStrokeColor(e.target.value);
         if (e.target.value.startsWith('#')) {
             elements.strokeColorPicker.value = e.target.value;
         }
@@ -120,7 +125,7 @@ function setupEventListeners() {
     });
 
     elements.strokeColorPicker.addEventListener('input', (e) => {
-        currentStrokeColor = e.target.value;
+        setCurrentStrokeColor(e.target.value);
         elements.strokeColor.value = e.target.value;
         updateSelectedShape();
     });
@@ -196,11 +201,11 @@ function setupEventListeners() {
 
         // Check if clicking on the selected shape
         if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
-            isDragging = true;
-            dragStartX = x;
-            dragStartY = y;
-            dragStartCX = shapes[selectedShapeIndex].cx;
-            dragStartCY = shapes[selectedShapeIndex].cy;
+            setIsDragging(true);
+            setDragStartX(x);
+            setDragStartY(y);
+            setDragStartCX(shapes[selectedShapeIndex].cx);
+            setDragStartCY(shapes[selectedShapeIndex].cy);
             canvas.style.cursor = 'move';
         }
     });
@@ -237,7 +242,7 @@ function setupEventListeners() {
 
     // Reset dragging state on mouseup or mouseleave
     const resetDragging = () => {
-        isDragging = false;
+        setIsDragging(false);
         canvas.style.cursor = 'crosshair';
     };
     canvas.addEventListener('mouseup', resetDragging);

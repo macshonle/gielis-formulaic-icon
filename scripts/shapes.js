@@ -1,20 +1,25 @@
+import { hexToRgba, CANVAS_CENTER } from './math.js';
+import { defaultPalette, demos, presets } from './config.js';
+import { updateShapeList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, colorSwatches } from './ui.js';
+import { renderCanvas } from './rendering.js';
+
 // Application state
-let shapes = [];
-let selectedShapeIndex = null;
-let currentColor = '#FF6B6B';
-let currentStrokeColor = '#000000';
-let draggedItem = null;
-let isFillNone = false;  // Track if fill is set to "none"
+export let shapes = [];
+export let selectedShapeIndex = null;
+export let currentColor = '#FF6B6B';
+export let currentStrokeColor = '#000000';
+export let draggedItem = null;
+export let isFillNone = false;  // Track if fill is set to "none"
 
 // Canvas dragging state
-let isDragging = false;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragStartCX = 0;
-let dragStartCY = 0;
+export let isDragging = false;
+export let dragStartX = 0;
+export let dragStartY = 0;
+export let dragStartCX = 0;
+export let dragStartCY = 0;
 
 // Helper function to normalize color for comparison
-function normalizeColor(color) {
+export function normalizeColor(color) {
     // Convert rgb(r, g, b) to hex for consistent comparison
     if (color.startsWith('rgb(')) {
         const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
@@ -29,11 +34,11 @@ function normalizeColor(color) {
 }
 
 // Canvas setup
-let canvas;
-let ctx;
+export let canvas;
+export let ctx;
 
 // Create shape object from current settings
-function createShapeFromSettings() {
+export function createShapeFromSettings() {
     const opacity = parseFloat(document.getElementById('opacity').value);
 
     // Handle fill color based on "no fill" state
@@ -76,7 +81,7 @@ function createShapeFromSettings() {
 }
 
 // Add new shape
-function addShape() {
+export function addShape() {
     const shape = createShapeFromSettings();
     shapes.push(shape);
     selectedShapeIndex = shapes.length - 1;
@@ -85,7 +90,7 @@ function addShape() {
 }
 
 // Update selected shape with current settings
-function updateSelectedShape() {
+export function updateSelectedShape() {
     if (selectedShapeIndex !== null && shapes[selectedShapeIndex]) {
         shapes[selectedShapeIndex] = createShapeFromSettings();
         updateShapeList();
@@ -94,7 +99,7 @@ function updateSelectedShape() {
 }
 
 // Load shape into editor
-function loadShapeToEditor(shape) {
+export function loadShapeToEditor(shape) {
     document.getElementById('posX').value = shape.cx;
     document.getElementById('posY').value = shape.cy;
     document.getElementById('size').value = shape.radius;
@@ -207,7 +212,7 @@ function loadShapeToEditor(shape) {
 }
 
 // Delete shape at index
-function deleteShape(index) {
+export function deleteShape(index) {
     shapes.splice(index, 1);
     if (selectedShapeIndex === index) {
         selectedShapeIndex = shapes.length > 0 ? Math.max(0, index - 1) : null;
@@ -222,7 +227,7 @@ function deleteShape(index) {
 }
 
 // Clear all shapes
-function clearAll() {
+export function clearAll() {
     if (confirm('Clear all shapes?')) {
         shapes = [];
         selectedShapeIndex = null;
@@ -232,7 +237,7 @@ function clearAll() {
 }
 
 // Load a demo
-function loadDemo(demoKey) {
+export function loadDemo(demoKey) {
     if (demos[demoKey]) {
         shapes = JSON.parse(JSON.stringify(demos[demoKey].shapes)); // Deep clone
         selectedShapeIndex = shapes.length > 0 ? shapes.length - 1 : null;
@@ -245,7 +250,7 @@ function loadDemo(demoKey) {
 }
 
 // Generate random demo
-function generateRandomDemo() {
+export function generateRandomDemo() {
     shapes = [];
     const layerCount = Math.floor(Math.random() * 6) + 3; // 3-8 layers
 
@@ -296,7 +301,7 @@ function generateRandomDemo() {
 }
 
 // Apply preset
-function applyPreset(presetName) {
+export function applyPreset(presetName) {
     if (presets[presetName]) {
         const preset = presets[presetName];
         document.getElementById('paramM').value = preset.m;
@@ -320,4 +325,53 @@ function applyPreset(presetName) {
             updateSelectedShape();
         }
     }
+}
+
+// Setter functions for state variables (needed for imports)
+export function setSelectedShapeIndex(value) {
+    selectedShapeIndex = value;
+}
+
+export function setCurrentColor(value) {
+    currentColor = value;
+}
+
+export function setCurrentStrokeColor(value) {
+    currentStrokeColor = value;
+}
+
+export function setIsFillNone(value) {
+    isFillNone = value;
+}
+
+export function setIsDragging(value) {
+    isDragging = value;
+}
+
+export function setDragStartX(value) {
+    dragStartX = value;
+}
+
+export function setDragStartY(value) {
+    dragStartY = value;
+}
+
+export function setDragStartCX(value) {
+    dragStartCX = value;
+}
+
+export function setDragStartCY(value) {
+    dragStartCY = value;
+}
+
+export function setCanvas(value) {
+    canvas = value;
+}
+
+export function setCtx(value) {
+    ctx = value;
+}
+
+export function setDraggedItem(value) {
+    draggedItem = value;
 }

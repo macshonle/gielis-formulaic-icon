@@ -1,13 +1,18 @@
+import { defaultPalette, demos } from './config.js';
+import { shapes, selectedShapeIndex, currentColor, isFillNone, draggedItem, updateSelectedShape, loadShapeToEditor, deleteShape, loadDemo, generateRandomDemo, setCurrentColor, setIsFillNone, setDraggedItem, setSelectedShapeIndex } from './shapes.js';
+import { renderShape, renderCanvas, renderToCanvas } from './rendering.js';
+import { generateSVG } from './export.js';
+
 // UI constants
-const PREVIEW_SIZE = 48; // Thumbnail size for shape list previews (pixels)
-const PREVIEW_SCALE = 0.4; // Scale factor for preview shapes (relative to canvas size)
-const EXPORT_PREVIEW_DEBOUNCE = 300; // Debounce delay for export preview updates (ms)
+export const PREVIEW_SIZE = 48; // Thumbnail size for shape list previews (pixels)
+export const PREVIEW_SCALE = 0.4; // Scale factor for preview shapes (relative to canvas size)
+export const EXPORT_PREVIEW_DEBOUNCE = 300; // Debounce delay for export preview updates (ms)
 
 // Cache for shape previews
 const shapePreviewCache = new Map();
 
 // Cache for color swatches
-let colorSwatches = null;
+export let colorSwatches = null;
 
 // Generate cache key for a shape based on properties that affect rendering
 function getShapeCacheKey(shape) {
@@ -26,7 +31,7 @@ function getShapeCacheKey(shape) {
 }
 
 // Initialize color palette
-function initColorPalette() {
+export function initColorPalette() {
     const palette = document.getElementById('colorPalette');
     defaultPalette.forEach(color => {
         const swatch = document.createElement('div');
@@ -36,8 +41,8 @@ function initColorPalette() {
             swatch.classList.add('selected');
         }
         swatch.addEventListener('click', () => {
-            currentColor = color;
-            isFillNone = false;  // Disable "no fill" when color is selected
+            setCurrentColor(color);
+            setIsFillNone(false);  // Disable "no fill" when color is selected
             colorSwatches.forEach(s => s.classList.remove('selected'));
             swatch.classList.add('selected');
             document.getElementById('customColor').value = color;
@@ -91,7 +96,7 @@ function generateShapePreview(shape) {
 }
 
 // Update shape list UI
-function updateShapeList() {
+export function updateShapeList() {
     const list = document.getElementById('shapeList');
     list.innerHTML = '';
 
@@ -133,13 +138,13 @@ function updateShapeList() {
 
         // Drag and drop handlers
         item.addEventListener('dragstart', (e) => {
-            draggedItem = index;
+            setDraggedItem(index);
             item.classList.add('dragging');
         });
 
         item.addEventListener('dragend', (e) => {
             item.classList.remove('dragging');
-            draggedItem = null;
+            setDraggedItem(null);
         });
 
         item.addEventListener('dragover', (e) => {
@@ -156,18 +161,18 @@ function updateShapeList() {
                 // Update selectedShapeIndex to follow the correct item
                 if (selectedShapeIndex === draggedItem) {
                     // Dragged item was selected, follow it to new position
-                    selectedShapeIndex = index;
+                    setSelectedShapeIndex(index);
                 } else if (selectedShapeIndex !== null) {
                     // Another item is selected, adjust if needed
                     if (draggedItem < index) {
                         // Dragging down: items between draggedItem and index shift up
                         if (selectedShapeIndex > draggedItem && selectedShapeIndex <= index) {
-                            selectedShapeIndex--;
+                            setSelectedShapeIndex(selectedShapeIndex - 1);
                         }
                     } else {
                         // Dragging up: items between index and draggedItem shift down
                         if (selectedShapeIndex >= index && selectedShapeIndex < draggedItem) {
-                            selectedShapeIndex++;
+                            setSelectedShapeIndex(selectedShapeIndex + 1);
                         }
                     }
                 }
@@ -178,7 +183,7 @@ function updateShapeList() {
         });
 
         item.addEventListener('click', () => {
-            selectedShapeIndex = index;
+            setSelectedShapeIndex(index);
             loadShapeToEditor(shape);
             updateShapeList();
         });
@@ -188,7 +193,7 @@ function updateShapeList() {
 }
 
 // Initialize demo list
-function initDemoList() {
+export function initDemoList() {
     const demoList = document.getElementById('demoList');
 
     // Add preset demos
@@ -210,7 +215,7 @@ function initDemoList() {
 }
 
 // Update fill UI state based on isFillNone
-function updateFillUIState() {
+export function updateFillUIState() {
     const noFillBtn = document.getElementById('noFillBtn');
     const fillColorPicker = document.getElementById('fillColorPicker');
     const customColorInput = document.getElementById('customColor');
@@ -234,7 +239,7 @@ function updateFillUIState() {
 }
 
 // Update stroke UI state based on checkbox
-function updateStrokeUIState() {
+export function updateStrokeUIState() {
     const strokeEnabled = document.getElementById('strokeEnabled').checked;
     const strokeWidthSelect = document.getElementById('strokeWidth');
     const strokeColorInput = document.getElementById('strokeColor');
@@ -255,7 +260,7 @@ function updateStrokeUIState() {
 }
 
 // Legacy function name - redirects to updateStrokeUIState for compatibility
-function updateStrokeColorVisibility() {
+export function updateStrokeColorVisibility() {
     updateStrokeUIState();
 }
 
@@ -263,7 +268,7 @@ function updateStrokeColorVisibility() {
 let exportPreviewDebounceTimer = null;
 
 // Update export previews (debounced to avoid excessive updates during editing)
-function updateExportPreviews() {
+export function updateExportPreviews() {
     // Clear any pending update
     if (exportPreviewDebounceTimer) {
         clearTimeout(exportPreviewDebounceTimer);

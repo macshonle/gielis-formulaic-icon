@@ -1,5 +1,15 @@
+import { superformulaR, CANVAS_SIZE } from './math.js';
+import { shapes, setSelectedShapeIndex } from './shapes.js';
+import { renderToCanvas } from './rendering.js';
+import { updateShapeList, updateExportPreviews } from './ui.js';
+import { renderCanvas } from './rendering.js';
+
+// Export constants
+export const SVG_STEPS = 360; // Number of points for SVG paths (balances smoothness and file size)
+export const FAVICON_SIZES = [16, 32, 64]; // Standard favicon sizes in pixels
+
 // Export apple touch icon
-function exportAppleTouchIcon() {
+export function exportAppleTouchIcon() {
     const iconCanvas = renderToCanvas(180);
     iconCanvas.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
@@ -108,7 +118,7 @@ function createBMPData(imageData) {
 }
 
 // Export favicon
-function exportFavicon() {
+export function exportFavicon() {
     const sizes = [16, 32, 48, 64, 128, 256];
     const icoData = createIcoFile(sizes);
     const blob = new Blob([icoData], { type: 'image/x-icon' });
@@ -119,10 +129,6 @@ function exportFavicon() {
     a.click();
     URL.revokeObjectURL(url);
 }
-
-// Export constants
-const SVG_STEPS = 360; // Number of points for SVG paths (balances smoothness and file size)
-const FAVICON_SIZES = [16, 32, 64]; // Standard favicon sizes in pixels
 
 // Generate SVG path data for a shape
 function generateSVGPath(shape) {
@@ -149,7 +155,7 @@ function generateSVGPath(shape) {
 }
 
 // Generate complete SVG document
-function generateSVG(size = CANVAS_SIZE) {
+export function generateSVG(size = CANVAS_SIZE) {
     const svgParts = [];
     svgParts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
     svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 ${CANVAS_SIZE} ${CANVAS_SIZE}" xmlns="http://www.w3.org/2000/svg">`);
@@ -174,7 +180,7 @@ function generateSVG(size = CANVAS_SIZE) {
 }
 
 // Export as SVG
-function exportSVG() {
+export function exportSVG() {
     const svgContent = generateSVG(CANVAS_SIZE);
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
@@ -186,7 +192,7 @@ function exportSVG() {
 }
 
 // Export as JSON
-function exportJSON() {
+export function exportJSON() {
     const data = {
         version: "1.0",
         shapes: shapes
@@ -202,14 +208,16 @@ function exportJSON() {
 }
 
 // Import from JSON
-function importJSON(file) {
+export function importJSON(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
         try {
             const data = JSON.parse(e.target.result);
             if (data.shapes && Array.isArray(data.shapes)) {
-                shapes = data.shapes;
-                selectedShapeIndex = null;
+                // Can't reassign imported variable, so clear and repopulate
+                shapes.length = 0;
+                shapes.push(...data.shapes);
+                setSelectedShapeIndex(null);
                 updateShapeList();
                 renderCanvas();
                 updateExportPreviews();
