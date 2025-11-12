@@ -370,7 +370,10 @@ h1 {
     cursor: pointer;
     transition: all 0.15s;
     font-size: 12px;
-    text-align: center;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .demo-item:hover {
@@ -393,6 +396,15 @@ h1 {
 .demo-item.random:hover {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
     border-color: #764ba2;
+}
+
+.demo-preview {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    background: white;
+    border: 1px solid #444;
 }
 
 .controls-grid {

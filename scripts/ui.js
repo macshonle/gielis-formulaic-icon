@@ -205,15 +205,48 @@ export function initDemoList() {
         const demo = demos[key];
         const item = document.createElement('div');
         item.className = 'demo-item';
-        item.textContent = demo.name;
+
+        // Create preview canvas
+        const preview = document.createElement('canvas');
+        preview.className = 'demo-preview';
+        preview.width = 20;
+        preview.height = 20;
+
+        // Create label
+        const label = document.createElement('span');
+        label.textContent = demo.name;
+
+        item.appendChild(preview);
+        item.appendChild(label);
         item.addEventListener('click', () => loadDemo(key));
         demoList.appendChild(item);
+
+        // Queue async preview generation
+        queueDemoPreview(key, preview);
     });
 
-    // Add random button
+    // Add random button (no preview for Random)
     const randomItem = document.createElement('div');
     randomItem.className = 'demo-item random';
-    randomItem.textContent = 'Random';
+
+    // Create a placeholder canvas for consistent layout
+    const randomPreview = document.createElement('canvas');
+    randomPreview.className = 'demo-preview';
+    randomPreview.width = 20;
+    randomPreview.height = 20;
+    // Draw a simple "?" or sparkles icon
+    const ctx = randomPreview.getContext('2d');
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('?', 10, 10);
+
+    const randomLabel = document.createElement('span');
+    randomLabel.textContent = 'Random';
+
+    randomItem.appendChild(randomPreview);
+    randomItem.appendChild(randomLabel);
     randomItem.addEventListener('click', generateRandomDemo);
     demoList.appendChild(randomItem);
 }
@@ -281,6 +314,75 @@ export function updateKnotPatternUIState() {
 // Legacy function name - redirects to updateStrokeUIState for compatibility
 export function updateStrokeColorVisibility() {
     updateStrokeUIState();
+}
+
+// Queue for async demo preview generation
+const demoPreviewQueue = [];
+let isProcessingPreviews = false;
+
+// Generate a single demo preview at 20x20 size
+function generateDemoPreview(demoKey, canvas) {
+    const demo = demos[demoKey];
+    if (!demo) return;
+
+    const ctx = canvas.getContext('2d');
+    const size = 20;
+
+    // White background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, size, size);
+
+    // Calculate scale factor to fit all shapes in the 20x20 preview
+    const scaleFactor = size / 384; // 384 is CANVAS_SIZE
+
+    // Render each shape from the demo
+    demo.shapes.forEach(shapeData => {
+        const previewShape = {
+            ...shapeData,
+            cx: shapeData.cx * scaleFactor,
+            cy: shapeData.cy * scaleFactor,
+            radius: shapeData.radius * scaleFactor
+        };
+        renderShape(ctx, previewShape, scaleFactor);
+    });
+}
+
+// Queue a demo preview for async generation
+function queueDemoPreview(demoKey, canvas) {
+    demoPreviewQueue.push({ demoKey, canvas });
+
+    // Start processing if not already running
+    if (!isProcessingPreviews) {
+        processNextPreview();
+    }
+}
+
+// Process preview queue asynchronously using requestIdleCallback or setTimeout
+function processNextPreview() {
+    if (demoPreviewQueue.length === 0) {
+        isProcessingPreviews = false;
+        return;
+    }
+
+    isProcessingPreviews = true;
+    const { demoKey, canvas } = demoPreviewQueue.shift();
+
+    // Use requestIdleCallback if available, otherwise setTimeout
+    const scheduleNext = () => {
+        if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(() => processNextPreview(), { timeout: 100 });
+        } else {
+            setTimeout(processNextPreview, 10);
+        }
+    };
+
+    try {
+        generateDemoPreview(demoKey, canvas);
+    } catch (error) {
+        console.warn('Failed to generate demo preview:', demoKey, error);
+    }
+
+    scheduleNext();
 }
 
 // Debounce timer for export previews

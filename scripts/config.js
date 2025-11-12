@@ -467,7 +467,7 @@ export const demos = {
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 165,
+                radius: 150,
                 rotation: 0,
                 m: 7,
                 n1: 2,
@@ -486,7 +486,7 @@ export const demos = {
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 165,
+                radius: 150,
                 rotation: 0.5235987755982988,
                 m: 5,
                 n1: 2,
@@ -505,7 +505,7 @@ export const demos = {
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 165,
+                radius: 150,
                 rotation: 1.0471975511965976,
                 m: 9,
                 n1: 2,
@@ -524,7 +524,7 @@ export const demos = {
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 165,
+                radius: 150,
                 rotation: 1.5707963267948966,
                 m: 11,
                 n1: 2,
