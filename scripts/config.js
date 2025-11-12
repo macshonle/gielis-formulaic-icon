@@ -383,6 +383,84 @@ export const demos = {
             return shapes;
         })()
     },
+    knotRosette: {
+        name: "Knot Rosette",
+        shapes: [
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 150,
+                rotation: 0,
+                m: 5,
+                n1: 0.5,
+                n2: 0.5,
+                n3: 0.5,
+                a: 1,
+                b: 1,
+                fillColor: hexToRgba('#4D96FF', 0.3),
+                strokeColor: '#4D96FF',
+                strokeWidth: 3,
+                knotLobes: 8,
+                knotTurns: 3,
+                knotAmplitude: 0.25,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 130,
+                rotation: 0.2617993877991494,
+                m: 5,
+                n1: 0.5,
+                n2: 0.5,
+                n3: 0.5,
+                a: 1,
+                b: 1,
+                fillColor: hexToRgba('#6C5CE7', 0.3),
+                strokeColor: '#6C5CE7',
+                strokeWidth: 3,
+                knotLobes: 12,
+                knotTurns: 5,
+                knotAmplitude: 0.2,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 100,
+                rotation: 0.5235987755982988,
+                m: 5,
+                n1: 0.5,
+                n2: 0.5,
+                n3: 0.5,
+                a: 1,
+                b: 1,
+                fillColor: hexToRgba('#A78BFA', 0.4),
+                strokeColor: '#A78BFA',
+                strokeWidth: 2,
+                knotLobes: 16,
+                knotTurns: 7,
+                knotAmplitude: 0.15,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 40,
+                rotation: 0,
+                m: 4,
+                n1: 2,
+                n2: 2,
+                n3: 2,
+                a: 1,
+                b: 1,
+                fillColor: '#FFD93D',
+                strokeColor: '#F59E0B',
+                strokeWidth: 2,
+                knotLobes: 0
+            }
+        ]
+    },
     geminEye: {
         name: "Gemin-EYE",
         shapes: [

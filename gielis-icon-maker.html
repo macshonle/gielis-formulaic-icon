@@ -196,6 +196,56 @@
                         </div>
                     </div>
                 </fieldset>
+
+                <fieldset id="knotPatternFieldset">
+                    <legend>
+                        <input type="checkbox" id="enableKnotPattern">
+                        <label for="enableKnotPattern">Knot Pattern (Rosette)</label>
+                    </legend>
+                    <div class="input-row">
+                        <label>Lobes</label>
+                        <select id="knotLobes">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8" selected>8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="16">16</option>
+                            <option value="20">20</option>
+                            <option value="24">24</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>Turns</label>
+                        <select id="knotTurns">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="7">7</option>
+                            <option value="9">9</option>
+                            <option value="11">11</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>Lobe depth</label>
+                        <div class="range-container">
+                            <input type="range" id="knotAmplitude" min="0" max="0.5" step="0.01" value="0.25">
+                            <span class="range-value" id="knotAmplitudeDisplay">0.25</span>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label>Base radius</label>
+                        <div class="range-container">
+                            <input type="range" id="knotBaseRadius" min="0.5" max="1.5" step="0.05" value="1.0">
+                            <span class="range-value" id="knotBaseRadiusDisplay">1.00</span>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
         </div>
     </div>

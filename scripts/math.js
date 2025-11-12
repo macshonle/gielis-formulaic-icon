@@ -10,6 +10,14 @@ export function superformulaR(theta, {m, n1, n2, n3, a, b}) {
     return Math.pow(Math.max(denom, 1e-12), -1 / n1);
 }
 
+// Knot pattern calculation (rosette/knot formula)
+// Returns {r, theta} for a given t parameter [0, 1]
+export function knotPattern(t, {lobes, turns, amplitude, baseRadius = 1.0}) {
+    const r = baseRadius + amplitude * Math.cos(2 * lobes * Math.PI * t);
+    const theta = 2 * turns * Math.PI * t;
+    return {r, theta};
+}
+
 // Helper function to lighten a color
 export function lightenColor(color, percent) {
     const num = parseInt(color.replace("#",""), 16);

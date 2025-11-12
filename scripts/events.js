@@ -52,7 +52,16 @@ export function setupEventListeners() {
         paramA: document.getElementById('paramA'),
         paramB: document.getElementById('paramB'),
         posX: document.getElementById('posX'),
-        posY: document.getElementById('posY')
+        posY: document.getElementById('posY'),
+
+        // Knot pattern controls
+        enableKnotPattern: document.getElementById('enableKnotPattern'),
+        knotLobes: document.getElementById('knotLobes'),
+        knotTurns: document.getElementById('knotTurns'),
+        knotAmplitude: document.getElementById('knotAmplitude'),
+        knotAmplitudeDisplay: document.getElementById('knotAmplitudeDisplay'),
+        knotBaseRadius: document.getElementById('knotBaseRadius'),
+        knotBaseRadiusDisplay: document.getElementById('knotBaseRadiusDisplay')
     };
 
     // Button event listeners
@@ -187,6 +196,29 @@ export function setupEventListeners() {
             elements.presetSelect.value = '';
             updateSelectedShape();
         });
+    });
+
+    // Knot pattern controls
+    elements.enableKnotPattern.addEventListener('change', () => {
+        updateSelectedShape();
+    });
+
+    elements.knotLobes.addEventListener('change', () => {
+        updateSelectedShape();
+    });
+
+    elements.knotTurns.addEventListener('change', () => {
+        updateSelectedShape();
+    });
+
+    elements.knotAmplitude.addEventListener('input', (e) => {
+        elements.knotAmplitudeDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+        updateSelectedShape();
+    });
+
+    elements.knotBaseRadius.addEventListener('input', (e) => {
+        elements.knotBaseRadiusDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+        updateSelectedShape();
     });
 
     // Canvas mouse event handlers for dragging shapes

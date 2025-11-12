@@ -63,7 +63,10 @@ export function createShapeFromSettings() {
         strokeColor = document.getElementById('strokeColor').value || currentStrokeColor;
     }
 
-    return {
+    // Check if knot pattern is enabled
+    const enableKnotPattern = document.getElementById('enableKnotPattern').checked;
+
+    const shape = {
         cx: parseFloat(document.getElementById('posX').value),
         cy: parseFloat(document.getElementById('posY').value),
         radius: parseFloat(document.getElementById('size').value),
@@ -78,6 +81,18 @@ export function createShapeFromSettings() {
         strokeColor: strokeColor,
         strokeWidth: strokeWidth,
     };
+
+    // Add knot pattern parameters if enabled
+    if (enableKnotPattern) {
+        shape.knotLobes = parseFloat(document.getElementById('knotLobes').value);
+        shape.knotTurns = parseFloat(document.getElementById('knotTurns').value);
+        shape.knotAmplitude = parseFloat(document.getElementById('knotAmplitude').value);
+        shape.knotBaseRadius = parseFloat(document.getElementById('knotBaseRadius').value);
+    } else {
+        shape.knotLobes = 0;
+    }
+
+    return shape;
 }
 
 // Add new shape
@@ -209,6 +224,19 @@ export function loadShapeToEditor(shape) {
 
     updateStrokeUIState();
     updateStrokeColorVisibility();
+
+    // Load knot pattern parameters if present
+    const hasKnotPattern = shape.knotLobes !== undefined && shape.knotLobes > 0;
+    document.getElementById('enableKnotPattern').checked = hasKnotPattern;
+
+    if (hasKnotPattern) {
+        document.getElementById('knotLobes').value = shape.knotLobes;
+        document.getElementById('knotTurns').value = shape.knotTurns;
+        document.getElementById('knotAmplitude').value = shape.knotAmplitude;
+        document.getElementById('knotAmplitudeDisplay').textContent = shape.knotAmplitude.toFixed(2);
+        document.getElementById('knotBaseRadius').value = shape.knotBaseRadius || 1.0;
+        document.getElementById('knotBaseRadiusDisplay').textContent = (shape.knotBaseRadius || 1.0).toFixed(2);
+    }
 }
 
 // Delete shape at index
