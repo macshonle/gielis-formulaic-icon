@@ -67,6 +67,14 @@ h1 {
     letter-spacing: 0.5px;
 }
 
+.colors-panel {
+    min-width: 25rem;
+}
+
+.shape-panel {
+    min-width: 36rem;
+}
+
 .export-panel {
     width: 280px;
     height: 404px;
