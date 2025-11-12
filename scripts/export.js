@@ -1,4 +1,4 @@
-import { superformulaR, CANVAS_SIZE } from './math.js';
+import { superformulaR, knotPattern, CANVAS_SIZE } from './math.js';
 import { shapes, setSelectedShapeIndex } from './shapes.js';
 import { renderToCanvas } from './rendering.js';
 import { updateShapeList, updateExportPreviews } from './ui.js';
@@ -132,21 +132,51 @@ export function exportFavicon() {
 
 // Generate SVG path data for a shape
 function generateSVGPath(shape) {
-    const {cx, cy, radius, rotation, m, n1, n2, n3, a, b} = shape;
+    const {cx, cy, radius, rotation} = shape;
     const steps = SVG_STEPS;
     const pathParts = [];
 
-    for (let i = 0; i <= steps; i++) {
-        const theta = (i / steps) * 2 * Math.PI;
-        const r = superformulaR(theta, {m, n1, n2, n3, a, b});
-        const ang = theta + rotation;
-        const x = cx + (radius * r * Math.cos(ang));
-        const y = cy + (radius * r * Math.sin(ang));
+    // Check if this is a knot pattern or superformula
+    const isKnotPattern = shape.knotLobes !== undefined && shape.knotLobes > 0;
 
-        if (i === 0) {
-            pathParts.push(`M ${x.toFixed(2)} ${y.toFixed(2)}`);
-        } else {
-            pathParts.push(`L ${x.toFixed(2)} ${y.toFixed(2)}`);
+    if (isKnotPattern) {
+        // Use knot pattern formula
+        const {knotLobes, knotTurns, knotAmplitude, knotBaseRadius = 1.0} = shape;
+
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const {r, theta} = knotPattern(t, {
+                lobes: knotLobes,
+                turns: knotTurns,
+                amplitude: knotAmplitude,
+                baseRadius: knotBaseRadius
+            });
+            const ang = theta + rotation;
+            const x = cx + (radius * r * Math.cos(ang));
+            const y = cy + (radius * r * Math.sin(ang));
+
+            if (i === 0) {
+                pathParts.push(`M ${x.toFixed(2)} ${y.toFixed(2)}`);
+            } else {
+                pathParts.push(`L ${x.toFixed(2)} ${y.toFixed(2)}`);
+            }
+        }
+    } else {
+        // Use standard superformula
+        const {m, n1, n2, n3, a, b} = shape;
+
+        for (let i = 0; i <= steps; i++) {
+            const theta = (i / steps) * 2 * Math.PI;
+            const r = superformulaR(theta, {m, n1, n2, n3, a, b});
+            const ang = theta + rotation;
+            const x = cx + (radius * r * Math.cos(ang));
+            const y = cy + (radius * r * Math.sin(ang));
+
+            if (i === 0) {
+                pathParts.push(`M ${x.toFixed(2)} ${y.toFixed(2)}`);
+            } else {
+                pathParts.push(`L ${x.toFixed(2)} ${y.toFixed(2)}`);
+            }
         }
     }
 
