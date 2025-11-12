@@ -1,6 +1,6 @@
 import { addShape, clearAll, applyPreset, updateSelectedShape, shapes, selectedShapeIndex, canvas, isFillNone, currentColor, currentStrokeColor, isDragging, dragStartX, dragStartY, dragStartCX, dragStartCY, setIsFillNone, setCurrentColor, setCurrentStrokeColor, setIsDragging, setDragStartX, setDragStartY, setDragStartCX, setDragStartCY } from './shapes.js';
 import { exportAppleTouchIcon, exportFavicon, exportSVG, exportJSON, importJSON } from './export.js';
-import { updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, colorSwatches } from './ui.js';
+import { updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState, colorSwatches } from './ui.js';
 import { isPointInShape } from './rendering.js';
 
 // Cache DOM element references for performance (initialized in setupEventListeners)
@@ -52,7 +52,21 @@ export function setupEventListeners() {
         paramA: document.getElementById('paramA'),
         paramB: document.getElementById('paramB'),
         posX: document.getElementById('posX'),
-        posY: document.getElementById('posY')
+        posY: document.getElementById('posY'),
+
+        // Knot pattern controls
+        enableKnotPattern: document.getElementById('enableKnotPattern'),
+        knotTurns: document.getElementById('knotTurns'),
+        knotAmplitude: document.getElementById('knotAmplitude'),
+        knotAmplitudeDisplay: document.getElementById('knotAmplitudeDisplay'),
+        knotBaseRadius: document.getElementById('knotBaseRadius'),
+        knotBaseRadiusDisplay: document.getElementById('knotBaseRadiusDisplay'),
+
+        // Stepper buttons
+        lobesIncrement: document.getElementById('lobesIncrement'),
+        lobesDecrement: document.getElementById('lobesDecrement'),
+        turnsIncrement: document.getElementById('turnsIncrement'),
+        turnsDecrement: document.getElementById('turnsDecrement')
     };
 
     // Button event listeners
@@ -187,6 +201,54 @@ export function setupEventListeners() {
             elements.presetSelect.value = '';
             updateSelectedShape();
         });
+    });
+
+    // Knot pattern controls
+    elements.enableKnotPattern.addEventListener('change', () => {
+        updateKnotPatternUIState();
+        updateSelectedShape();
+    });
+
+    elements.knotTurns.addEventListener('input', () => {
+        updateSelectedShape();
+    });
+
+    elements.knotAmplitude.addEventListener('input', (e) => {
+        elements.knotAmplitudeDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+        updateSelectedShape();
+    });
+
+    elements.knotBaseRadius.addEventListener('input', (e) => {
+        elements.knotBaseRadiusDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+        updateSelectedShape();
+    });
+
+    // Stepper buttons for Lobes
+    elements.lobesIncrement.addEventListener('click', () => {
+        const current = parseFloat(elements.paramM.value) || 0;
+        elements.paramM.value = current + 1;
+        elements.presetSelect.value = '';
+        updateSelectedShape();
+    });
+
+    elements.lobesDecrement.addEventListener('click', () => {
+        const current = parseFloat(elements.paramM.value) || 0;
+        elements.paramM.value = Math.max(0, current - 1);
+        elements.presetSelect.value = '';
+        updateSelectedShape();
+    });
+
+    // Stepper buttons for Turns
+    elements.turnsIncrement.addEventListener('click', () => {
+        const current = parseFloat(elements.knotTurns.value) || 0;
+        elements.knotTurns.value = current + 1;
+        updateSelectedShape();
+    });
+
+    elements.turnsDecrement.addEventListener('click', () => {
+        const current = parseFloat(elements.knotTurns.value) || 0;
+        elements.knotTurns.value = Math.max(1, current - 1);
+        updateSelectedShape();
     });
 
     // Canvas mouse event handlers for dragging shapes
