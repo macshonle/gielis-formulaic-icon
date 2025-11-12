@@ -408,7 +408,7 @@ export function updateExportPreviews() {
 
         // Update SVG preview
         const svgPreviewContainer = document.getElementById('svgPreview');
-        const svgContent = generateSVG(80);
+        const svgContent = generateSVG(100);
         svgPreviewContainer.innerHTML = svgContent;
     }, EXPORT_PREVIEW_DEBOUNCE);
 }
