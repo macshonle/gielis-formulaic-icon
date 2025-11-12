@@ -209,8 +209,8 @@ export function initDemoList() {
         // Create preview canvas
         const preview = document.createElement('canvas');
         preview.className = 'demo-preview';
-        preview.width = 20;
-        preview.height = 20;
+        preview.width = 16;
+        preview.height = 16;
 
         // Create label
         const label = document.createElement('span');
@@ -221,8 +221,14 @@ export function initDemoList() {
         item.addEventListener('click', () => loadDemo(key));
         demoList.appendChild(item);
 
-        // Queue async preview generation
-        queueDemoPreview(key, preview);
+        // Generate preview synchronously for now to debug
+        setTimeout(() => {
+            try {
+                generateDemoPreview(key, preview);
+            } catch (error) {
+                console.error('Preview generation error for', key, error);
+            }
+        }, 0);
     });
 
     // Add random button (no preview for Random)
@@ -232,15 +238,15 @@ export function initDemoList() {
     // Create a placeholder canvas for consistent layout
     const randomPreview = document.createElement('canvas');
     randomPreview.className = 'demo-preview';
-    randomPreview.width = 20;
-    randomPreview.height = 20;
-    // Draw a simple "?" or sparkles icon
+    randomPreview.width = 16;
+    randomPreview.height = 16;
+    // Draw a simple "?" icon
     const ctx = randomPreview.getContext('2d');
     ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.font = 'bold 16px sans-serif';
+    ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('?', 10, 10);
+    ctx.fillText('?', 8, 8);
 
     const randomLabel = document.createElement('span');
     randomLabel.textContent = 'Random';
@@ -320,30 +326,25 @@ export function updateStrokeColorVisibility() {
 const demoPreviewQueue = [];
 let isProcessingPreviews = false;
 
-// Generate a single demo preview at 20x20 size
+// Generate a single demo preview at 16x16 size
 function generateDemoPreview(demoKey, canvas) {
     const demo = demos[demoKey];
-    if (!demo) return;
+    if (!demo || !demo.shapes) return;
 
     const ctx = canvas.getContext('2d');
-    const size = 20;
+    const size = 16;
+    const CANVAS_SIZE = 384;
 
     // White background
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, size, size);
 
-    // Calculate scale factor to fit all shapes in the 20x20 preview
-    const scaleFactor = size / 384; // 384 is CANVAS_SIZE
+    // Calculate scale factor
+    const scaleFactor = size / CANVAS_SIZE;
 
     // Render each shape from the demo
     demo.shapes.forEach(shapeData => {
-        const previewShape = {
-            ...shapeData,
-            cx: shapeData.cx * scaleFactor,
-            cy: shapeData.cy * scaleFactor,
-            radius: shapeData.radius * scaleFactor
-        };
-        renderShape(ctx, previewShape, scaleFactor);
+        renderShape(ctx, shapeData, scaleFactor);
     });
 }
 
