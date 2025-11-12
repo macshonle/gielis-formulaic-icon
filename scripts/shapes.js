@@ -1,6 +1,6 @@
 import { hexToRgba, CANVAS_CENTER } from './math.js';
 import { defaultPalette, demos, presets } from './config.js';
-import { updateShapeList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, colorSwatches } from './ui.js';
+import { updateShapeList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState, colorSwatches } from './ui.js';
 import { renderCanvas } from './rendering.js';
 
 // Application state
@@ -237,6 +237,8 @@ export function loadShapeToEditor(shape) {
         document.getElementById('knotBaseRadius').value = shape.knotBaseRadius || 1.0;
         document.getElementById('knotBaseRadiusDisplay').textContent = (shape.knotBaseRadius || 1.0).toFixed(2);
     }
+
+    updateKnotPatternUIState();
 }
 
 // Delete shape at index

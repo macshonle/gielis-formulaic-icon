@@ -1,5 +1,5 @@
 import { setCanvas, setCtx } from './shapes.js';
-import { initColorPalette, initDemoList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility } from './ui.js';
+import { initColorPalette, initDemoList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState } from './ui.js';
 import { setupEventListeners } from './events.js';
 import { renderCanvas } from './rendering.js';
 
@@ -17,6 +17,7 @@ export function init() {
     updateFillUIState();
     updateStrokeUIState();
     updateStrokeColorVisibility();
+    updateKnotPatternUIState();
 
     // Setup event listeners
     setupEventListeners();

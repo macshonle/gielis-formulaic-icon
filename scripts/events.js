@@ -1,6 +1,6 @@
 import { addShape, clearAll, applyPreset, updateSelectedShape, shapes, selectedShapeIndex, canvas, isFillNone, currentColor, currentStrokeColor, isDragging, dragStartX, dragStartY, dragStartCX, dragStartCY, setIsFillNone, setCurrentColor, setCurrentStrokeColor, setIsDragging, setDragStartX, setDragStartY, setDragStartCX, setDragStartCY } from './shapes.js';
 import { exportAppleTouchIcon, exportFavicon, exportSVG, exportJSON, importJSON } from './export.js';
-import { updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, colorSwatches } from './ui.js';
+import { updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState, colorSwatches } from './ui.js';
 import { isPointInShape } from './rendering.js';
 
 // Cache DOM element references for performance (initialized in setupEventListeners)
@@ -200,14 +200,15 @@ export function setupEventListeners() {
 
     // Knot pattern controls
     elements.enableKnotPattern.addEventListener('change', () => {
+        updateKnotPatternUIState();
         updateSelectedShape();
     });
 
-    elements.knotLobes.addEventListener('change', () => {
+    elements.knotLobes.addEventListener('input', () => {
         updateSelectedShape();
     });
 
-    elements.knotTurns.addEventListener('change', () => {
+    elements.knotTurns.addEventListener('input', () => {
         updateSelectedShape();
     });
 

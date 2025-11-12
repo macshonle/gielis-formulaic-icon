@@ -92,28 +92,34 @@
                         <span class="range-value" id="opacityValue">1.00</span>
                     </div>
                 </div>
-                <div class="input-row">
-                    <input type="checkbox" id="strokeEnabled" checked>
-                    <label for="strokeEnabled">Stroke</label>
-                    <select id="strokeWidth">
-                        <option value="1">1px</option>
-                        <option value="2">2px</option>
-                        <option value="3">3px</option>
-                        <option value="4" selected>4px</option>
-                        <option value="6">6px</option>
-                        <option value="8">8px</option>
-                        <option value="10">10px</option>
-                        <option value="15">15px</option>
-                        <option value="20">20px</option>
-                    </select>
-                </div>
-                <div class="input-row" id="strokeColorRow">
-                    <label>Color</label>
-                    <div class="color-input-group">
-                        <input type="color" id="strokeColorPicker" value="#000000">
-                        <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
+
+                <fieldset id="strokeFieldset">
+                    <legend>
+                        <input type="checkbox" id="strokeEnabled" checked>
+                        <label for="strokeEnabled">Stroke</label>
+                    </legend>
+                    <div class="input-row">
+                        <label>Width</label>
+                        <select id="strokeWidth">
+                            <option value="1">1px</option>
+                            <option value="2">2px</option>
+                            <option value="3">3px</option>
+                            <option value="4" selected>4px</option>
+                            <option value="6">6px</option>
+                            <option value="8">8px</option>
+                            <option value="10">10px</option>
+                            <option value="15">15px</option>
+                            <option value="20">20px</option>
+                        </select>
                     </div>
-                </div>
+                    <div class="input-row">
+                        <label>Color</label>
+                        <div class="color-input-group">
+                            <input type="color" id="strokeColorPicker" value="#000000">
+                            <input type="text" id="strokeColor" placeholder="#000000" value="#000000">
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <!-- Shape Panel -->
@@ -202,34 +208,38 @@
                         <input type="checkbox" id="enableKnotPattern">
                         <label for="enableKnotPattern">Knot Pattern (Rosette)</label>
                     </legend>
-                    <div class="input-row">
-                        <label>Lobes</label>
-                        <select id="knotLobes">
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8" selected>8</option>
-                            <option value="10">10</option>
-                            <option value="12">12</option>
-                            <option value="16">16</option>
-                            <option value="20">20</option>
-                            <option value="24">24</option>
-                        </select>
-                    </div>
-                    <div class="input-row">
-                        <label>Turns</label>
-                        <select id="knotTurns">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3" selected>3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="7">7</option>
-                            <option value="9">9</option>
-                            <option value="11">11</option>
-                        </select>
+                    <div class="param-grid">
+                        <div class="input-row">
+                            <label>Lobes</label>
+                            <input type="number" id="knotLobes" min="1" max="999" step="1" value="8" list="lobesSuggestions">
+                            <datalist id="lobesSuggestions">
+                                <option value="3">
+                                <option value="4">
+                                <option value="5">
+                                <option value="6">
+                                <option value="7">
+                                <option value="8">
+                                <option value="10">
+                                <option value="12">
+                                <option value="16">
+                                <option value="20">
+                                <option value="24">
+                            </datalist>
+                        </div>
+                        <div class="input-row">
+                            <label>Turns</label>
+                            <input type="number" id="knotTurns" min="1" max="999" step="1" value="3" list="turnsSuggestions">
+                            <datalist id="turnsSuggestions">
+                                <option value="1">
+                                <option value="2">
+                                <option value="3">
+                                <option value="4">
+                                <option value="5">
+                                <option value="7">
+                                <option value="9">
+                                <option value="11">
+                            </datalist>
+                        </div>
                     </div>
                     <div class="input-row">
                         <label>Lobe depth</label>

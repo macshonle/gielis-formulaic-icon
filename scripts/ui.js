@@ -26,7 +26,11 @@ function getShapeCacheKey(shape) {
         fillColor: shape.fillColor,
         strokeColor: shape.strokeColor,
         strokeWidth: shape.strokeWidth,
-        rotation: shape.rotation
+        rotation: shape.rotation,
+        knotLobes: shape.knotLobes,
+        knotTurns: shape.knotTurns,
+        knotAmplitude: shape.knotAmplitude,
+        knotBaseRadius: shape.knotBaseRadius
     });
 }
 
@@ -241,10 +245,10 @@ export function updateFillUIState() {
 // Update stroke UI state based on checkbox
 export function updateStrokeUIState() {
     const strokeEnabled = document.getElementById('strokeEnabled').checked;
+    const strokeFieldset = document.getElementById('strokeFieldset');
     const strokeWidthSelect = document.getElementById('strokeWidth');
     const strokeColorInput = document.getElementById('strokeColor');
     const strokeColorPicker = document.getElementById('strokeColorPicker');
-    const strokeColorRow = document.getElementById('strokeColorRow');
 
     const isDisabled = !strokeEnabled;
 
@@ -253,10 +257,27 @@ export function updateStrokeUIState() {
     strokeColorInput.disabled = isDisabled;
     strokeColorPicker.disabled = isDisabled;
 
-    strokeWidthSelect.classList.toggle('disabled', isDisabled);
-    strokeColorInput.classList.toggle('disabled', isDisabled);
-    strokeColorPicker.classList.toggle('disabled', isDisabled);
-    strokeColorRow.classList.toggle('disabled', isDisabled);
+    strokeFieldset.classList.toggle('disabled', isDisabled);
+}
+
+// Update knot pattern UI state based on checkbox
+export function updateKnotPatternUIState() {
+    const knotEnabled = document.getElementById('enableKnotPattern').checked;
+    const knotFieldset = document.getElementById('knotPatternFieldset');
+    const knotLobes = document.getElementById('knotLobes');
+    const knotTurns = document.getElementById('knotTurns');
+    const knotAmplitude = document.getElementById('knotAmplitude');
+    const knotBaseRadius = document.getElementById('knotBaseRadius');
+
+    const isDisabled = !knotEnabled;
+
+    // Update input disabled state
+    knotLobes.disabled = isDisabled;
+    knotTurns.disabled = isDisabled;
+    knotAmplitude.disabled = isDisabled;
+    knotBaseRadius.disabled = isDisabled;
+
+    knotFieldset.classList.toggle('disabled', isDisabled);
 }
 
 // Legacy function name - redirects to updateStrokeUIState for compatibility
