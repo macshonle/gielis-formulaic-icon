@@ -1,4 +1,4 @@
-import { hexToRgba, CANVAS_CENTER } from './math.js';
+import { hexToRgba, hexToOklch, oklchToHex, lightenColor, darkenColor, CANVAS_CENTER } from './math.js';
 import { defaultPalette, demos, presets } from './config.js';
 import { updateShapeList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState, colorSwatches } from './ui.js';
 import { renderCanvas } from './rendering.js';
@@ -287,30 +287,70 @@ export function loadDemo(demoKey) {
 // Generate random demo
 export function generateRandomDemo() {
     shapes = [];
-    const layerCount = Math.floor(Math.random() * 6) + 3; // 3-8 layers
+    const layerCount = Math.floor(Math.random() * 3) + 3; // 3-5 layers (reduced from 3-8)
+
+    // Pick a seed color from palette (exclude greys)
+    const seedColor = defaultPalette[Math.floor(Math.random() * (defaultPalette.length - 6))];
+    const [L, C, H] = hexToOklch(seedColor);
+
+    // Choose color scheme: complementary or split-complementary
+    const colorScheme = Math.random();
+    let hueOffsets;
+    if (colorScheme < 0.3) {
+        // Complementary (180 degrees)
+        hueOffsets = [0, 180];
+    } else {
+        // Split-complementary: pick from ±{30, 60, 120}
+        const angleChoices = [30, 60, 120];
+        const angle = angleChoices[Math.floor(Math.random() * angleChoices.length)];
+        hueOffsets = [0, angle, -angle];
+    }
+
+    // Generate color palette with varied lightness
+    const colorPalette = hueOffsets.map(offset => {
+        const newH = (H + offset + 360) % 360;
+        // Vary lightness slightly for depth
+        const newL = Math.max(0.3, Math.min(0.85, L + (Math.random() - 0.5) * 0.2));
+        const newC = Math.max(0.05, Math.min(0.25, C + (Math.random() - 0.5) * 0.05));
+        return oklchToHex(newL, newC, newH);
+    });
+
+    // Knot pattern value lists
+    const knotLobesOptions = [3, 4, 5, 6, 7, 8, 10, 12, 16, 20, 24];
+    const knotTurnsOptions = [1, 2, 3, 4, 5, 7, 9, 11];
 
     for (let i = 0; i < layerCount; i++) {
-        const m = Math.floor(Math.random() * 16) + 3; // 3-18 symmetry
-        // Clip to tenths (one decimal place)
-        const n1 = Math.round((Math.random() * 9 + 0.5) * 10) / 10; // 0.5-9.5
+        // 35% chance of knot pattern
+        const useKnotPattern = Math.random() < 0.35;
+
+        const m = Math.floor(Math.random() * 16) + 3; // 3-18 symmetry/lobes
+        const n1 = Math.round((Math.random() * 9 + 0.5) * 10) / 10;
         const n2 = Math.round((Math.random() * 9 + 0.5) * 10) / 10;
         const n3 = Math.round((Math.random() * 9 + 0.5) * 10) / 10;
-        const a = Math.round((Math.random() * 2 + 0.5) * 10) / 10; // 0.5-2.5
+        const a = Math.round((Math.random() * 2 + 0.5) * 10) / 10;
         const b = Math.round((Math.random() * 2 + 0.5) * 10) / 10;
 
-        // Clip size to integers, mostly smaller to avoid offscreen edges
-        // Weighted towards smaller sizes: 70% chance of 40-100, 30% chance of 100-140
-        const sizeRange = Math.random() < 0.7 ? 60 : 40;
-        const sizeBase = Math.random() < 0.7 ? 40 : 100;
-        const size = Math.floor(Math.random() * sizeRange + sizeBase); // Mostly 40-100, rarely 100-140
+        // Smaller sizes: 30-100 (was 40-140)
+        const size = Math.floor(Math.random() * 70 + 30);
 
         const rotation = Math.random() * 360 * Math.PI / 180;
         const opacity = Math.random() * 0.5 + 0.4; // 0.4-0.9
 
-        // Random color from palette
-        const color = defaultPalette[Math.floor(Math.random() * (defaultPalette.length - 6))]; // Exclude greys
+        // Pick color from palette (allow reuse)
+        const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
 
-        shapes.push({
+        // Stroke: 40% black, 30% lighter, 30% darker
+        let strokeColor;
+        const strokeChoice = Math.random();
+        if (strokeChoice < 0.4) {
+            strokeColor = '#000000';
+        } else if (strokeChoice < 0.7) {
+            strokeColor = lightenColor(color, 30);
+        } else {
+            strokeColor = darkenColor(color, 30);
+        }
+
+        const shape = {
             cx: CANVAS_CENTER,
             cy: CANVAS_CENTER,
             radius: size,
@@ -322,9 +362,21 @@ export function generateRandomDemo() {
             a: a,
             b: b,
             fillColor: hexToRgba(color, opacity),
-            strokeColor: color,
-            strokeWidth: Math.random() > 0.5 ? Math.floor(Math.random() * 3) + 1 : 0
-        });
+            strokeColor: strokeColor,
+            strokeWidth: Math.random() > 0.4 ? Math.floor(Math.random() * 3) + 1 : 0
+        };
+
+        // Add knot pattern parameters
+        if (useKnotPattern) {
+            shape.knotLobes = knotLobesOptions[Math.floor(Math.random() * knotLobesOptions.length)];
+            shape.knotTurns = knotTurnsOptions[Math.floor(Math.random() * knotTurnsOptions.length)];
+            shape.knotAmplitude = Math.round((Math.random() * 0.3 + 0.1) * 100) / 100; // 0.1-0.4
+            shape.knotBaseRadius = Math.round((Math.random() * 0.4 + 0.8) * 100) / 100; // 0.8-1.2
+        } else {
+            shape.knotLobes = 0;
+        }
+
+        shapes.push(shape);
     }
 
     selectedShapeIndex = shapes.length > 0 ? shapes.length - 1 : null;
