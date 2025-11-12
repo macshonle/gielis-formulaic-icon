@@ -461,6 +461,87 @@ export const demos = {
             }
         ]
     },
+    spirographDream: {
+        name: "Spirograph Dream",
+        shapes: [
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 165,
+                rotation: 0,
+                m: 7,
+                n1: 2,
+                n2: 2,
+                n3: 2,
+                a: 1,
+                b: 1,
+                fillColor: 'none',
+                strokeColor: '#FF6B9D',
+                strokeWidth: 2,
+                knotLobes: 7,
+                knotTurns: 3,
+                knotAmplitude: 0.28,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 165,
+                rotation: 0.5235987755982988,
+                m: 5,
+                n1: 2,
+                n2: 2,
+                n3: 2,
+                a: 1,
+                b: 1,
+                fillColor: 'none',
+                strokeColor: '#4ECDC4',
+                strokeWidth: 2,
+                knotLobes: 5,
+                knotTurns: 2,
+                knotAmplitude: 0.32,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 165,
+                rotation: 1.0471975511965976,
+                m: 9,
+                n1: 2,
+                n2: 2,
+                n3: 2,
+                a: 1,
+                b: 1,
+                fillColor: 'none',
+                strokeColor: '#FFD93D',
+                strokeWidth: 2,
+                knotLobes: 9,
+                knotTurns: 4,
+                knotAmplitude: 0.25,
+                knotBaseRadius: 1.0
+            },
+            {
+                cx: CANVAS_CENTER,
+                cy: CANVAS_CENTER,
+                radius: 165,
+                rotation: 1.5707963267948966,
+                m: 11,
+                n1: 2,
+                n2: 2,
+                n3: 2,
+                a: 1,
+                b: 1,
+                fillColor: 'none',
+                strokeColor: '#A78BFA',
+                strokeWidth: 2,
+                knotLobes: 11,
+                knotTurns: 5,
+                knotAmplitude: 0.22,
+                knotBaseRadius: 1.0
+            }
+        ]
+    },
     geminEye: {
         name: "Gemin-EYE",
         shapes: [
