@@ -526,6 +526,13 @@ select:focus {
     pointer-events: none;
 }
 
+/* But allow the checkbox in the legend to remain clickable */
+fieldset.disabled legend input[type="checkbox"],
+fieldset.disabled legend label {
+    pointer-events: auto;
+    opacity: 1;
+}
+
 input[type="range"] {
     padding: 0;
     height: 6px;
