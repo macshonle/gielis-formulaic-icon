@@ -68,7 +68,7 @@ export const demos = {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.3316125578789226,
+                rotation: 1.2217304763960306,
                 m: 6,
                 n1: 1,
                 n2: 4,
@@ -77,13 +77,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(244, 114, 182, 0.5)",
                 strokeColor: "#F472B6",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "none",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.6632251157578452,
+                rotation: 0.41887902047863906,
                 m: 4,
                 n1: 1,
                 n2: 4,
@@ -92,13 +94,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(236, 72, 153, 0.56)",
                 strokeColor: "#EC4899",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 90,
-                rotation: 1.413716694115407,
+                rotation: 1.4835298641951802,
                 m: 5,
                 n1: 1,
                 n2: 4,
@@ -107,13 +111,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(219, 39, 119, 0.62)",
                 strokeColor: "#DB2777",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 90,
-                rotation: 2.199114857512855,
+                radius: 78,
+                rotation: 1.6406094968746698,
                 m: 6,
                 n1: 1,
                 n2: 4,
@@ -122,13 +128,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(190, 24, 93, 0.68)",
                 strokeColor: "#BE185D",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 72,
-                rotation: 0.715584993317675,
+                radius: 81,
+                rotation: 0.5585053606381855,
                 m: 15,
                 n1: 1,
                 n2: 4,
@@ -137,13 +145,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(159, 18, 57, 0.74)",
                 strokeColor: "#9F1239",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.8552113334772214,
+                rotation: 0.06981317007977318,
                 m: 8,
                 n1: 1,
                 n2: 4,
@@ -152,7 +162,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(136, 19, 55, 0.8)",
                 strokeColor: "#881337",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -167,13 +179,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(112, 26, 71, 0.86)",
                 strokeColor: "#701A47",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 67,
-                rotation: 3.6477381366681487,
+                rotation: -2.6354471705114375,
                 m: 9,
                 n1: 1,
                 n2: 4,
@@ -182,14 +196,16 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(93, 26, 87, 0.82)",
                 strokeColor: "#5D1A57",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 18,
+                radius: 17,
                 rotation: 1.8325957145940461,
-                m: 4,
+                m: 7,
                 n1: 2,
                 n2: 2,
                 n3: 2,
@@ -197,22 +213,12 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(234, 179, 8, 0.82)",
                 strokeColor: "#a96800",
-                strokeWidth: 4
-            },
-            {
-                cx: CANVAS_CENTER,
-                cy: CANVAS_CENTER,
-                radius: 10,
-                rotation: 0.3316125578789226,
-                m: 4,
-                n1: 2,
-                n2: 2,
-                n3: 2,
-                a: 1,
-                b: 1,
-                fillColor: "rgba(255, 217, 61, 0.5)",
-                strokeColor: "#F472B6",
-                strokeWidth: 0
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 7,
+                knotTurns: 20,
+                knotAmplitude: 0.45,
+                knotBaseRadius: 0.7
             }
         ]
     },
