@@ -775,3 +775,172 @@ button.primary:active {
 .fill-control input[type="color"] {
     flex: 0 0 40px;
 }
+
+/* ============================================
+   Mobile Responsive Design
+   ============================================ */
+
+/* Tablet and below (< 768px) */
+@media (max-width: 767px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    /* Main workspace: wrap and reorder panels */
+    .main-workspace {
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    /* Panel reordering for mobile UX */
+    .demos-panel {
+        order: 1; /* Top - help users discover features */
+    }
+
+    .canvas-container {
+        order: 2; /* Keep canvas prominent */
+    }
+
+    .layers-panel {
+        order: 3; /* Middle access */
+    }
+
+    .export-panel {
+        order: 4; /* Bottom - least frequently used */
+    }
+
+    /* Remove fixed dimensions, let content flow naturally */
+    .export-panel,
+    .layers-panel,
+    .demos-panel {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+        height: auto;
+    }
+
+    /* Canvas container: scale to fit screen */
+    .canvas-container {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Canvas: maintain aspect ratio, scale visually */
+    #mainCanvas {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 384px;
+        /* Maintain square aspect ratio */
+        aspect-ratio: 1 / 1;
+    }
+
+    /* Adjust panels for mobile */
+    .colors-panel,
+    .shape-panel {
+        min-width: unset;
+        width: 100%;
+    }
+
+    /* Export panel: compact layout */
+    .export-panel {
+        padding: 12px;
+    }
+
+    .export-preview {
+        margin-bottom: 12px;
+    }
+
+    /* Layers panel: reasonable height on mobile */
+    .layers-panel {
+        min-height: 200px;
+        max-height: 300px;
+    }
+
+    .shape-list {
+        max-height: 180px;
+    }
+
+    /* Demos panel: horizontal scroll if needed */
+    .demos-panel {
+        min-height: auto;
+    }
+
+    .demo-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+    }
+
+    /* Controls grid: single column on very narrow screens */
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Very small phones (< 480px) */
+@media (max-width: 479px) {
+    body {
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .panel {
+        padding: 10px;
+    }
+
+    .main-workspace {
+        gap: 10px;
+    }
+
+    /* More compact canvas on tiny screens */
+    #mainCanvas {
+        max-width: calc(100vw - 36px); /* Account for padding and borders */
+    }
+
+    /* Compact demo grid */
+    .demo-list {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 6px;
+    }
+
+    .demo-item {
+        font-size: 11px;
+        padding: 4px;
+    }
+
+    /* Smaller layer items */
+    .shape-item {
+        padding: 6px;
+        font-size: 11px;
+    }
+
+    .shape-item-preview {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Landscape mobile (height < 500px) - keep layout compact */
+@media (max-height: 499px) and (max-width: 767px) {
+    .layers-panel {
+        max-height: 200px;
+    }
+
+    .shape-list {
+        max-height: 120px;
+    }
+}
