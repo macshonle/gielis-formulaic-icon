@@ -1,6 +1,6 @@
 import { lightenColor, hexToRgba, CANVAS_CENTER } from './math.js';
 
-// Modern icon color palette
+// Modern icon color palette (48 colors)
 export const defaultPalette = [
     '#FF6B6B', '#FF8E53', '#FFA64D', '#FFD93D', '#6BCF7F', '#4ECDC4',
     '#45B7D1', '#4D96FF', '#6C5CE7', '#A78BFA', '#F472B6', '#FB7185',
@@ -8,6 +8,7 @@ export const defaultPalette = [
     '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E',
     '#DC2626', '#EA580C', '#D97706', '#CA8A04', '#16A34A', '#0D9488',
     '#0891B2', '#2563EB', '#4F46E5', '#7C3AED', '#DB2777', '#E11D48',
+    '#D4A574', '#B8860B', '#A0522D', '#8B4513', '#654321', '#3E2723',
     '#000000', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB', '#FFFFFF'
 ];
 
