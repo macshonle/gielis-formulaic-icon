@@ -16,9 +16,8 @@ function createCloseButton() {
 
 // Initialize mobile UI (toggle buttons and backdrop)
 export function initMobileUI() {
-    if (!isMobileViewport()) {
-        return; // Only initialize on mobile
-    }
+    // Always create mobile UI elements - CSS will control visibility
+    // This ensures they work even when page loads at desktop size then resizes
 
     // Create backdrop
     const backdrop = document.createElement('div');
@@ -90,17 +89,15 @@ export function initMobileUI() {
         backdrop.classList.remove('visible');
     }
 
-    // Handle window resize - cleanup if switching to desktop
+    // Handle window resize - close panels if switching to desktop
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             if (!isMobileViewport()) {
-                // Cleanup mobile UI when switching to desktop
+                // Close panels when switching to desktop
+                // (buttons will be hidden by CSS)
                 closePanels();
-                backdrop.remove();
-                layersToggle.remove();
-                importExportToggle.remove();
             }
         }, 250);
     });

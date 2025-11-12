@@ -780,6 +780,14 @@ button.primary:active {
    Mobile Responsive Design
    ============================================ */
 
+/* Hide mobile-specific UI elements on desktop */
+.mobile-toggle-btn,
+.mobile-backdrop,
+.mobile-close-btn {
+    display: none;
+}
+
+
 /* Tablet and below (< 768px) */
 @media (max-width: 767px) {
     body {
@@ -928,6 +936,7 @@ button.primary:active {
 
     /* Mobile toggle buttons for slide-out panels */
     .mobile-toggle-btn {
+        display: block; /* Override desktop hide */
         position: fixed;
         z-index: 999;
         background: #007aff;
@@ -964,6 +973,7 @@ button.primary:active {
 
     /* Backdrop for overlay panels */
     .mobile-backdrop {
+        display: block; /* Override desktop hide */
         position: fixed;
         top: 0;
         left: 0;
@@ -995,6 +1005,7 @@ button.primary:active {
 
     /* Close button for overlay panels */
     .mobile-close-btn {
+        display: flex; /* Override desktop hide and enable flexbox */
         position: absolute;
         top: 10px;
         right: 10px;
@@ -1007,7 +1018,6 @@ button.primary:active {
         font-size: 24px;
         line-height: 1;
         cursor: pointer;
-        display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
