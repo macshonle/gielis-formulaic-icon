@@ -607,9 +607,11 @@ export const demos = {
                 n3: 0.5,
                 a: 1,
                 b: 1,
-                fillColor: "#5e92d5",
+                fillColor: "rgba(94, 146, 213, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -622,9 +624,11 @@ export const demos = {
                 n3: 0.5,
                 a: 1,
                 b: 1,
-                fillColor: "#d2e1f3",
+                fillColor: "rgba(210, 225, 243, 1)",
                 strokeColor: "#A0B9E0",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -639,7 +643,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(255, 255, 255, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 0,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -654,7 +660,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(88, 52, 0, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -669,7 +677,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(0, 0, 0, 0.82)",
                 strokeColor: "#2f1f00",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: 175,
