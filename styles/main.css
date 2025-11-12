@@ -659,6 +659,47 @@ input[type="checkbox"] {
     flex: 1;
 }
 
+/* Stepper button group for +/- controls */
+.stepper-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex: 1;
+}
+
+.stepper-btn {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #e0e0e0;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.stepper-btn:hover {
+    background: #3a3a3a;
+    border-color: #007aff;
+}
+
+.stepper-btn:active {
+    transform: scale(0.95);
+}
+
+.stepper-group input[type="number"] {
+    flex: 1;
+    min-width: 0;
+}
+
 button.primary {
     width: 100%;
     background: #007aff;

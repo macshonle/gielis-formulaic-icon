@@ -66,12 +66,15 @@ export function createShapeFromSettings() {
     // Check if knot pattern is enabled
     const enableKnotPattern = document.getElementById('enableKnotPattern').checked;
 
+    // Use unified lobes parameter (paramM) for both m and knotLobes
+    const lobes = parseFloat(document.getElementById('paramM').value);
+
     const shape = {
         cx: parseFloat(document.getElementById('posX').value),
         cy: parseFloat(document.getElementById('posY').value),
         radius: parseFloat(document.getElementById('size').value),
         rotation: parseFloat(document.getElementById('rotation').value) * Math.PI / 180,
-        m: parseFloat(document.getElementById('paramM').value),
+        m: lobes,
         n1: parseFloat(document.getElementById('paramN1').value),
         n2: parseFloat(document.getElementById('paramN2').value),
         n3: parseFloat(document.getElementById('paramN3').value),
@@ -84,7 +87,7 @@ export function createShapeFromSettings() {
 
     // Add knot pattern parameters if enabled
     if (enableKnotPattern) {
-        shape.knotLobes = parseFloat(document.getElementById('knotLobes').value);
+        shape.knotLobes = lobes; // Use unified lobes value
         shape.knotTurns = parseFloat(document.getElementById('knotTurns').value);
         shape.knotAmplitude = parseFloat(document.getElementById('knotAmplitude').value);
         shape.knotBaseRadius = parseFloat(document.getElementById('knotBaseRadius').value);
@@ -131,7 +134,9 @@ export function loadShapeToEditor(shape) {
     document.getElementById('rotationDisplay').textContent = roundedRotation;
     document.getElementById('rotationValue').value = roundedRotation;
 
-    document.getElementById('paramM').value = shape.m;
+    // Use knotLobes if present, otherwise use m (for unified lobes control)
+    const lobes = (shape.knotLobes !== undefined && shape.knotLobes > 0) ? shape.knotLobes : shape.m;
+    document.getElementById('paramM').value = lobes;
     document.getElementById('paramN1').value = shape.n1;
     document.getElementById('paramN2').value = shape.n2;
     document.getElementById('paramN3').value = shape.n3;
@@ -230,7 +235,7 @@ export function loadShapeToEditor(shape) {
     document.getElementById('enableKnotPattern').checked = hasKnotPattern;
 
     if (hasKnotPattern) {
-        document.getElementById('knotLobes').value = shape.knotLobes;
+        // Note: knotLobes is now unified with paramM, so it's already set above
         document.getElementById('knotTurns').value = shape.knotTurns;
         document.getElementById('knotAmplitude').value = shape.knotAmplitude;
         document.getElementById('knotAmplitudeDisplay').textContent = shape.knotAmplitude.toFixed(2);

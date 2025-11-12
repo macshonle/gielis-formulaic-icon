@@ -264,7 +264,6 @@ export function updateStrokeUIState() {
 export function updateKnotPatternUIState() {
     const knotEnabled = document.getElementById('enableKnotPattern').checked;
     const knotFieldset = document.getElementById('knotPatternFieldset');
-    const knotLobes = document.getElementById('knotLobes');
     const knotTurns = document.getElementById('knotTurns');
     const knotAmplitude = document.getElementById('knotAmplitude');
     const knotBaseRadius = document.getElementById('knotBaseRadius');
@@ -272,7 +271,6 @@ export function updateKnotPatternUIState() {
     const isDisabled = !knotEnabled;
 
     // Update input disabled state
-    knotLobes.disabled = isDisabled;
     knotTurns.disabled = isDisabled;
     knotAmplitude.disabled = isDisabled;
     knotBaseRadius.disabled = isDisabled;

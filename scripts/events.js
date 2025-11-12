@@ -56,12 +56,17 @@ export function setupEventListeners() {
 
         // Knot pattern controls
         enableKnotPattern: document.getElementById('enableKnotPattern'),
-        knotLobes: document.getElementById('knotLobes'),
         knotTurns: document.getElementById('knotTurns'),
         knotAmplitude: document.getElementById('knotAmplitude'),
         knotAmplitudeDisplay: document.getElementById('knotAmplitudeDisplay'),
         knotBaseRadius: document.getElementById('knotBaseRadius'),
-        knotBaseRadiusDisplay: document.getElementById('knotBaseRadiusDisplay')
+        knotBaseRadiusDisplay: document.getElementById('knotBaseRadiusDisplay'),
+
+        // Stepper buttons
+        lobesIncrement: document.getElementById('lobesIncrement'),
+        lobesDecrement: document.getElementById('lobesDecrement'),
+        turnsIncrement: document.getElementById('turnsIncrement'),
+        turnsDecrement: document.getElementById('turnsDecrement')
     };
 
     // Button event listeners
@@ -204,10 +209,6 @@ export function setupEventListeners() {
         updateSelectedShape();
     });
 
-    elements.knotLobes.addEventListener('input', () => {
-        updateSelectedShape();
-    });
-
     elements.knotTurns.addEventListener('input', () => {
         updateSelectedShape();
     });
@@ -219,6 +220,34 @@ export function setupEventListeners() {
 
     elements.knotBaseRadius.addEventListener('input', (e) => {
         elements.knotBaseRadiusDisplay.textContent = parseFloat(e.target.value).toFixed(2);
+        updateSelectedShape();
+    });
+
+    // Stepper buttons for Lobes
+    elements.lobesIncrement.addEventListener('click', () => {
+        const current = parseFloat(elements.paramM.value) || 0;
+        elements.paramM.value = current + 1;
+        elements.presetSelect.value = '';
+        updateSelectedShape();
+    });
+
+    elements.lobesDecrement.addEventListener('click', () => {
+        const current = parseFloat(elements.paramM.value) || 0;
+        elements.paramM.value = Math.max(0, current - 1);
+        elements.presetSelect.value = '';
+        updateSelectedShape();
+    });
+
+    // Stepper buttons for Turns
+    elements.turnsIncrement.addEventListener('click', () => {
+        const current = parseFloat(elements.knotTurns.value) || 0;
+        elements.knotTurns.value = current + 1;
+        updateSelectedShape();
+    });
+
+    elements.turnsDecrement.addEventListener('click', () => {
+        const current = parseFloat(elements.knotTurns.value) || 0;
+        elements.knotTurns.value = Math.max(1, current - 1);
         updateSelectedShape();
     });
 
