@@ -50,24 +50,36 @@ h1 {
     margin-bottom: 16px;
 }
 
-.export-panel {
-    width: 280px;
-    height: 404px;
+/* Common panel styles */
+.panel {
     background: #2a2a2a;
     border-radius: 12px;
-    padding: 16px;
+    padding: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
 }
 
-.export-panel h2 {
+.panel h2 {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 8px;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.colors-panel {
+    min-width: 25rem;
+}
+
+.shape-panel {
+    min-width: 36rem;
+}
+
+.export-panel {
+    width: 280px;
+    height: 404px;
+    display: flex;
+    flex-direction: column;
 }
 
 .export-preview {
@@ -197,21 +209,8 @@ h1 {
     max-width: 240px;
     flex: 1;
     height: 404px;
-    background: #2a2a2a;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-}
-
-.layers-panel h2 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .shape-list {
@@ -343,21 +342,8 @@ h1 {
     max-width: 250px;
     flex: 1;
     height: 404px;
-    background: #2a2a2a;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-}
-
-.demos-panel h2 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .demo-list {
@@ -415,22 +401,6 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 16px;
-}
-
-.control-panel {
-    background: #2a2a2a;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.control-panel h2 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 fieldset {
@@ -502,6 +472,33 @@ legend {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+/* Dual select row for Preset and Variation */
+.dual-select-row {
+    display: flex;
+    gap: 12px;
+}
+
+.dual-select-row .select-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.dual-select-row .select-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.dual-select-row .select-group select {
+    flex: 1;
+    min-width: 0;
 }
 
 .input-row .range-value {

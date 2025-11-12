@@ -1,6 +1,6 @@
 import { lightenColor, hexToRgba, CANVAS_CENTER } from './math.js';
 
-// Modern icon color palette
+// Modern icon color palette (48 colors)
 export const defaultPalette = [
     '#FF6B6B', '#FF8E53', '#FFA64D', '#FFD93D', '#6BCF7F', '#4ECDC4',
     '#45B7D1', '#4D96FF', '#6C5CE7', '#A78BFA', '#F472B6', '#FB7185',
@@ -8,6 +8,7 @@ export const defaultPalette = [
     '#06B6D4', '#3B82F6', '#6366F1', '#8B5CF6', '#EC4899', '#F43F5E',
     '#DC2626', '#EA580C', '#D97706', '#CA8A04', '#16A34A', '#0D9488',
     '#0891B2', '#2563EB', '#4F46E5', '#7C3AED', '#DB2777', '#E11D48',
+    '#D4A574', '#B8860B', '#A0522D', '#8B4513', '#654321', '#3E2723',
     '#000000', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB', '#FFFFFF'
 ];
 
@@ -68,7 +69,7 @@ export const demos = {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.3316125578789226,
+                rotation: 1.2217304763960306,
                 m: 6,
                 n1: 1,
                 n2: 4,
@@ -77,13 +78,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(244, 114, 182, 0.5)",
                 strokeColor: "#F472B6",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "none",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.6632251157578452,
+                rotation: 0.41887902047863906,
                 m: 4,
                 n1: 1,
                 n2: 4,
@@ -92,13 +95,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(236, 72, 153, 0.56)",
                 strokeColor: "#EC4899",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 90,
-                rotation: 1.413716694115407,
+                rotation: 1.4835298641951802,
                 m: 5,
                 n1: 1,
                 n2: 4,
@@ -107,13 +112,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(219, 39, 119, 0.62)",
                 strokeColor: "#DB2777",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 90,
-                rotation: 2.199114857512855,
+                radius: 78,
+                rotation: 1.6406094968746698,
                 m: 6,
                 n1: 1,
                 n2: 4,
@@ -122,13 +129,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(190, 24, 93, 0.68)",
                 strokeColor: "#BE185D",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 72,
-                rotation: 0.715584993317675,
+                radius: 81,
+                rotation: 0.5585053606381855,
                 m: 15,
                 n1: 1,
                 n2: 4,
@@ -137,13 +146,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(159, 18, 57, 0.74)",
                 strokeColor: "#9F1239",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 94,
-                rotation: 0.8552113334772214,
+                rotation: 0.06981317007977318,
                 m: 8,
                 n1: 1,
                 n2: 4,
@@ -152,7 +163,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(136, 19, 55, 0.8)",
                 strokeColor: "#881337",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -167,13 +180,15 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(112, 26, 71, 0.86)",
                 strokeColor: "#701A47",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
                 radius: 67,
-                rotation: 3.6477381366681487,
+                rotation: -2.6354471705114375,
                 m: 9,
                 n1: 1,
                 n2: 4,
@@ -182,14 +197,16 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(93, 26, 87, 0.82)",
                 strokeColor: "#5D1A57",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
                 cy: CANVAS_CENTER,
-                radius: 18,
+                radius: 17,
                 rotation: 1.8325957145940461,
-                m: 4,
+                m: 7,
                 n1: 2,
                 n2: 2,
                 n3: 2,
@@ -197,22 +214,12 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(234, 179, 8, 0.82)",
                 strokeColor: "#a96800",
-                strokeWidth: 4
-            },
-            {
-                cx: CANVAS_CENTER,
-                cy: CANVAS_CENTER,
-                radius: 10,
-                rotation: 0.3316125578789226,
-                m: 4,
-                n1: 2,
-                n2: 2,
-                n3: 2,
-                a: 1,
-                b: 1,
-                fillColor: "rgba(255, 217, 61, 0.5)",
-                strokeColor: "#F472B6",
-                strokeWidth: 0
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 7,
+                knotTurns: 20,
+                knotAmplitude: 0.45,
+                knotBaseRadius: 0.7
             }
         ]
     },
@@ -601,9 +608,11 @@ export const demos = {
                 n3: 0.5,
                 a: 1,
                 b: 1,
-                fillColor: "#5e92d5",
+                fillColor: "rgba(94, 146, 213, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -616,9 +625,11 @@ export const demos = {
                 n3: 0.5,
                 a: 1,
                 b: 1,
-                fillColor: "#d2e1f3",
+                fillColor: "rgba(210, 225, 243, 1)",
                 strokeColor: "#A0B9E0",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -633,7 +644,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(255, 255, 255, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 0,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -648,7 +661,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(88, 52, 0, 1)",
                 strokeColor: "#000000",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: CANVAS_CENTER,
@@ -663,7 +678,9 @@ export const demos = {
                 b: 1,
                 fillColor: "rgba(0, 0, 0, 0.82)",
                 strokeColor: "#2f1f00",
-                strokeWidth: 1
+                strokeWidth: 1,
+                variation: "low",
+                knotLobes: 0
             },
             {
                 cx: 175,

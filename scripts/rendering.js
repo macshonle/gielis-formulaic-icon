@@ -1,4 +1,4 @@
-import { superformulaR, knotPattern, CANVAS_SIZE } from './math.js';
+import { superformulaR, knotPattern, CANVAS_SIZE, generateShapeSeed, getVariationAmount, createVariationEnvelope } from './math.js';
 import { shapes, canvas, ctx } from './shapes.js';
 import { updateExportPreviews } from './ui.js';
 
@@ -14,6 +14,27 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
     // Check if this is a knot pattern or superformula
     const isKnotPattern = shape.knotLobes !== undefined && shape.knotLobes > 0;
 
+    // Setup variation if enabled
+    const variation = shape.variation || 'none';
+    const variationAmount = getVariationAmount(variation);
+    const hasVariation = variationAmount > 0;
+
+    // Create smooth variation envelopes for organic hand-drawn effect
+    let radiusEnvelope = null;
+    let angleEnvelope = null;
+    if (hasVariation) {
+        const seed = generateShapeSeed(shape);
+
+        // Determine number of control points based on shape complexity
+        // More lobes = more control points for detailed variation
+        const lobes = isKnotPattern ? (shape.knotLobes || 5) : (shape.m || 5);
+        const numControlPoints = Math.max(8, Math.min(24, Math.round(lobes * 2)));
+
+        // Create two independent envelopes: one for radius, one for angle
+        radiusEnvelope = createVariationEnvelope(seed, numControlPoints);
+        angleEnvelope = createVariationEnvelope(seed + 1000, numControlPoints);
+    }
+
     if (isKnotPattern) {
         // Use knot pattern formula
         const {knotLobes, knotTurns, knotAmplitude, knotBaseRadius = 1.0} = shape;
@@ -26,9 +47,26 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
                 amplitude: knotAmplitude,
                 baseRadius: knotBaseRadius
             });
-            const ang = theta + rotation;
-            const x = (cx * scaleFactor) + (radius * scaleFactor * r * Math.cos(ang));
-            const y = (cy * scaleFactor) + (radius * scaleFactor * r * Math.sin(ang));
+
+            // Apply smooth organic variation
+            let variedR = r;
+            let variedTheta = theta;
+
+            if (hasVariation) {
+                // Get smooth variation values from envelopes
+                const rVar = radiusEnvelope(t); // Range: [-1, 1]
+                const angleVar = angleEnvelope(t); // Range: [-1, 1]
+
+                // Apply radius variation (affects size/depth of lobes)
+                variedR = r * (1 + rVar * variationAmount);
+
+                // Apply angular variation (affects timing/position of lobes)
+                variedTheta = theta + angleVar * variationAmount * 0.3;
+            }
+
+            const ang = variedTheta + rotation;
+            const x = (cx * scaleFactor) + (radius * scaleFactor * variedR * Math.cos(ang));
+            const y = (cy * scaleFactor) + (radius * scaleFactor * variedR * Math.sin(ang));
 
             if (i === 0) {
                 ctx.moveTo(x, y);
@@ -41,11 +79,29 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
         const {m, n1, n2, n3, a, b} = shape;
 
         for (let i = 0; i <= steps; i++) {
-            const theta = (i / steps) * 2 * Math.PI;
+            const t = i / steps;
+            const theta = t * 2 * Math.PI;
             const r = superformulaR(theta, {m, n1, n2, n3, a, b});
-            const ang = theta + rotation;
-            const x = (cx * scaleFactor) + (radius * scaleFactor * r * Math.cos(ang));
-            const y = (cy * scaleFactor) + (radius * scaleFactor * r * Math.sin(ang));
+
+            // Apply smooth organic variation
+            let variedR = r;
+            let variedTheta = theta;
+
+            if (hasVariation) {
+                // Get smooth variation values from envelopes
+                const rVar = radiusEnvelope(t); // Range: [-1, 1]
+                const angleVar = angleEnvelope(t); // Range: [-1, 1]
+
+                // Apply radius variation (creates lumpy, organic shape)
+                variedR = r * (1 + rVar * variationAmount);
+
+                // Apply angular variation (shifts lobe positions)
+                variedTheta = theta + angleVar * variationAmount * 0.2;
+            }
+
+            const ang = variedTheta + rotation;
+            const x = (cx * scaleFactor) + (radius * scaleFactor * variedR * Math.cos(ang));
+            const y = (cy * scaleFactor) + (radius * scaleFactor * variedR * Math.sin(ang));
 
             if (i === 0) {
                 ctx.moveTo(x, y);

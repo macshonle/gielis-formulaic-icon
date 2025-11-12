@@ -83,6 +83,7 @@ export function createShapeFromSettings() {
         fillColor: fillColor,
         strokeColor: strokeColor,
         strokeWidth: strokeWidth,
+        variation: document.getElementById('variationSelect').value || 'none',
     };
 
     // Add knot pattern parameters if enabled
@@ -244,6 +245,10 @@ export function loadShapeToEditor(shape) {
     }
 
     updateKnotPatternUIState();
+
+    // Load variation setting
+    const variation = shape.variation || 'none';
+    document.getElementById('variationSelect').value = variation;
 }
 
 // Delete shape at index
