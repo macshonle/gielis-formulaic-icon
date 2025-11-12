@@ -504,6 +504,33 @@ legend {
     gap: 8px;
 }
 
+/* Dual select row for Preset and Variation */
+.dual-select-row {
+    display: flex;
+    gap: 12px;
+}
+
+.dual-select-row .select-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.dual-select-row .select-group label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.dual-select-row .select-group select {
+    flex: 1;
+    min-width: 0;
+}
+
 .input-row .range-value {
     font-size: 12px;
     color: #888;

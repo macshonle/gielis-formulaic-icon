@@ -18,6 +18,61 @@ export function knotPattern(t, {lobes, turns, amplitude, baseRadius = 1.0}) {
     return {r, theta};
 }
 
+// ===== SEEDED RANDOM NUMBER GENERATOR FOR ORGANIC VARIATION =====
+
+// Simple string hash function to generate seed from shape parameters
+function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash);
+}
+
+// Generate seed from shape parameters for deterministic variation
+export function generateShapeSeed(shape) {
+    // Create a string representation of key shape parameters
+    const params = [
+        shape.m || 0,
+        shape.n1 || 0,
+        shape.n2 || 0,
+        shape.n3 || 0,
+        shape.a || 0,
+        shape.b || 0,
+        shape.radius || 0,
+        shape.rotation || 0,
+        shape.knotLobes || 0,
+        shape.knotTurns || 0,
+        shape.knotAmplitude || 0,
+        shape.knotBaseRadius || 0
+    ].join(',');
+    return hashString(params);
+}
+
+// Mulberry32 PRNG - fast and simple seeded random number generator
+export function createSeededRandom(seed) {
+    let state = seed;
+    return function() {
+        state |= 0;
+        state = state + 0x6D2B79F5 | 0;
+        let t = Math.imul(state ^ state >>> 15, 1 | state);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+// Get variation amount based on variation level
+export function getVariationAmount(level) {
+    switch (level) {
+        case 'low': return 0.03; // 3%
+        case 'mid': return 0.08; // 8%
+        case 'high': return 0.15; // 15%
+        default: return 0; // 'none'
+    }
+}
+
 // Helper function to lighten a color
 export function lightenColor(color, percent) {
     const num = parseInt(color.replace("#",""), 16);

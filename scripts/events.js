@@ -23,6 +23,7 @@ export function setupEventListeners() {
 
         // Selectors
         presetSelect: document.getElementById('presetSelect'),
+        variationSelect: document.getElementById('variationSelect'),
 
         // Color inputs
         customColor: document.getElementById('customColor'),
@@ -106,6 +107,11 @@ export function setupEventListeners() {
     // Preset selector
     elements.presetSelect.addEventListener('change', (e) => {
         applyPreset(e.target.value);
+    });
+
+    // Variation selector
+    elements.variationSelect.addEventListener('change', () => {
+        updateSelectedShape();
     });
 
     // Custom color input
