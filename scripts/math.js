@@ -66,9 +66,9 @@ export function createSeededRandom(seed) {
 // Get variation amount based on variation level
 export function getVariationAmount(level) {
     switch (level) {
-        case 'low': return 0.05; // 5%
-        case 'mid': return 0.12; // 12%
-        case 'high': return 0.25; // 25%
+        case 'low': return 0.025; // 2.5%
+        case 'mid': return 0.05; // 5%
+        case 'high': return 0.12; // 12%
         default: return 0; // 'none'
     }
 }
