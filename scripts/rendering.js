@@ -1,4 +1,4 @@
-import { superformulaR, knotPattern, CANVAS_SIZE, generateShapeSeed, createSeededRandom, getVariationAmount } from './math.js';
+import { superformulaR, knotPattern, CANVAS_SIZE, generateShapeSeed, getVariationAmount, createVariationEnvelope } from './math.js';
 import { shapes, canvas, ctx } from './shapes.js';
 import { updateExportPreviews } from './ui.js';
 
@@ -19,10 +19,20 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
     const variationAmount = getVariationAmount(variation);
     const hasVariation = variationAmount > 0;
 
-    let rng = null;
+    // Create smooth variation envelopes for organic hand-drawn effect
+    let radiusEnvelope = null;
+    let angleEnvelope = null;
     if (hasVariation) {
         const seed = generateShapeSeed(shape);
-        rng = createSeededRandom(seed);
+
+        // Determine number of control points based on shape complexity
+        // More lobes = more control points for detailed variation
+        const lobes = isKnotPattern ? (shape.knotLobes || 5) : (shape.m || 5);
+        const numControlPoints = Math.max(8, Math.min(24, Math.round(lobes * 2)));
+
+        // Create two independent envelopes: one for radius, one for angle
+        radiusEnvelope = createVariationEnvelope(seed, numControlPoints);
+        angleEnvelope = createVariationEnvelope(seed + 1000, numControlPoints);
     }
 
     if (isKnotPattern) {
@@ -38,21 +48,23 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
                 baseRadius: knotBaseRadius
             });
 
-            // Apply organic variation
+            // Apply smooth organic variation
             let variedR = r;
-            let variedRotation = rotation;
+            let variedTheta = theta;
 
             if (hasVariation) {
-                // Vary the radius (affects lobe depth)
-                const rVariation = (rng() - 0.5) * 2 * variationAmount;
-                variedR = r * (1 + rVariation);
+                // Get smooth variation values from envelopes
+                const rVar = radiusEnvelope(t); // Range: [-1, 1]
+                const angleVar = angleEnvelope(t); // Range: [-1, 1]
 
-                // Vary the rotation slightly for organic angular shifts
-                const rotationVariation = (rng() - 0.5) * 2 * variationAmount * 0.5;
-                variedRotation = rotation + rotationVariation;
+                // Apply radius variation (affects size/depth of lobes)
+                variedR = r * (1 + rVar * variationAmount);
+
+                // Apply angular variation (affects timing/position of lobes)
+                variedTheta = theta + angleVar * variationAmount * 0.3;
             }
 
-            const ang = theta + variedRotation;
+            const ang = variedTheta + rotation;
             const x = (cx * scaleFactor) + (radius * scaleFactor * variedR * Math.cos(ang));
             const y = (cy * scaleFactor) + (radius * scaleFactor * variedR * Math.sin(ang));
 
@@ -67,24 +79,27 @@ export function drawSuperformula(ctx, shape, scaleFactor = 1) {
         const {m, n1, n2, n3, a, b} = shape;
 
         for (let i = 0; i <= steps; i++) {
-            const theta = (i / steps) * 2 * Math.PI;
+            const t = i / steps;
+            const theta = t * 2 * Math.PI;
             const r = superformulaR(theta, {m, n1, n2, n3, a, b});
 
-            // Apply organic variation
+            // Apply smooth organic variation
             let variedR = r;
-            let variedRotation = rotation;
+            let variedTheta = theta;
 
             if (hasVariation) {
-                // Vary the radius (simulates hand-drawing imperfection)
-                const rVariation = (rng() - 0.5) * 2 * variationAmount;
-                variedR = r * (1 + rVariation);
+                // Get smooth variation values from envelopes
+                const rVar = radiusEnvelope(t); // Range: [-1, 1]
+                const angleVar = angleEnvelope(t); // Range: [-1, 1]
 
-                // Vary the rotation angle slightly for organic angular shifts
-                const rotationVariation = (rng() - 0.5) * 2 * variationAmount * 0.3;
-                variedRotation = rotation + rotationVariation;
+                // Apply radius variation (creates lumpy, organic shape)
+                variedR = r * (1 + rVar * variationAmount);
+
+                // Apply angular variation (shifts lobe positions)
+                variedTheta = theta + angleVar * variationAmount * 0.2;
             }
 
-            const ang = theta + variedRotation;
+            const ang = variedTheta + rotation;
             const x = (cx * scaleFactor) + (radius * scaleFactor * variedR * Math.cos(ang));
             const y = (cy * scaleFactor) + (radius * scaleFactor * variedR * Math.sin(ang));
 

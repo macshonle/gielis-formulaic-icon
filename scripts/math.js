@@ -66,11 +66,40 @@ export function createSeededRandom(seed) {
 // Get variation amount based on variation level
 export function getVariationAmount(level) {
     switch (level) {
-        case 'low': return 0.03; // 3%
-        case 'mid': return 0.08; // 8%
-        case 'high': return 0.15; // 15%
+        case 'low': return 0.05; // 5%
+        case 'mid': return 0.12; // 12%
+        case 'high': return 0.25; // 25%
         default: return 0; // 'none'
     }
+}
+
+// Generate smooth variation envelope for organic hand-drawn effect
+// Returns a function that takes a parameter t [0,1] and returns variation value [-1, 1]
+export function createVariationEnvelope(seed, numControlPoints = 12) {
+    const rng = createSeededRandom(seed);
+
+    // Generate control points with random variation values
+    const controlPoints = [];
+    for (let i = 0; i < numControlPoints; i++) {
+        controlPoints.push((rng() - 0.5) * 2); // Range: [-1, 1]
+    }
+
+    // Return interpolation function using cosine interpolation for smoothness
+    return function(t) {
+        // Wrap t to [0, 1]
+        t = ((t % 1) + 1) % 1;
+
+        // Find the two control points to interpolate between
+        const scaledT = t * numControlPoints;
+        const index0 = Math.floor(scaledT) % numControlPoints;
+        const index1 = (index0 + 1) % numControlPoints;
+        const fraction = scaledT - Math.floor(scaledT);
+
+        // Cosine interpolation for smooth transitions
+        const mu = (1 - Math.cos(fraction * Math.PI)) / 2;
+
+        return controlPoints[index0] * (1 - mu) + controlPoints[index1] * mu;
+    };
 }
 
 // Helper function to lighten a color
