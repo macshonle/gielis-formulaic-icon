@@ -851,6 +851,51 @@ button.primary:active {
         width: 100%;
     }
 
+    /* Colors panel: better wrapping for color swatches */
+    .color-palette {
+        grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+        gap: 6px;
+    }
+
+    /* Shape panel: stack param-grid vertically (Lobes and Preset/Variation) */
+    .param-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* N1/N2/N3 on one row, A/B on separate row below */
+    .param-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .param-row .param-group {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    /* Full-width sliders on mobile */
+    .range-container {
+        min-width: 0;
+    }
+
+    .range-container input[type="range"] {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    /* Ensure input rows don't overflow */
+    .input-row {
+        flex-wrap: wrap;
+    }
+
+    .input-row label {
+        min-width: auto;
+    }
+
     /* Export panel: compact layout */
     .export-panel {
         padding: 12px;
@@ -911,6 +956,12 @@ button.primary:active {
         max-width: calc(100vw - 36px); /* Account for padding and borders */
     }
 
+    /* Even more compact color swatches */
+    .color-palette {
+        grid-template-columns: repeat(auto-fill, minmax(24px, 1fr));
+        gap: 4px;
+    }
+
     /* Compact demo grid */
     .demo-list {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -931,6 +982,19 @@ button.primary:active {
     .shape-item-preview {
         width: 24px;
         height: 24px;
+    }
+
+    /* Smaller input fields */
+    input[type="number"],
+    input[type="text"],
+    select {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+
+    /* Compact param inputs */
+    .param-input input[type="number"] {
+        width: 4em;
     }
 }
 
