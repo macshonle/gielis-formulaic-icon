@@ -2,6 +2,7 @@ import { setCanvas, setCtx } from './shapes.js';
 import { initColorPalette, initDemoList, updateFillUIState, updateStrokeUIState, updateStrokeColorVisibility, updateKnotPatternUIState } from './ui.js';
 import { setupEventListeners } from './events.js';
 import { renderCanvas } from './rendering.js';
+import { initMobileUI } from './mobile.js';
 
 // Initialize the application
 export function init() {
@@ -21,6 +22,9 @@ export function init() {
 
     // Setup event listeners
     setupEventListeners();
+
+    // Initialize mobile UI (toggle buttons, etc.)
+    initMobileUI();
 
     // Initial render
     renderCanvas();

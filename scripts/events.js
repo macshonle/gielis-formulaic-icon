@@ -316,6 +316,66 @@ export function setupEventListeners() {
     canvas.addEventListener('mouseup', resetDragging);
     canvas.addEventListener('mouseleave', resetDragging);
 
+    // Touch event handlers for mobile - parallel to mouse handlers above
+    canvas.addEventListener('touchstart', (e) => {
+        if (selectedShapeIndex === null || !shapes[selectedShapeIndex]) {
+            return;
+        }
+
+        // Prevent default to avoid scrolling while dragging
+        e.preventDefault();
+
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        // Check if touching the selected shape
+        if (isPointInShape(x, y, shapes[selectedShapeIndex])) {
+            setIsDragging(true);
+            setDragStartX(x);
+            setDragStartY(y);
+            setDragStartCX(shapes[selectedShapeIndex].cx);
+            setDragStartCY(shapes[selectedShapeIndex].cy);
+        }
+    }, { passive: false }); // passive: false allows preventDefault
+
+    canvas.addEventListener('touchmove', (e) => {
+        if (!isDragging || selectedShapeIndex === null) {
+            return;
+        }
+
+        // Prevent default to avoid scrolling while dragging
+        e.preventDefault();
+
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        // Calculate the movement delta
+        const deltaX = x - dragStartX;
+        const deltaY = y - dragStartY;
+
+        // Update position
+        const newCX = dragStartCX + deltaX;
+        const newCY = dragStartCY + deltaY;
+
+        // Update the input fields
+        elements.posX.value = Math.round(newCX);
+        elements.posY.value = Math.round(newCY);
+
+        // Update the shape
+        updateSelectedShape();
+    }, { passive: false }); // passive: false allows preventDefault
+
+    // Reset dragging state on touchend or touchcancel
+    const resetTouchDragging = () => {
+        setIsDragging(false);
+    };
+    canvas.addEventListener('touchend', resetTouchDragging);
+    canvas.addEventListener('touchcancel', resetTouchDragging);
+
     // Arrow key controls for precise positioning
     document.addEventListener('keydown', (e) => {
         // Only handle arrow keys when there's a selected shape

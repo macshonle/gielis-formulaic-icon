@@ -775,3 +775,356 @@ button.primary:active {
 .fill-control input[type="color"] {
     flex: 0 0 40px;
 }
+
+/* ============================================
+   Mobile Responsive Design
+   ============================================ */
+
+/* Hide mobile-specific UI elements on desktop */
+.mobile-toggle-btn,
+.mobile-backdrop,
+.mobile-close-btn {
+    display: none;
+}
+
+
+/* Tablet and below (< 768px) */
+@media (max-width: 767px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    /* Main workspace: wrap and reorder panels */
+    .main-workspace {
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    /* Panel reordering for mobile UX */
+    .demos-panel {
+        order: 1; /* Top - help users discover features */
+    }
+
+    .canvas-container {
+        order: 2; /* Keep canvas prominent */
+    }
+
+    /* Hide Layers and Import/Export panels from normal flow on mobile */
+    .layers-panel,
+    .export-panel {
+        position: fixed;
+        top: 0;
+        height: 100vh;
+        width: 280px;
+        max-width: 85vw;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Add padding-top to panel h2 to avoid overlap with close button */
+    .layers-panel h2,
+    .export-panel h2 {
+        padding-right: 40px;
+    }
+
+    /* Layers slides in from right */
+    .layers-panel {
+        right: 0;
+        transform: translateX(100%);
+    }
+
+    .layers-panel.mobile-visible {
+        transform: translateX(0);
+    }
+
+    /* Import/Export slides in from left */
+    .export-panel {
+        left: 0;
+        transform: translateX(-100%);
+    }
+
+    .export-panel.mobile-visible {
+        transform: translateX(0);
+    }
+
+    /* Adjust demos panel */
+    .demos-panel {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+        height: auto;
+    }
+
+    /* Canvas container: scale to fit screen */
+    .canvas-container {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Canvas: maintain aspect ratio, scale visually */
+    #mainCanvas {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 384px;
+        /* Maintain square aspect ratio */
+        aspect-ratio: 1 / 1;
+    }
+
+    /* Adjust panels for mobile */
+    .colors-panel,
+    .shape-panel {
+        min-width: unset;
+        width: 100%;
+    }
+
+    /* Colors panel: better wrapping for color swatches */
+    .color-palette {
+        grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+        gap: 6px;
+    }
+
+    /* Shape panel: stack param-grid vertically (Lobes and Preset/Variation) */
+    .param-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* N1/N2/N3 on one row, A/B on separate row below */
+    .param-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .param-row .param-group {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    /* Full-width sliders on mobile */
+    .range-container {
+        min-width: 0;
+    }
+
+    .range-container input[type="range"] {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    /* Ensure input rows don't overflow */
+    .input-row {
+        flex-wrap: wrap;
+    }
+
+    .input-row label {
+        min-width: auto;
+    }
+
+    /* Mobile toggle buttons for slide-out panels */
+    .mobile-toggle-btn {
+        display: block; /* Override desktop hide */
+        position: fixed;
+        z-index: 999;
+        background: #007aff;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        transition: all 0.2s;
+    }
+
+    .mobile-toggle-btn:hover {
+        background: #0051d5;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
+    }
+
+    .mobile-toggle-btn:active {
+        transform: translateY(0);
+    }
+
+    #layersToggle {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #importExportToggle {
+        bottom: 20px;
+        left: 20px;
+    }
+
+    /* Backdrop for overlay panels */
+    .mobile-backdrop {
+        display: block; /* Override desktop hide */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-backdrop.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Adjust overlays when visible */
+    .layers-panel.mobile-visible,
+    .export-panel.mobile-visible {
+        padding: 16px;
+    }
+
+    /* Shape list in overlay mode */
+    .layers-panel.mobile-visible .shape-list {
+        flex: 1;
+        min-height: 300px;
+    }
+
+    /* Close button for overlay panels */
+    .mobile-close-btn {
+        display: flex; /* Override desktop hide and enable flexbox */
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid #666;
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        padding: 0;
+        z-index: 1;
+    }
+
+    .mobile-close-btn:hover {
+        background: #ff3b30;
+        border-color: #ff3b30;
+        transform: scale(1.1);
+    }
+
+    .mobile-close-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Demos panel: horizontal scroll if needed */
+    .demos-panel {
+        min-height: auto;
+    }
+
+    .demo-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+    }
+
+    /* Controls grid: single column on very narrow screens */
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Very small phones (< 480px) */
+@media (max-width: 479px) {
+    body {
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .panel {
+        padding: 10px;
+    }
+
+    .main-workspace {
+        gap: 10px;
+    }
+
+    /* More compact canvas on tiny screens */
+    #mainCanvas {
+        max-width: calc(100vw - 36px); /* Account for padding and borders */
+    }
+
+    /* Even more compact color swatches */
+    .color-palette {
+        grid-template-columns: repeat(auto-fill, minmax(24px, 1fr));
+        gap: 4px;
+    }
+
+    /* Compact demo grid */
+    .demo-list {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 6px;
+    }
+
+    .demo-item {
+        font-size: 11px;
+        padding: 4px;
+    }
+
+    /* Smaller layer items */
+    .shape-item {
+        padding: 6px;
+        font-size: 11px;
+    }
+
+    .shape-item-preview {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Smaller input fields */
+    input[type="number"],
+    input[type="text"],
+    select {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+
+    /* Compact param inputs */
+    .param-input input[type="number"] {
+        width: 4em;
+    }
+}
+
+/* Landscape mobile (height < 500px) - keep layout compact */
+@media (max-height: 499px) and (max-width: 767px) {
+    .layers-panel {
+        max-height: 200px;
+    }
+
+    .shape-list {
+        max-height: 120px;
+    }
+}
