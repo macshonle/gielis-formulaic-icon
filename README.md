@@ -10,6 +10,8 @@ A client-side only web app in pure HTML/CSS/JavaScript for creating program icon
 
 <img width="180" height="180" alt="GeminEYE" src="https://github.com/user-attachments/assets/38493b8a-c992-4883-9d67-bfb5c13b7e06" />
 
+Why not head over to the [working demo](https://macshonle.com/gielis-icon-maker/)? Give the "Random" button a try!
+
 ## Features
 
 - **Superformula shape generation** with full control over parameters (m, n1, n2, n3, a, b)
@@ -29,8 +31,6 @@ The app is fully responsive and works on mobile devices:
 - **Slide-out panels**: Layers and Import/Export panels slide in from the sides on mobile
 - **Touch support**: Drag shapes with touch gestures
 - **Optimized controls**: Color swatches, sliders, and parameter inputs adapt to mobile screens
-
-See [MOBILE_SETUP.md](MOBILE_SETUP.md) for detailed mobile testing instructions.
 
 ## Development
 
